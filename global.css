@@ -1,0 +1,23 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css';
+
+@import 'nativewind/theme';
+
+@theme {
+    --font-jakarta: jakarta-regular;
+    --font-jakarta-light: jakarta-light;
+    --font-jakarta-medium: jakarta-medium;
+    --font-jakarta-semibold: jakarta-semibold;
+    --font-jakarta-bold: jakarta-bold;
+    --font-jakarta-extrabold: jakarta-extrabold;
+
+    --font-vietnam: vietnam-regular;
+    --font-vietnam-light: vietnam-light;
+    --font-vietnam-medium: vietnam-medium;
+    --font-vietnam-semibold: vietnam-semibold;
+    --font-vietnam-bold: vietnam-bold;
+    --font-vietnam-extrabold: vietnam-extrabold;
+
+    --font-badscript: badscript-regular;
+}

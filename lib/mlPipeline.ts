@@ -61,21 +61,31 @@ class MLPipeline {
         return this.processLogits(outputTensor.data as Float32Array);
     }
 
-    private processLogits(logits: Float32Array) {
-        let maxIndex = 0;
-        let maxValue = logits[0];
-
-        for (let i = 1; i < logits.length; i++) {
-            if (logits[i] > maxValue) {
-                maxValue = logits[i];
-                maxIndex = i;
-            }
+    private processLogits(logits: Float32Array): Prediction[] {
+        let maxLogit = -Infinity;
+        for (let i = 0; i < logits.length; i++) {
+            if (logits[i] > maxLogit) maxLogit = logits[i];
         }
 
-        return {
-            classIndex: maxIndex,
-            confidenceScore: maxValue,
-        };
+        let sumExp = 0;
+        const expLogits = new Float32Array(logits.length);
+        for (let i = 0; i < logits.length; i++) {
+            const e = Math.exp(logits[i] - maxLogit);
+            expLogits[i] = e;
+            sumExp += e;
+        }
+
+        const predictions: Prediction[] = [];
+        for (let i = 0; i < logits.length; i++) {
+            predictions.push({
+                classIndex: i,
+                confidenceScore: expLogits[i] / sumExp,
+            });
+        }
+
+        predictions.sort((a, b) => b.confidenceScore - a.confidenceScore);
+
+        return predictions.slice(0, 5);
     }
 }
 

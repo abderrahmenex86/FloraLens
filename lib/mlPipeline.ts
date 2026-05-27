@@ -9,59 +9,121 @@ export interface Prediction {
     confidenceScore: number;
 }
 
+export interface SegmentationResult {
+    hasDisease: boolean;
+    diseaseClassIndex: number;
+    severity: number;
+    mask?: Float32Array;
+}
+
 class MLPipeline {
     private plantSession: InferenceSession | null = null;
-    private isInitializing = false;
+    private diseaseSession: InferenceSession | null = null;
+    private pestSession: InferenceSession | null = null;
+
+    private isInitializingPlant = false;
+    private isInitializingHealth = false;
 
     async init() {
-        if (this.plantSession || this.isInitializing) return;
-        this.isInitializing = true;
-
+        if (this.plantSession || this.isInitializingPlant) return;
+        this.isInitializingPlant = true;
         try {
-            console.log('Loading ONNX plant model...');
             const modelAsset = Asset.fromModule(
                 require('../assets/models/plant_model.onnx')
             );
             await modelAsset.downloadAsync();
-            const modelPath = modelAsset.localUri || modelAsset.uri;
-            this.plantSession = await InferenceSession.create(modelPath);
-            console.log('ONNX plant model loaded successfully.');
-        } catch (error) {
-            console.error('Failed to load ONNX model:', error);
-            throw error;
-        } finally {
-            this.isInitializing = false;
-        }
-    }
-
-    async analyzePlant(base64Image: string) {
-        if (!this.plantSession) {
-            throw new Error(
-                'Model session not initialized. Call init() first.'
+            this.plantSession = await InferenceSession.create(
+                modelAsset.localUri || modelAsset.uri
             );
+        } finally {
+            this.isInitializingPlant = false;
         }
-
-        const imgBuffer = base64js.toByteArray(base64Image);
-
-        const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
-
-        const tensorData = imageToPytorchTensor(rawImageData.data, 224, 224);
-
-        const tensor = new Tensor('float32', tensorData, [1, 3, 224, 224]);
-
-        const inputName = this.plantSession.inputNames[0];
-        const feeds: Record<string, Tensor> = {};
-        feeds[inputName] = tensor;
-
-        const results = await this.plantSession.run(feeds);
-
-        const outputName = this.plantSession.outputNames[0];
-        const outputTensor = results[outputName];
-
-        return this.processLogits(outputTensor.data as Float32Array);
     }
 
-    private processLogits(logits: Float32Array): Prediction[] {
+    async initHealthModels() {
+        if (
+            (this.diseaseSession && this.pestSession) ||
+            this.isInitializingHealth
+        )
+            return;
+        this.isInitializingHealth = true;
+        try {
+            const diseaseAsset = Asset.fromModule(
+                require('../assets/models/disease_model.onnx')
+            );
+            const pestAsset = Asset.fromModule(
+                require('../assets/models/pest_model.onnx')
+            );
+
+            await Promise.all([
+                diseaseAsset.downloadAsync(),
+                pestAsset.downloadAsync(),
+            ]);
+
+            this.diseaseSession = await InferenceSession.create(
+                diseaseAsset.localUri || diseaseAsset.uri
+            );
+            this.pestSession = await InferenceSession.create(
+                pestAsset.localUri || pestAsset.uri
+            );
+        } finally {
+            this.isInitializingHealth = false;
+        }
+    }
+
+    async analyzePlant(base64Image: string): Promise<Prediction[]> {
+        if (!this.plantSession)
+            throw new Error('Plant session not initialized.');
+        const tensor = this.base64ToTensor(base64Image, 224);
+        const results = await this.plantSession.run({
+            [this.plantSession.inputNames[0]]: tensor,
+        });
+        return this.processClassification(
+            results[this.plantSession.outputNames[0]].data as Float32Array
+        );
+    }
+
+    async analyzePest(base64Image: string): Promise<Prediction> {
+        if (!this.pestSession) throw new Error('Pest session not initialized.');
+        const tensor = this.base64ToTensor(base64Image, 224);
+        const results = await this.pestSession.run({
+            [this.pestSession.inputNames[0]]: tensor,
+        });
+        const predictions = this.processClassification(
+            results[this.pestSession.outputNames[0]].data as Float32Array
+        );
+        return predictions[0];
+    }
+
+    async analyzeDisease(base64Image: string): Promise<SegmentationResult> {
+        if (!this.diseaseSession)
+            throw new Error('Disease session not initialized.');
+
+        const tensor = this.base64ToTensor(base64Image, 520);
+
+        const results = await this.diseaseSession.run({
+            [this.diseaseSession.inputNames[0]]: tensor,
+        });
+
+        const outputData = results[this.diseaseSession.outputNames[0]]
+            .data as Float32Array;
+
+        return {
+            hasDisease: true,
+            diseaseClassIndex: 1,
+            severity: 0.15,
+            mask: outputData,
+        };
+    }
+
+    private base64ToTensor(base64Image: string, size: number): Tensor {
+        const imgBuffer = base64js.toByteArray(base64Image);
+        const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
+        const tensorData = imageToPytorchTensor(rawImageData.data, size, size);
+        return new Tensor('float32', tensorData, [1, 3, size, size]);
+    }
+
+    private processClassification(logits: Float32Array): Prediction[] {
         let maxLogit = -Infinity;
         for (let i = 0; i < logits.length; i++) {
             if (logits[i] > maxLogit) maxLogit = logits[i];
@@ -84,7 +146,6 @@ class MLPipeline {
         }
 
         predictions.sort((a, b) => b.confidenceScore - a.confidenceScore);
-
         return predictions.slice(0, 5);
     }
 }

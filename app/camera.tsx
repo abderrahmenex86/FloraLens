@@ -30,7 +30,7 @@ import {
     RotateCcw,
     ScanLine,
 } from 'lucide-react-native';
-import { mlPipeline } from '../lib/mlPipeline';
+import { Prediction, mlPipeline } from '../lib/mlPipeline';
 import { saveScanResult } from '../lib/storage';
 
 const View = styled(RNView);
@@ -56,10 +56,9 @@ export default function CameraScreen() {
     const [aiState, setAiState] = useState<AIState>('idle');
     const [photoData, setPhotoData] = useState<PhotoData | null>(null);
     const [processedImage, setProcessedImage] = useState<string | null>(null);
-    const [inferenceResult, setInferenceResult] = useState<{
-        classIndex: number;
-        confidenceScore: number;
-    } | null>(null);
+    const [inferenceResult, setInferenceResult] = useState<Prediction[] | null>(
+        null
+    );
 
     const cameraRef = useRef<CameraView>(null);
     const bottomSheetRef = useRef<BottomSheet>(null);
@@ -141,14 +140,14 @@ export default function CameraScreen() {
             if (!manipResult.base64)
                 throw new Error('Missing Base64 image data');
 
-            const result = await mlPipeline.analyzePlant(manipResult.base64);
+            const results = await mlPipeline.analyzePlant(manipResult.base64);
             await saveScanResult(
-                result.classIndex,
-                result.confidenceScore,
+                results[0].classIndex,
+                results[0].confidenceScore,
                 photoData.uri
             );
 
-            setInferenceResult(result);
+            setInferenceResult(results);
             setAiState('complete');
         } catch (error) {
             console.error('AI Processing failed:', error);
@@ -365,18 +364,40 @@ export default function CameraScreen() {
                             <Pressable
                                 className='bg-[#2D5A27] px-8 py-4 rounded-full mt-2 w-full active:opacity-90'
                                 onPress={() => {
-                                    bottomSheetRef.current?.close();
-                                    if (inferenceResult) {
+                                    if (
+                                        inferenceResult &&
+                                        inferenceResult.length > 0
+                                    ) {
+                                        const topResult = inferenceResult[0];
+                                        const alternatives =
+                                            inferenceResult.slice(1);
+
                                         router.push({
                                             pathname: '/result/[id]',
                                             params: {
-                                                id: inferenceResult.classIndex.toString(),
+                                                id: topResult.classIndex.toString(),
                                                 imageUri: photoData?.uri || '',
                                                 confidence:
-                                                    inferenceResult.confidenceScore.toString(),
+                                                    topResult.confidenceScore.toString(),
+                                                alternatives:
+                                                    JSON.stringify(
+                                                        alternatives
+                                                    ),
                                             },
                                         });
                                     }
+                                    // bottomSheetRef.current?.close();
+                                    // if (inferenceResult) {
+                                    //     router.push({
+                                    //         pathname: '/result/[id]',
+                                    //         params: {
+                                    //             id: inferenceResult.classIndex.toString(),
+                                    //             imageUri: photoData?.uri || '',
+                                    //             confidence:
+                                    //                 inferenceResult.confidenceScore.toString(),
+                                    //         },
+                                    //     });
+                                    // }
                                 }}>
                                 <Text className='font-jakarta-bold text-center text-[#F4F7F2] text-lg'>
                                     View Results

@@ -11,7 +11,7 @@ interface ScreenProps {
 
 export function Screen({ children, className = '' }: ScreenProps) {
     return (
-        <SafeAreaView className={`flex-1 bg-[#F4F7F2] p-8 pb-32 ${className}`}>
+        <SafeAreaView className={`flex-1 bg-[#F4F7F2] p-8 pb-18 ${className}`}>
             {children}
         </SafeAreaView>
     );

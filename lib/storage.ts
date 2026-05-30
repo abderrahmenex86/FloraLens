@@ -8,6 +8,7 @@ export const storage = createMMKV({
 export const StorageKeys = {
     SCAN_HISTORY: 'scan_history',
     GARDEN: 'garden_plants',
+    CURRENT_SESSION: 'current_session',
 } as const;
 
 export interface ScanRecord {
@@ -25,9 +26,7 @@ export async function saveScanResult(
 ): Promise<ScanRecord> {
     const fileName = `scan_${Date.now()}.jpg`;
     const destination = new File(Paths.document, fileName);
-    const source = new File(tempUri);
-
-    source.copy(destination);
+    new File(tempUri).copy(destination);
 
     const newRecord: ScanRecord = {
         id: Date.now().toString(),
@@ -37,12 +36,9 @@ export async function saveScanResult(
         timestamp: Date.now(),
     };
 
-    const existing = storage.getString(StorageKeys.SCAN_HISTORY);
-    const history: ScanRecord[] = existing ? JSON.parse(existing) : [];
-
+    const history = getScanHistory();
     history.unshift(newRecord);
     storage.set(StorageKeys.SCAN_HISTORY, JSON.stringify(history));
-
     return newRecord;
 }
 
@@ -51,10 +47,13 @@ export function getScanHistory(): ScanRecord[] {
     return existing ? JSON.parse(existing) : [];
 }
 
-export function saveToGarden(record: ScanRecord) {
-    const existing = storage.getString(StorageKeys.GARDEN);
-    const garden: ScanRecord[] = existing ? JSON.parse(existing) : [];
+export function removeFromHistory(id: string) {
+    const history = getScanHistory().filter((item) => item.id !== id);
+    storage.set(StorageKeys.SCAN_HISTORY, JSON.stringify(history));
+}
 
+export function saveToGarden(record: ScanRecord) {
+    const garden = getGardenPlants();
     if (!garden.some((plant) => plant.id === record.id)) {
         garden.unshift(record);
         storage.set(StorageKeys.GARDEN, JSON.stringify(garden));
@@ -67,9 +66,6 @@ export function getGardenPlants(): ScanRecord[] {
 }
 
 export function removeFromGarden(id: string) {
-    const existing = storage.getString(StorageKeys.GARDEN);
-    if (!existing) return;
-    const garden: ScanRecord[] = JSON.parse(existing);
-    const filtered = garden.filter((plant) => plant.id !== id);
-    storage.set(StorageKeys.GARDEN, JSON.stringify(filtered));
+    const garden = getGardenPlants().filter((plant) => plant.id !== id);
+    storage.set(StorageKeys.GARDEN, JSON.stringify(garden));
 }

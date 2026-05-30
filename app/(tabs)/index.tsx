@@ -1,12 +1,23 @@
 import { useState, useCallback } from 'react';
-import { Text, View as RNView, Pressable, ScrollView } from 'react-native';
+import {
+    Text,
+    View as RNView,
+    Pressable,
+    ScrollView,
+    Animated,
+} from 'react-native';
 import { Image } from 'expo-image';
 import { styled } from 'nativewind';
 import { Link, useFocusEffect, useRouter } from 'expo-router';
-import { Camera, ScanSearch, ChevronRight } from 'lucide-react-native';
+import { Camera, ScanSearch, ChevronRight, Trash2 } from 'lucide-react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { Screen } from '../../components/Screen';
 import { EmptyState } from '../../components/EmptyState';
-import { getScanHistory, ScanRecord } from '../../lib/storage';
+import {
+    getScanHistory,
+    removeFromHistory,
+    ScanRecord,
+} from '../../lib/storage';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 
 const View = styled(RNView);
@@ -15,20 +26,23 @@ export default function Home() {
     const router = useRouter();
     const [recentScans, setRecentScans] = useState<ScanRecord[]>([]);
 
-    useFocusEffect(
-        useCallback(() => {
-            const history = getScanHistory();
-            setRecentScans(history);
-        }, [])
-    );
+    useFocusEffect(useCallback(() => setRecentScans(getScanHistory()), []));
 
-    const formatDate = (timestamp: number) => {
-        const date = new Date(timestamp);
-        return date.toLocaleDateString(undefined, {
-            month: 'short',
-            day: 'numeric',
-        });
+    const handleDelete = (id: string) => {
+        removeFromHistory(id);
+        setRecentScans((prev) => prev.filter((s) => s.id !== id));
     };
+
+    const renderRightActions = (id: string) => (
+        <Pressable
+            onPress={() => handleDelete(id)}
+            className='bg-red-500 justify-center items-end w-24 rounded-3xl mb-3 pr-6'>
+            <Trash2
+                size={24}
+                color='white'
+            />
+        </Pressable>
+    );
 
     return (
         <Screen className='gap-8'>
@@ -36,72 +50,44 @@ export default function Home() {
                 <Text className='text-5xl font-jakarta-bold text-[#1A1C19]'>
                     FloraLens
                 </Text>
-                <Text className='text-lg font-vietnam text-[#2D5A27]'>
-                    Welcome Back!
-                </Text>
             </View>
 
             <Link
                 href='/camera'
                 asChild>
-                <Pressable className='flex-row items-center justify-between bg-[#2D5A27] rounded-4xl p-6 shadow-sm active:opacity-90'>
+                <Pressable className='flex-row items-center justify-between bg-[#2D5A27] rounded-[32px] p-6 shadow-sm'>
                     <View className='flex-1 gap-2'>
                         <Text className='text-2xl font-jakarta-bold text-[#F4F7F2]'>
                             Identify Plant
-                        </Text>
-                        <Text className='font-vietnam text-[#F4F7F2]/80 text-sm pr-4 leading-relaxed'>
-                            Take a photo to detect plants, pests, and diseases
-                            offline.
                         </Text>
                     </View>
                     <View className='bg-[#F4F7F2]/20 p-5 rounded-full'>
                         <Camera
                             size={32}
                             color='#F4F7F2'
-                            strokeWidth={1.5}
                         />
                     </View>
                 </Pressable>
             </Link>
 
-            {/* Recent Scans Section */}
             <View className='flex-1 gap-4'>
                 <Text className='text-2xl font-jakarta-bold text-[#1A1C19]'>
-                    Recent Scans
+                    Recent Scans (Swipe left)
                 </Text>
-
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 20, gap: 12 }}>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     {recentScans.length === 0 ?
                         <EmptyState
                             icon={ScanSearch}
-                            title='No recent history'
-                            description='Your on-device scan history will appear here securely.'
+                            title='No history'
+                            description='Scans appear here.'
                         />
-                    :   recentScans.map((scan) => {
-                            const plantInfo = PLANT_CLASSES[
-                                scan.classIndex
-                            ] || {
-                                name: 'Unknown Plant',
-                                scientific: 'Unknown',
-                            };
-
-                            return (
-                                <Pressable
-                                    key={scan.id}
-                                    onPress={() => {
-                                        router.push({
-                                            pathname: '/result/[id]',
-                                            params: {
-                                                id: scan.classIndex.toString(),
-                                                imageUri: scan.imageUri,
-                                                confidence:
-                                                    scan.confidence.toString(),
-                                            },
-                                        });
-                                    }}
-                                    className='flex-row items-center bg-white p-4 rounded-3xl shadow-sm shadow-black/5 active:opacity-80'>
+                    :   recentScans.map((scan) => (
+                            <Swipeable
+                                key={scan.id}
+                                renderRightActions={() =>
+                                    renderRightActions(scan.id)
+                                }>
+                                <View className='flex-row items-center bg-white p-4 rounded-3xl shadow-sm mb-3'>
                                     <Image
                                         source={{ uri: scan.imageUri }}
                                         style={{
@@ -109,29 +95,18 @@ export default function Home() {
                                             height: 64,
                                             borderRadius: 16,
                                         }}
-                                        contentFit='cover'
                                     />
                                     <View className='flex-1 ml-4 justify-center'>
-                                        <Text
-                                            className='font-jakarta-bold text-[#1A1C19] text-lg mb-0.5'
-                                            numberOfLines={1}>
-                                            {plantInfo.name}
-                                        </Text>
-                                        <Text className='font-vietnam text-[#1A1C19]/60 text-sm'>
-                                            {formatDate(scan.timestamp)} •{' '}
-                                            {(scan.confidence * 100).toFixed(0)}
-                                            % Match
+                                        <Text className='font-jakarta-bold text-[#1A1C19]'>
+                                            {
+                                                PLANT_CLASSES[scan.classIndex]
+                                                    ?.name
+                                            }
                                         </Text>
                                     </View>
-                                    <View className='bg-[#F4F7F2] p-2 rounded-full'>
-                                        <ChevronRight
-                                            size={20}
-                                            color='#2D5A27'
-                                        />
-                                    </View>
-                                </Pressable>
-                            );
-                        })
+                                </View>
+                            </Swipeable>
+                        ))
                     }
                 </ScrollView>
             </View>

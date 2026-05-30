@@ -14,16 +14,16 @@ const HomeLayout = () => {
                 tabBarInactiveTintColor: '#84B026',
                 tabBarStyle: {
                     position: 'absolute',
-                    bottom: insets.bottom,
-                    height: 64,
-                    marginHorizontal: 16,
+                    bottom: 16 + insets.bottom,
+                    height: 80,
+                    marginHorizontal: 28,
                     borderRadius: 32,
                     backgroundColor: '#2D5A27',
                     borderTopWidth: 0,
                     elevation: 0,
                 },
                 tabBarItemStyle: {
-                    paddingVertical: 64 / 2 - 40 / 1.6,
+                    paddingVertical: 80 / 2 - 40 / 1.6,
                 },
                 tabBarIconStyle: {
                     width: 40,

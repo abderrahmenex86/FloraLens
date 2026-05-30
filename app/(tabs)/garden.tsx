@@ -3,11 +3,17 @@ import { Text, View as RNView, Pressable, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { styled } from 'nativewind';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Sprout } from 'lucide-react-native';
+import { Sprout, Trash2, ChevronRight } from 'lucide-react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { Screen } from '../../components/Screen';
 import { EmptyState } from '../../components/EmptyState';
-import { getGardenPlants, ScanRecord } from '../../lib/storage';
+import {
+    getGardenPlants,
+    removeFromGarden,
+    ScanRecord,
+} from '../../lib/storage';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
+import { PLANT_IMAGES } from '../../lib/plantImages';
 
 const View = styled(RNView);
 
@@ -17,9 +23,24 @@ export default function Garden() {
 
     useFocusEffect(
         useCallback(() => {
-            const plants = getGardenPlants();
-            setGardenPlants(plants);
+            setGardenPlants(getGardenPlants());
         }, [])
+    );
+
+    const handleDelete = (id: string) => {
+        removeFromGarden(id);
+        setGardenPlants((prev) => prev.filter((p) => p.id !== id));
+    };
+
+    const renderRightActions = (id: string) => (
+        <Pressable
+            onPress={() => handleDelete(id)}
+            className='bg-red-500 justify-center items-end w-24 rounded-3xl mb-3 pr-6'>
+            <Trash2
+                size={24}
+                color='white'
+            />
+        </Pressable>
     );
 
     return (
@@ -40,60 +61,67 @@ export default function Garden() {
                     <EmptyState
                         icon={Sprout}
                         title='Your garden is empty'
-                        description='Save plants from your scans to track their health, get care reminders, and monitor disease recovery.'
+                        description='Save plants from your scans to track their health and get care reminders.'
                     />
                 </View>
             :   <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 100 }}>
-                    <View className='flex-row flex-wrap justify-between gap-y-4'>
-                        {gardenPlants.map((plant) => {
-                            const plantInfo = PLANT_CLASSES[
-                                plant.classIndex
-                            ] || {
-                                name: 'Unknown Plant',
-                                scientific: 'Unknown',
-                            };
+                    {gardenPlants.map((plant) => {
+                        const plantInfo = PLANT_CLASSES[plant.classIndex] || {
+                            name: 'Unknown Plant',
+                            scientific: 'Unknown',
+                        };
+                        // Prefer high quality reference image for the garden, fallback to scan
+                        const coverImage = (PLANT_IMAGES[plant.classIndex] &&
+                            PLANT_IMAGES[plant.classIndex][0]) || {
+                            uri: plant.imageUri,
+                        };
 
-                            return (
+                        return (
+                            <Swipeable
+                                key={plant.id}
+                                renderRightActions={() =>
+                                    renderRightActions(plant.id)
+                                }>
                                 <Pressable
-                                    key={plant.id}
-                                    onPress={() => {
-                                        router.push({
-                                            pathname: '/result/[id]',
-                                            params: {
-                                                id: plant.classIndex.toString(),
-                                                imageUri: plant.imageUri,
-                                                confidence:
-                                                    plant.confidence.toString(),
-                                            },
-                                        });
-                                    }}
-                                    className='w-[48%] bg-white rounded-[24px] p-3 shadow-sm shadow-black/5 active:opacity-90'>
+                                    onPress={() =>
+                                        router.push(
+                                            `/plant/${plant.classIndex}`
+                                        )
+                                    }
+                                    className='flex-row items-center bg-white p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
                                     <Image
-                                        source={{ uri: plant.imageUri }}
+                                        source={coverImage}
                                         style={{
-                                            width: '100%',
-                                            aspectRatio: 1,
+                                            width: 72,
+                                            height: 72,
                                             borderRadius: 16,
-                                            marginBottom: 12,
                                         }}
                                         contentFit='cover'
                                     />
-                                    <Text
-                                        className='font-jakarta-bold text-[#1A1C19] text-base mb-1'
-                                        numberOfLines={1}>
-                                        {plantInfo.name}
-                                    </Text>
-                                    <Text
-                                        className='font-vietnam text-[#1A1C19]/60 text-xs'
-                                        numberOfLines={1}>
-                                        {plantInfo.scientific}
-                                    </Text>
+                                    <View className='flex-1 ml-4 justify-center'>
+                                        <Text
+                                            className='font-jakarta-bold text-[#1A1C19] text-lg mb-0.5'
+                                            numberOfLines={1}>
+                                            {plantInfo.name}
+                                        </Text>
+                                        <Text
+                                            className='font-vietnam text-[#1A1C19]/60 text-sm'
+                                            numberOfLines={1}>
+                                            {plantInfo.scientific}
+                                        </Text>
+                                    </View>
+                                    <View className='bg-[#F4F7F2] p-2 rounded-full'>
+                                        <ChevronRight
+                                            size={20}
+                                            color='#2D5A27'
+                                        />
+                                    </View>
                                 </Pressable>
-                            );
-                        })}
-                    </View>
+                            </Swipeable>
+                        );
+                    })}
                 </ScrollView>
             }
         </Screen>

@@ -3,11 +3,10 @@ import '@/global.css';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
-// import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
 
 const RootLayout = () => {
-    // const insets = useSafeAreaInsets();
     const [fontsLoaded] = useFonts({
         'jakarta-light': require('../assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Light.ttf'),
         'jakarta-regular': require('../assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Regular.ttf'),
@@ -32,6 +31,10 @@ const RootLayout = () => {
     if (!fontsLoaded) return null;
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
+            <StatusBar
+                style='dark'
+                backgroundColor='#F4F7F2'
+            />
             <Stack
                 screenOptions={{
                     headerShown: false,

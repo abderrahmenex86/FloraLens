@@ -3,6 +3,8 @@ import * as jpeg from 'jpeg-js';
 import * as base64js from 'base64-js';
 import { imageToPytorchTensor } from './tensorUtils';
 import { Asset } from 'expo-asset';
+import { Buffer } from 'buffer';
+global.Buffer = global.Buffer || Buffer;
 
 export interface Prediction {
     classIndex: number;
@@ -13,7 +15,7 @@ export interface SegmentationResult {
     hasDisease: boolean;
     diseaseClassIndex: number;
     severity: number;
-    mask?: Float32Array;
+    blendedBase64?: string;
 }
 
 class MLPipeline {
@@ -74,7 +76,7 @@ class MLPipeline {
     async analyzePlant(base64Image: string): Promise<Prediction[]> {
         if (!this.plantSession)
             throw new Error('Plant session not initialized.');
-        const tensor = this.base64ToTensor(base64Image, 224);
+        const tensor = this.base64ToTensor(base64Image, 224).tensor;
         const results = await this.plantSession.run({
             [this.plantSession.inputNames[0]]: tensor,
         });
@@ -85,7 +87,7 @@ class MLPipeline {
 
     async analyzePest(base64Image: string): Promise<Prediction> {
         if (!this.pestSession) throw new Error('Pest session not initialized.');
-        const tensor = this.base64ToTensor(base64Image, 224);
+        const tensor = this.base64ToTensor(base64Image, 224).tensor;
         const results = await this.pestSession.run({
             [this.pestSession.inputNames[0]]: tensor,
         });
@@ -99,28 +101,93 @@ class MLPipeline {
         if (!this.diseaseSession)
             throw new Error('Disease session not initialized.');
 
-        const tensor = this.base64ToTensor(base64Image, 520);
+        const { tensor, rawImageData } = this.base64ToTensor(base64Image, 520);
 
         const results = await this.diseaseSession.run({
             [this.diseaseSession.inputNames[0]]: tensor,
         });
+        const outputTensor = results[this.diseaseSession.outputNames[0]];
+        const outputData = outputTensor.data as Float32Array;
 
-        const outputData = results[this.diseaseSession.outputNames[0]]
-            .data as Float32Array;
+        const numClasses = outputTensor.dims[1];
+        const spatialSize = 520 * 520;
 
-        return {
-            hasDisease: true,
-            diseaseClassIndex: 1,
-            severity: 0.15,
-            mask: outputData,
-        };
+        const pixelClasses = new Uint8Array(spatialSize);
+        const classCounts = new Array(numClasses).fill(0);
+
+        for (let p = 0; p < spatialSize; p++) {
+            let maxVal = -Infinity;
+            let maxClass = 0;
+            for (let c = 0; c < numClasses; c++) {
+                const val = outputData[c * spatialSize + p];
+                if (val > maxVal) {
+                    maxVal = val;
+                    maxClass = c;
+                }
+            }
+            pixelClasses[p] = maxClass;
+            classCounts[maxClass]++;
+        }
+
+        let dominantClass = 0;
+        let maxDiseaseCount = 0;
+        for (let c = 1; c < numClasses; c++) {
+            if (classCounts[c] > maxDiseaseCount) {
+                maxDiseaseCount = classCounts[c];
+                dominantClass = c;
+            }
+        }
+
+        const severity = maxDiseaseCount / spatialSize; // Percentage of image
+
+        if (severity > 0.05) {
+            for (let p = 0; p < spatialSize; p++) {
+                if (pixelClasses[p] === dominantClass) {
+                    const rIdx = p * 4;
+                    rawImageData.data[rIdx] = Math.min(
+                        255,
+                        rawImageData.data[rIdx] + 100
+                    );
+                    rawImageData.data[rIdx + 1] = Math.max(
+                        0,
+                        rawImageData.data[rIdx + 1] - 50
+                    );
+                    rawImageData.data[rIdx + 2] = Math.max(
+                        0,
+                        rawImageData.data[rIdx + 2] - 50
+                    );
+                }
+            }
+
+            const blendedJpeg = jpeg.encode(rawImageData, 80);
+            const blendedBase64 = base64js.fromByteArray(blendedJpeg.data);
+
+            return {
+                hasDisease: true,
+                diseaseClassIndex: dominantClass,
+                severity,
+                blendedBase64: `data:image/jpeg;base64,${blendedBase64}`,
+            };
+        } else {
+            return {
+                hasDisease: false,
+                diseaseClassIndex: 0,
+                severity: 0,
+            };
+        }
     }
 
-    private base64ToTensor(base64Image: string, size: number): Tensor {
+    private base64ToTensor(
+        base64Image: string,
+        size: number
+    ): { tensor: Tensor; rawImageData: jpeg.RawImageData<Uint8Array> } {
         const imgBuffer = base64js.toByteArray(base64Image);
         const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
         const tensorData = imageToPytorchTensor(rawImageData.data, size, size);
-        return new Tensor('float32', tensorData, [1, 3, size, size]);
+        return {
+            tensor: new Tensor('float32', tensorData, [1, 3, size, size]),
+            rawImageData,
+        };
     }
 
     private processClassification(logits: Float32Array): Prediction[] {

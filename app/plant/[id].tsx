@@ -22,6 +22,7 @@ import {
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
 import { getGardenPlants, saveToGarden } from '../../lib/storage';
+import { colors, spacing } from '@/theme';
 
 const View = styled(RNView);
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -62,7 +63,7 @@ export default function PlantProfileScreen() {
         <View className='flex-1 bg-[#F4F7F2]'>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}>
+                contentContainerStyle={{ paddingBottom: spacing.scrollBottom }}>
                 <View className='h-[420px] w-full relative bg-[#2D5A27]'>
                     {images.length > 0 ?
                         <ScrollView
@@ -99,7 +100,7 @@ export default function PlantProfileScreen() {
                         style={{ top: Math.max(insets.top, 16), left: 16 }}>
                         <ArrowLeft
                             size={24}
-                            color='#F4F7F2'
+                            color={colors.background}
                         />
                     </Pressable>
                 </View>
@@ -120,11 +121,11 @@ export default function PlantProfileScreen() {
                             {isSaved ?
                                 <BookmarkCheck
                                     size={28}
-                                    color='#F4F7F2'
+                                    color={colors.background}
                                 />
                             :   <BookmarkPlus
                                     size={28}
-                                    color='#2D5A27'
+                                    color={colors.primary}
                                 />
                             }
                         </Pressable>
@@ -139,7 +140,7 @@ export default function PlantProfileScreen() {
                             <View className='bg-[#EAF1E8] p-3 rounded-full'>
                                 <Sun
                                     size={24}
-                                    color='#2D5A27'
+                                    color={colors.primary}
                                 />
                             </View>
                             <Text className='flex-1 font-vietnam text-[#1A1C19] leading-relaxed'>
@@ -151,7 +152,7 @@ export default function PlantProfileScreen() {
                             <View className='bg-[#EAF1E8] p-3 rounded-full'>
                                 <Droplets
                                     size={24}
-                                    color='#2D5A27'
+                                    color={colors.primary}
                                 />
                             </View>
                             <Text className='flex-1 font-vietnam text-[#1A1C19] leading-relaxed'>

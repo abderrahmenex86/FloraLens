@@ -22,6 +22,7 @@ import {
 } from 'lucide-react-native';
 import { mlPipeline } from '../lib/mlPipeline';
 import { storage, StorageKeys } from '../lib/storage';
+import { colors } from '@/theme';
 
 const View = styled(RNView);
 
@@ -123,7 +124,7 @@ export default function ScanScreen() {
                     <View className='bg-[#84B026]/20 p-8 rounded-full mb-4'>
                         <Sparkles
                             size={64}
-                            color='#84B026'
+                            color={colors.accent}
                         />
                     </View>
                     <Text className='text-4xl font-jakarta-bold text-white text-center'>
@@ -156,7 +157,7 @@ export default function ScanScreen() {
                 <View className='flex-1 items-center justify-center p-8 gap-6 bg-[#F4F7F2]'>
                     <ActivityIndicator
                         size={64}
-                        color='#2D5A27'
+                        color={colors.primary}
                     />
                     <Text className='text-3xl font-jakarta-bold text-[#1A1C19]'>
                         Running Diagnostics

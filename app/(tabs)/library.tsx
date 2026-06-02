@@ -13,6 +13,7 @@ import { Image } from 'expo-image';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
+import { colors, radii, sizes } from '@/theme';
 
 const View = styled(RNView);
 
@@ -48,12 +49,19 @@ export default function Library() {
                 {coverImage ?
                     <Image
                         source={coverImage}
-                        style={{ width: 64, height: 64, borderRadius: 16 }}
+                        style={{
+                            width: sizes.thumbnail,
+                            height: sizes.thumbnail,
+                            borderRadius: radii.md,
+                        }}
                         contentFit='cover'
                     />
                 :   <View
                         className='width-[64px] height-[64px] bg-[#EAF1E8] rounded-2xl items-center justify-center'
-                        style={{ width: 64, height: 64 }}>
+                        style={{
+                            width: sizes.thumbnail,
+                            height: sizes.thumbnail,
+                        }}>
                         <Text className='font-jakarta-bold text-[#2D5A27]'>
                             {item.name.charAt(0)}
                         </Text>
@@ -74,7 +82,7 @@ export default function Library() {
                 <View className='bg-[#F4F7F2] p-2 rounded-full'>
                     <ChevronRight
                         size={20}
-                        color='#2D5A27'
+                        color={colors.primary}
                     />
                 </View>
             </Pressable>
@@ -95,7 +103,7 @@ export default function Library() {
             <View className='flex-row items-center bg-white px-4 py-3 rounded-2xl shadow-sm shadow-black/5 border border-[#F4F7F2]'>
                 <Search
                     size={20}
-                    color='#84B026'
+                    color={colors.accent}
                 />
                 <TextInput
                     placeholder='Search by name or scientific name...'

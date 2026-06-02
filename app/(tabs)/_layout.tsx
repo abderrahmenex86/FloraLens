@@ -1,8 +1,12 @@
 import { Tabs } from 'expo-router';
 import { BookOpen, House, Info, Leaf } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
+import { StyleSheet, Pressable } from 'react-native';
+import { colors } from '@/theme';
+import { hapticLight } from '../../lib/haptics';
 
-const HomeLayout = () => {
+export default function HomeLayout() {
     const insets = useSafeAreaInsets();
 
     return (
@@ -10,26 +14,31 @@ const HomeLayout = () => {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarActiveTintColor: '#F4F7F2',
-                tabBarInactiveTintColor: '#84B026',
+                tabBarActiveTintColor: '#FFFFFF',
+                tabBarInactiveTintColor: '#FFFFFF33',
                 tabBarStyle: {
                     position: 'absolute',
-                    bottom: 16 + insets.bottom,
-                    height: 80,
+                    bottom: insets.bottom,
+                    height: 64,
                     marginHorizontal: 28,
                     borderRadius: 32,
-                    backgroundColor: '#2D5A27',
+                    backgroundColor: colors.primary,
                     borderTopWidth: 0,
                     elevation: 0,
+                    shadowColor: 'transparent',
                 },
                 tabBarItemStyle: {
-                    paddingVertical: 80 / 2 - 40 / 1.6,
+                    paddingVertical: 12,
                 },
-                tabBarIconStyle: {
-                    width: 40,
-                    height: 40,
-                    alignItems: 'center',
-                },
+                tabBarButton: (props) => (
+                    <Pressable
+                        {...props}
+                        onPress={(e) => {
+                            hapticLight();
+                            props.onPress?.(e);
+                        }}
+                    />
+                ),
             }}>
             <Tabs.Screen
                 name='index'
@@ -81,6 +90,4 @@ const HomeLayout = () => {
             />
         </Tabs>
     );
-};
-
-export default HomeLayout;
+}

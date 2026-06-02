@@ -32,6 +32,7 @@ import {
     storage,
     StorageKeys,
 } from '../../lib/storage';
+import { colors, radii, spacing } from '@/theme';
 
 const View = styled(RNView);
 
@@ -88,7 +89,7 @@ export default function ResultScreen() {
         <View className='flex-1 bg-[#F4F7F2]'>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}>
+                contentContainerStyle={{ paddingBottom: spacing.scrollBottom }}>
                 <View className='h-[420px] w-full relative bg-[#2D5A27]'>
                     {(
                         PLANT_IMAGES[mainMatch.classIndex] &&
@@ -139,7 +140,7 @@ export default function ResultScreen() {
                         style={{ top: Math.max(insets.top, 16), left: 16 }}>
                         <ArrowLeft
                             size={24}
-                            color='#F4F7F2'
+                            color={colors.background}
                         />
                     </Pressable>
                 </View>
@@ -165,11 +166,11 @@ export default function ResultScreen() {
                             {isSavedToGarden ?
                                 <BookmarkCheck
                                     size={28}
-                                    color='#F4F7F2'
+                                    color={colors.background}
                                 />
                             :   <BookmarkPlus
                                     size={28}
-                                    color='#2D5A27'
+                                    color={colors.primary}
                                 />
                             }
                         </Pressable>
@@ -181,7 +182,7 @@ export default function ResultScreen() {
                             <View className='bg-[#EAF1E8] p-3 rounded-full'>
                                 <Sun
                                     size={20}
-                                    color='#2D5A27'
+                                    color={colors.primary}
                                 />
                             </View>
                             <Text className='flex-1 font-vietnam text-[#1A1C19]'>
@@ -210,7 +211,7 @@ export default function ResultScreen() {
                                             <View className='bg-[#F4F7F2] p-2 rounded-full mr-3'>
                                                 <Search
                                                     size={18}
-                                                    color='#84B026'
+                                                    color={colors.accent}
                                                 />
                                             </View>
                                             <View className='flex-1'>
@@ -240,11 +241,11 @@ export default function ResultScreen() {
                             {disease.hasDisease ?
                                 <ShieldAlert
                                     size={24}
-                                    color='#E25A38'
+                                    color={colors.danger}
                                 />
                             :   <ShieldCheck
                                     size={24}
-                                    color='#84B026'
+                                    color={colors.accent}
                                 />
                             }
                             <Text className='font-jakarta-bold text-xl text-[#1A1C19]'>
@@ -258,7 +259,7 @@ export default function ResultScreen() {
                                     style={{
                                         width: '100%',
                                         height: 200,
-                                        borderRadius: 16,
+                                        borderRadius: radii.md,
                                         marginBottom: 16,
                                     }}
                                     contentFit='cover'
@@ -289,11 +290,11 @@ export default function ResultScreen() {
                             {pest.confidenceScore >= 0.7 ?
                                 <Bug
                                     size={24}
-                                    color='#E25A38'
+                                    color={colors.danger}
                                 />
                             :   <ShieldCheck
                                     size={24}
-                                    color='#84B026'
+                                    color={colors.accent}
                                 />
                             }
                             <Text className='font-jakarta-bold text-xl text-[#1A1C19]'>

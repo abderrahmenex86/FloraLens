@@ -19,6 +19,7 @@ import {
     ScanRecord,
 } from '../../lib/storage';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
+import { colors, radii, sizes } from '@/theme';
 
 const View = styled(RNView);
 
@@ -64,7 +65,7 @@ export default function Home() {
                     <View className='bg-[#F4F7F2]/20 p-5 rounded-full'>
                         <Camera
                             size={32}
-                            color='#F4F7F2'
+                            color={colors.background}
                         />
                     </View>
                 </Pressable>
@@ -91,9 +92,9 @@ export default function Home() {
                                     <Image
                                         source={{ uri: scan.imageUri }}
                                         style={{
-                                            width: 64,
-                                            height: 64,
-                                            borderRadius: 16,
+                                            width: sizes.thumbnail,
+                                            height: sizes.thumbnail,
+                                            borderRadius: radii.md,
                                         }}
                                     />
                                     <View className='flex-1 ml-4 justify-center'>

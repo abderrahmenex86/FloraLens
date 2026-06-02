@@ -14,6 +14,7 @@ import {
 } from '../../lib/storage';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
+import { colors, radii, spacing } from '@/theme';
 
 const View = styled(RNView);
 
@@ -66,7 +67,7 @@ export default function Garden() {
                 </View>
             :   <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 100 }}>
+                    contentContainerStyle={{ paddingBottom: spacing.scrollBottom }}>
                     {gardenPlants.map((plant) => {
                         const plantInfo = PLANT_CLASSES[plant.classIndex] || {
                             name: 'Unknown Plant',
@@ -96,7 +97,7 @@ export default function Garden() {
                                         style={{
                                             width: 72,
                                             height: 72,
-                                            borderRadius: 16,
+                                            borderRadius: radii.md,
                                         }}
                                         contentFit='cover'
                                     />
@@ -115,7 +116,7 @@ export default function Garden() {
                                     <View className='bg-[#F4F7F2] p-2 rounded-full'>
                                         <ChevronRight
                                             size={20}
-                                            color='#2D5A27'
+                                            color={colors.primary}
                                         />
                                     </View>
                                 </Pressable>

@@ -1,5 +1,6 @@
 import { SplashScreen } from 'expo-router';
 import '@/global.css';
+import { colors } from '@/theme';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
@@ -33,7 +34,7 @@ const RootLayout = () => {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <StatusBar
                 style='dark'
-                backgroundColor='#F4F7F2'
+                backgroundColor={colors.background}
             />
             <Stack
                 screenOptions={{

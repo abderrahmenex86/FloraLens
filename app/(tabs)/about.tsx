@@ -3,6 +3,7 @@ import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
 import { Flower2, Heart } from 'lucide-react-native';
 import { View as RNView } from 'react-native';
 import { styled } from 'nativewind';
+import { colors } from '@/theme';
 
 const SafeAreaView = styled(RNSafeAreaView);
 const View = styled(RNView);
@@ -16,7 +17,7 @@ export default function About() {
             <View className='flex items-center justify-center gap-4'>
                 <Flower2
                     size={48}
-                    color='#2D5A27'
+                    color={colors.primary}
                 />
                 <Text className='font-jakarta-bold text-2xl mx-4 text-[#2D5A27]'>
                     FloraLens

@@ -1,6 +1,7 @@
 import { View as RNView, Text } from 'react-native';
 import { styled } from 'nativewind';
 import { LucideIcon } from 'lucide-react-native';
+import { colors } from '@/theme';
 
 const View = styled(RNView);
 
@@ -20,7 +21,7 @@ export function EmptyState({
             <View className='bg-[#84B026]/10 p-4 rounded-full mb-4'>
                 <Icon
                     size={40}
-                    color='#2D5A27'
+                    color={colors.primary}
                     strokeWidth={1.5}
                 />
             </View>

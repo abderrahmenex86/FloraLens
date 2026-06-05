@@ -13,11 +13,11 @@
 FloraLens, Built entirely from scratch, it leverages **100% offline, on-device Machine Learning** to identify closer to 400 plant species, classify pests, and generate spatial pixel-level disease masks—all.
 
 <div align="center">
-  <img src="docs/home.png" width="15%" />
-  <img src="docs/camera.png" width="15%" />
-  <img src="docs/results.png" width="15%" />
-  <img src="docs/garden.png" width="15%" />
-  <img src="docs/library.png" width="15%" />
+  <img src="docs/home.png" width="18%" />
+  <img src="docs/camera.png" width="18%" />
+  <img src="docs/results.png" width="18%" />
+  <img src="docs/garden.png" width="18%" />
+  <img src="docs/library.png" width="18%" />
 </div>
 
 ## ✨ Features

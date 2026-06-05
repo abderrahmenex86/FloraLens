@@ -1,38 +1,37 @@
-import { useState, useEffect } from 'react';
-import {
-    View as RNView,
-    Text,
-    Pressable,
-    ScrollView,
-    ToastAndroid,
-    Dimensions,
-} from 'react-native';
-import { PLANT_IMAGES } from '../../lib/plantImages';
 import { Image } from 'expo-image';
-import { styled } from 'nativewind';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
     ArrowLeft,
-    BookmarkPlus,
     BookmarkCheck,
-    Droplets,
-    Sun,
+    BookmarkPlus,
+    Bug,
     Search,
     ShieldAlert,
     ShieldCheck,
-    Bug,
+    Sun,
 } from 'lucide-react-native';
+import { styled } from 'nativewind';
+import { useEffect, useState } from 'react';
+import {
+    Dimensions,
+    Pressable,
+    View as RNView,
+    ScrollView,
+    Text,
+    ToastAndroid,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { PLANT_IMAGES } from '../../lib/plantImages';
 
-import { PLANT_CLASSES } from '../../lib/plantClasses';
+import { colors, radii, spacing } from '@/theme';
 import { DISEASE_CLASSES, PEST_CLASSES } from '../../lib/healthClasses';
+import { PLANT_CLASSES } from '../../lib/plantClasses';
 import {
     saveScanResult,
     saveToGarden,
     storage,
     StorageKeys,
 } from '../../lib/storage';
-import { colors, radii, spacing } from '@/theme';
 
 const View = styled(RNView);
 
@@ -41,7 +40,7 @@ export default function ResultScreen() {
     const insets = useSafeAreaInsets();
 
     const sessionData = JSON.parse(
-        storage.getString(StorageKeys.CURRENT_SESSION) || '{}'
+        storage.getString(StorageKeys.CURRENT_SESSION) || '{}',
     );
     const { originalUri, plant, pest, disease } = sessionData;
     const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -58,7 +57,7 @@ export default function ResultScreen() {
             saveScanResult(
                 mainMatch.classIndex,
                 mainMatch.confidenceScore,
-                originalUri
+                originalUri,
             );
             setHasSavedToHistory(true);
         }
@@ -114,7 +113,7 @@ export default function ResultScreen() {
                                             contentFit='cover'
                                         />
                                     </View>
-                                )
+                                ),
                             )}
                         </ScrollView>
                     :   <Image
@@ -177,7 +176,7 @@ export default function ResultScreen() {
                     </View>
 
                     {/* Care Insights */}
-                    <View className='bg-white p-5 rounded-3xl gap-4 shadow-sm shadow-black/5 mb-8'>
+                    <View className='bg-[#EAF1E8] p-5 rounded-3xl gap-4 shadow-sm shadow-black/5 mb-8'>
                         <View className='flex-row items-center gap-4'>
                             <View className='bg-[#EAF1E8] p-3 rounded-full'>
                                 <Sun
@@ -196,7 +195,7 @@ export default function ResultScreen() {
                             <Text className='text-lg font-jakarta-bold text-[#1A1C19] mb-4'>
                                 Not correct? Select from Top 5
                             </Text>
-                            <View className='bg-white rounded-3xl p-2 shadow-sm shadow-black/5 mb-8'>
+                            <View className='bg-[#EAF1E8] rounded-3xl p-2 shadow-sm shadow-black/5 mb-8'>
                                 {top5Matches.map((alt: any, index: number) => {
                                     if (index === selectedPlantIdx) return null; // Don't show currently selected
                                     const altData =
@@ -236,7 +235,7 @@ export default function ResultScreen() {
                         Diagnostics
                     </Text>
 
-                    <View className='bg-white p-5 rounded-3xl shadow-sm shadow-black/5 mb-4 border border-[#F4F7F2]'>
+                    <View className='bg-[#EAF1E8] p-5 rounded-3xl shadow-sm shadow-black/5 mb-4 border border-[#F4F7F2]'>
                         <View className='flex-row items-center gap-3 mb-4'>
                             {disease.hasDisease ?
                                 <ShieldAlert
@@ -285,7 +284,7 @@ export default function ResultScreen() {
                         }
                     </View>
 
-                    <View className='bg-white p-5 rounded-3xl shadow-sm shadow-black/5 mb-10 border border-[#F4F7F2]'>
+                    <View className='bg-[#EAF1E8] p-5 rounded-3xl shadow-sm shadow-black/5 mb-10 border border-[#F4F7F2]'>
                         <View className='flex-row items-center gap-3 mb-4'>
                             {pest.confidenceScore >= 0.7 ?
                                 <Bug

@@ -1,28 +1,28 @@
-import { useState, useEffect } from 'react';
-import {
-    View as RNView,
-    Text,
-    Pressable,
-    ScrollView,
-    Dimensions,
-    ToastAndroid,
-} from 'react-native';
 import { Image } from 'expo-image';
-import { styled } from 'nativewind';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
     ArrowLeft,
-    BookmarkPlus,
     BookmarkCheck,
-    Sun,
+    BookmarkPlus,
     Droplets,
+    Sun,
 } from 'lucide-react-native';
+import { styled } from 'nativewind';
+import { useEffect, useState } from 'react';
+import {
+    Dimensions,
+    Pressable,
+    View as RNView,
+    ScrollView,
+    Text,
+    ToastAndroid,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { colors, spacing } from '@/theme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
 import { getGardenPlants, saveToGarden } from '../../lib/storage';
-import { colors, spacing } from '@/theme';
 
 const View = styled(RNView);
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -135,7 +135,7 @@ export default function PlantProfileScreen() {
                         Care Guide
                     </Text>
 
-                    <View className='bg-white p-6 rounded-3xl gap-4 shadow-sm shadow-black/5'>
+                    <View className='bg-[#EAF1E8] p-6 rounded-3xl gap-4 shadow-sm shadow-black/5'>
                         <View className='flex-row items-center gap-4'>
                             <View className='bg-[#EAF1E8] p-3 rounded-full'>
                                 <Sun

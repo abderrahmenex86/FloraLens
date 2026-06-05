@@ -1,19 +1,19 @@
-import { useState, useMemo } from 'react';
+import { colors, radii, sizes } from '@/theme';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
+import { ChevronRight, Search } from 'lucide-react-native';
+import { styled } from 'nativewind';
+import { useMemo, useState } from 'react';
 import {
-    Text,
-    View as RNView,
-    TextInput,
     FlatList,
     Pressable,
+    View as RNView,
+    Text,
+    TextInput,
 } from 'react-native';
-import { styled } from 'nativewind';
-import { Search, ChevronRight } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
-import { Image } from 'expo-image';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
-import { colors, radii, sizes } from '@/theme';
 
 const View = styled(RNView);
 
@@ -34,7 +34,7 @@ export default function Library() {
         return ALL_PLANTS.filter(
             (p) =>
                 p.name.toLowerCase().includes(lowerQ) ||
-                p.scientific.toLowerCase().includes(lowerQ)
+                p.scientific.toLowerCase().includes(lowerQ),
         );
     }, [searchQuery]);
 
@@ -45,7 +45,7 @@ export default function Library() {
         return (
             <Pressable
                 onPress={() => router.push(`/plant/${item.id}`)}
-                className='flex-row items-center bg-white p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
+                className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
                 {coverImage ?
                     <Image
                         source={coverImage}
@@ -69,12 +69,12 @@ export default function Library() {
                 }
                 <View className='flex-1 ml-4 justify-center'>
                     <Text
-                        className='font-jakarta-bold text-[#1A1C19] text-lg mb-0.5'
+                        className='font-jakarta-bold text-[#1A1C19] text-xl mb-0.5'
                         numberOfLines={1}>
                         {item.name}
                     </Text>
                     <Text
-                        className='font-vietnam text-[#1A1C19]/60 text-sm'
+                        className='font-vietnam text-[#1A1C19]/60 text-base'
                         numberOfLines={1}>
                         {item.scientific}
                     </Text>
@@ -100,7 +100,7 @@ export default function Library() {
                 </Text>
             </View>
 
-            <View className='flex-row items-center bg-white px-4 py-3 rounded-2xl shadow-sm shadow-black/5 border border-[#F4F7F2]'>
+            <View className='flex-row items-center bg-[#EAF1E8] px-4 py-3 rounded-2xl shadow-sm shadow-black/5 border border-[#F4F7F2]'>
                 <Search
                     size={20}
                     color={colors.accent}

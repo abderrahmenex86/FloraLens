@@ -1,25 +1,19 @@
-import { useState, useCallback } from 'react';
-import {
-    Text,
-    View as RNView,
-    Pressable,
-    ScrollView,
-    Animated,
-} from 'react-native';
+import { colors, radii, sizes } from '@/theme';
 import { Image } from 'expo-image';
-import { styled } from 'nativewind';
 import { Link, useFocusEffect, useRouter } from 'expo-router';
-import { Camera, ScanSearch, ChevronRight, Trash2 } from 'lucide-react-native';
+import { Camera, ScanSearch, Trash2 } from 'lucide-react-native';
+import { styled } from 'nativewind';
+import { useCallback, useState } from 'react';
+import { Pressable, View as RNView, ScrollView, Text } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
-import { Screen } from '../../components/Screen';
 import { EmptyState } from '../../components/EmptyState';
+import { Screen } from '../../components/Screen';
+import { PLANT_CLASSES } from '../../lib/plantClasses';
 import {
     getScanHistory,
     removeFromHistory,
     ScanRecord,
 } from '../../lib/storage';
-import { PLANT_CLASSES } from '../../lib/plantClasses';
-import { colors, radii, sizes } from '@/theme';
 
 const View = styled(RNView);
 
@@ -88,7 +82,7 @@ export default function Home() {
                                 renderRightActions={() =>
                                     renderRightActions(scan.id)
                                 }>
-                                <View className='flex-row items-center bg-white p-4 rounded-3xl shadow-sm mb-3'>
+                                <View className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm mb-3'>
                                     <Image
                                         source={{ uri: scan.imageUri }}
                                         style={{
@@ -98,7 +92,7 @@ export default function Home() {
                                         }}
                                     />
                                     <View className='flex-1 ml-4 justify-center'>
-                                        <Text className='font-jakarta-bold text-[#1A1C19]'>
+                                        <Text className='font-jakarta-bold text-xl text-[#1A1C19]'>
                                             {
                                                 PLANT_CLASSES[scan.classIndex]
                                                     ?.name

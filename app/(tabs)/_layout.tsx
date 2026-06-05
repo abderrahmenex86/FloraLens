@@ -1,9 +1,8 @@
+import { colors } from '@/theme';
 import { Tabs } from 'expo-router';
 import { BookOpen, House, Info, Leaf } from 'lucide-react-native';
+import { Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
-import { StyleSheet, Pressable } from 'react-native';
-import { colors } from '@/theme';
 import { hapticLight } from '../../lib/haptics';
 
 export default function HomeLayout() {
@@ -18,10 +17,10 @@ export default function HomeLayout() {
                 tabBarInactiveTintColor: '#FFFFFF33',
                 tabBarStyle: {
                     position: 'absolute',
-                    bottom: insets.bottom,
+                    bottom: 16 + insets.bottom,
                     height: 64,
                     marginHorizontal: 28,
-                    borderRadius: 32,
+                    borderRadius: 24,
                     backgroundColor: colors.primary,
                     borderTopWidth: 0,
                     elevation: 0,

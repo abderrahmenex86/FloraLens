@@ -38,8 +38,8 @@ export default function About() {
                         fill='red'
                     />
                     <Text className='font-vietnam-bold text-[#1A1C19]'>
-                        {' '}
-                        by humans
+                        {', '}
+                        by Humans.
                     </Text>
                 </View>
             </View>

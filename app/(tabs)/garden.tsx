@@ -1,20 +1,20 @@
-import { useState, useCallback } from 'react';
-import { Text, View as RNView, Pressable, ScrollView } from 'react-native';
+import { colors, radii, spacing } from '@/theme';
 import { Image } from 'expo-image';
-import { styled } from 'nativewind';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Sprout, Trash2, ChevronRight } from 'lucide-react-native';
+import { ChevronRight, Sprout, Trash2 } from 'lucide-react-native';
+import { styled } from 'nativewind';
+import { useCallback, useState } from 'react';
+import { Pressable, View as RNView, ScrollView, Text } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
-import { Screen } from '../../components/Screen';
 import { EmptyState } from '../../components/EmptyState';
+import { Screen } from '../../components/Screen';
+import { PLANT_CLASSES } from '../../lib/plantClasses';
+import { PLANT_IMAGES } from '../../lib/plantImages';
 import {
     getGardenPlants,
     removeFromGarden,
     ScanRecord,
 } from '../../lib/storage';
-import { PLANT_CLASSES } from '../../lib/plantClasses';
-import { PLANT_IMAGES } from '../../lib/plantImages';
-import { colors, radii, spacing } from '@/theme';
 
 const View = styled(RNView);
 
@@ -25,7 +25,7 @@ export default function Garden() {
     useFocusEffect(
         useCallback(() => {
             setGardenPlants(getGardenPlants());
-        }, [])
+        }, []),
     );
 
     const handleDelete = (id: string) => {
@@ -67,7 +67,9 @@ export default function Garden() {
                 </View>
             :   <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: spacing.scrollBottom }}>
+                    contentContainerStyle={{
+                        paddingBottom: spacing.scrollBottom,
+                    }}>
                     {gardenPlants.map((plant) => {
                         const plantInfo = PLANT_CLASSES[plant.classIndex] || {
                             name: 'Unknown Plant',
@@ -88,10 +90,10 @@ export default function Garden() {
                                 <Pressable
                                     onPress={() =>
                                         router.push(
-                                            `/plant/${plant.classIndex}`
+                                            `/plant/${plant.classIndex}`,
                                         )
                                     }
-                                    className='flex-row items-center bg-white p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
+                                    className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
                                     <Image
                                         source={coverImage}
                                         style={{
@@ -103,12 +105,12 @@ export default function Garden() {
                                     />
                                     <View className='flex-1 ml-4 justify-center'>
                                         <Text
-                                            className='font-jakarta-bold text-[#1A1C19] text-lg mb-0.5'
+                                            className='font-jakarta-bold text-[#1A1C19] text-xl mb-0.5'
                                             numberOfLines={1}>
                                             {plantInfo.name}
                                         </Text>
                                         <Text
-                                            className='font-vietnam text-[#1A1C19]/60 text-sm'
+                                            className='font-vietnam text-[#1A1C19]/60 text-base'
                                             numberOfLines={1}>
                                             {plantInfo.scientific}
                                         </Text>

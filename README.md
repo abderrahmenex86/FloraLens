@@ -31,11 +31,11 @@ FloraLens, Built entirely from scratch, it leverages **100% offline, on-device M
 
 ## Tech Stack
 
-**Machine Learning:** ONNX Runtime, `jpeg-js`, PyTorch-identical preprocessing (Resize, CenterCrop, Normalize)
-**Frontend Framework:** React Native / Expo (SDK 54) / Expo Router
-**Styling:** NativeWind (Tailwind CSS)
-**Storage & FileSystem:** React Native MMKV, Expo File System
-**Animations & Gestures:** React Native Reanimated, Gorhom Bottom Sheet, React Native Gesture Handler
+- **Machine Learning:** ONNX Runtime, `jpeg-js`, PyTorch-identical preprocessing (Resize, CenterCrop, Normalize)
+- **Frontend Framework:** React Native / Expo (SDK 54) / Expo Router
+- **Styling:** NativeWind (Tailwind CSS)
+- **Storage & FileSystem:** React Native MMKV, Expo File System
+- **Animations & Gestures:** React Native Reanimated, Gorhom Bottom Sheet, React Native Gesture Handler
 
 ## Getting Started
 

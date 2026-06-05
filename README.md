@@ -47,10 +47,10 @@ FloraLens, Built entirely from scratch, it leverages **100% offline, on-device M
 ### Installation
 
 1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/abderrahmenex86/floralens.git
-   cd floralens
-   ```
+```bash
+git clone https://github.com/abderrahmenex86/floralens.git
+cd floralens
+```
 2. **Install dependencies:**
 ```bash
 npm install
@@ -60,6 +60,7 @@ Ensure your `.onnx` models are placed in `assets/models/`.
 Ensure your reference images are placed in `assets/images/plants/`.
 
 4. **Build and Run (Android):**
+
 *Because this project utilizes custom native code (ONNX, MMKV), it cannot run in Expo Go. You must build the development client.*
 ```bash
 npx expo prebuild --clean --platform android

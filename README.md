@@ -1,23 +1,23 @@
 # 🌿 FloraLens
 
 <div align="center">
-  <p><strong>Advanced on-device AI plant identification, disease segmentation, and garden management.</strong></p>
+  <p><strong>On-device AI plant identification, disease segmentation, and garden management.</strong></p>
   <p>
     <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
     <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
     <img src="https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX" />
-    <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android" />
+    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
   </p>
 </div>
 
 FloraLens, Built entirely from scratch, it leverages **100% offline, on-device Machine Learning** to identify closer to 400 plant species, classify pests, and generate spatial pixel-level disease masks—all.
 
 <div align="center">
-  <img src="docs/home_preview.png" width="20%" />
-  <img src="docs/scan_preview.png" width="20%" />
-  <img src="docs/result_preview.png" width="20%" />
-  <img src="docs/disease_preview.png" width="20%" />
-  <img src="docs/demo.gif" width="20%" />
+  <img src="docs/home.png" width="20%" />
+  <img src="docs/camera.png" width="20%" />
+  <img src="docs/results.png" width="20%" />
+  <img src="docs/garden.png" width="20%" />
+  <img src="docs/library.png" width="20%" />
 </div>
 
 ## ✨ Features

@@ -1,16 +1,6 @@
 # FloraLens
 
-<div align="center">
-  <p><strong>On-device AI plant identification, disease segmentation, and garden management.</strong></p>
-  <p>
-    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
-    <img src="https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX" />
-    <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
-    <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
-  </p>
-</div>
-
-FloraLens, Built entirely from scratch, it leverages **100% offline, on-device Machine Learning** to identify closer to 400 plant species, classify pests, and generate spatial pixel-level disease masks.
+FloraLens is an Android application that performs fully offline plant identification, pest classification, and disease segmentation using on-device AI models.
 
 <div align="center">
   <img src="docs/home.png" width="18%" />
@@ -28,6 +18,16 @@ FloraLens, Built entirely from scratch, it leverages **100% offline, on-device M
   - **Pest ID**: (from my other project [pesti](https://github.com/abderrahmenex86/pesti)) Confidence-thresholded insect detection.
   - **Disease Segmentation**: (from my other project [segmenti](https://github.com/abderrahmenex86/segmenti)) 520x520 spatial mask generation with in-memory RGBA tinting for visual overlays.
 - 💾 **Synchronous Storage**: using `react-native-mmkv` to manage the user's digital garden and scan history.
+
+<div align="center">
+  <p><strong>On-device AI plant identification, disease segmentation, and garden management.</strong></p>
+  <p>
+    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
+    <img src="https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX" />
+    <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
+    <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
+  </p>
+</div>
 
 ## Tech Stack
 
@@ -67,3 +67,8 @@ npx expo prebuild --clean --platform android
 npx expo run:android
 ```
 
+## Related Projects
+
+- [Flora](https://github.com/abderrahmenex86/flora) — Plant classification model
+- [Pesti](https://github.com/abderrahmenex86/pesti) — Pest classification model
+- [Segmenti](https://github.com/abderrahmenex86/segmenti) — Disease segmentation model

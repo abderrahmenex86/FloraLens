@@ -1,5 +1,14 @@
 # FloraLens
 
+<div align="center">
+  <p>
+    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
+    <img src="https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX" />
+    <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
+    <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
+  </p>
+</div>
+
 FloraLens is an Android application that performs fully offline plant identification, pest classification, and disease segmentation using on-device AI models.
 
 <div align="center">
@@ -19,15 +28,6 @@ FloraLens is an Android application that performs fully offline plant identifica
   - **Disease Segmentation**: (from my other project [segmenti](https://github.com/abderrahmenex86/segmenti)) 520x520 spatial mask generation with in-memory RGBA tinting for visual overlays.
 - 💾 **Synchronous Storage**: using `react-native-mmkv` to manage the user's digital garden and scan history.
 
-<div align="center">
-  <p><strong>On-device AI plant identification, disease segmentation, and garden management.</strong></p>
-  <p>
-    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
-    <img src="https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX" />
-    <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
-    <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
-  </p>
-</div>
 
 ## Tech Stack
 
@@ -60,7 +60,6 @@ Ensure your `.onnx` models are placed in `assets/models/`.
 Ensure your reference images are placed in `assets/images/plants/`.
 
 4. **Build and Run (Android):**
-
 *Because this project utilizes custom native code (ONNX, MMKV), it cannot run in Expo Go. You must build the development client.*
 ```bash
 npx expo prebuild --clean --platform android

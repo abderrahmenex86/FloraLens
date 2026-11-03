@@ -63,6 +63,6 @@ React Native · Expo SDK 54 · Expo Router · NativeWind · MMKV · ONNX Runtime
 
 ## Related
 
-- [Flora](https://github.com/abderrahmenex86/flora) for the plant classifier
+- [Flora](https://github.com/abderrahmenex86/Plant-Species-Classifier) for the plant classifier
 - [Pesti](https://github.com/abderrahmenex86/pesti) for the pest classifier
-- [Segmenti](https://github.com/abderrahmenex86/segmenti) for disease segmentation
+- [Segmenti](https://github.com/abderrahmenex86/Plant-Disease-Segmentation) for disease segmentation

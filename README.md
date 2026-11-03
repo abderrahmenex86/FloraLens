@@ -1,73 +1,68 @@
 # FloraLens
 
-<div align="center">
-  <p>
-    <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
-    <img src="https://img.shields.io/badge/ONNX_Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX" />
-    <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
-    <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
-  </p>
-</div>
+An Android app that identifies plants, classifies pests, and segments leaf
+disease with the models running on the device. No server, no API calls, no
+uploaded photos.
 
-FloraLens is an Android application that performs fully offline plant identification, pest classification, and disease segmentation using on-device AI models.
+<img src="docs/home.png" width="18%" /> <img src="docs/camera.png" width="18%" /> <img src="docs/results.png" width="18%" /> <img src="docs/garden.png" width="18%" />
 
-<div align="center">
-  <img src="docs/home.png" width="18%" />
-  <img src="docs/camera.png" width="18%" />
-  <img src="docs/results.png" width="18%" />
-  <img src="docs/garden.png" width="18%" />
-  <img src="docs/library.png" width="18%" />
-</div>
+## What it does
 
-## Features
+- Runs three ONNX models through `onnxruntime-react-native`, so inference happens
+  on the phone with no network round trip.
+- Identifies the plant species from a 224x224 photo and degrades to a top-5 list
+  when confidence is low.
+- Classifies insect pests, with a confidence threshold below which it reports
+  nothing rather than guessing.
+- Segments disease regions at 520x520 and tints the mask in memory to show the
+  affected area over the original image.
+- Keeps a personal garden and scan history in MMKV, so a scan is available
+  offline after the app closes.
 
-- **Entirely Offline Inference**: Using `onnxruntime-react-native`, models execute directly on the Android hardware via C++ bindings. No servers, no API costs, and total data privacy.
-- **Multi-Model Pipeline**:
-  - **Plant ID**: (From my other project [flora](https://github.com/abderrahmenex86/flora)) 224x224 Classification with Softmax top-5 graceful degradation.
-  - **Pest ID**: (from my other project [pesti](https://github.com/abderrahmenex86/pesti)) Confidence-thresholded insect detection.
-  - **Disease Segmentation**: (from my other project [segmenti](https://github.com/abderrahmenex86/segmenti)) 520x520 spatial mask generation with in-memory RGBA tinting for visual overlays.
-- 💾 **Synchronous Storage**: using `react-native-mmkv` to manage the user's digital garden and scan history.
+## Run it
 
-
-## Tech Stack
-
-- **Machine Learning:** ONNX Runtime, `jpeg-js`, PyTorch-identical preprocessing (Resize, CenterCrop, Normalize)
-- **Frontend Framework:** React Native / Expo (SDK 54) / Expo Router
-- **Styling:** NativeWind (Tailwind CSS)
-- **Storage & FileSystem:** React Native MMKV, Expo File System
-- **Animations & Gestures:** React Native Reanimated, Gorhom Bottom Sheet, React Native Gesture Handler
-
-## Getting Started
-
-### Prerequisites
-- Node.js (v18+)
-- Expo CLI
-- Android Emulator or a physical Android device (USB Debugging enabled)
-
-### Installation
-
-1. **Clone the repository:**
 ```bash
-git clone https://github.com/abderrahmenex86/floralens.git
-cd floralens
-```
-2. **Install dependencies:**
-```bash
+git clone https://github.com/abderrahmeneex86/FloraLens
+cd FloraLens
 npm install
 ```
-3. **Add your AI Models & Assets:**
-Ensure your `.onnx` models are placed in `assets/models/`.
-Ensure your reference images are placed in `assets/images/plants/`.
 
-4. **Build and Run (Android):**
-*Because this project utilizes custom native code (ONNX, MMKV), it cannot run in Expo Go. You must build the development client.*
+Put the `.onnx` models in `assets/models/` and the reference plant images in
+`assets/images/plants/`. The three expected files are `plant_model.onnx`,
+`pest_model.onnx`, and `disease_model.onnx`.
+
+Build a development client, not Expo Go, because the ONNX and MMKV modules
+include native code:
+
 ```bash
 npx expo prebuild --clean --platform android
 npx expo run:android
 ```
 
-## Related Projects
+Node 18+ and either an Android emulator or a device with USB debugging on.
 
-- [Flora](https://github.com/abderrahmenex86/flora) — Plant classification model
-- [Pesti](https://github.com/abderrahmenex86/pesti) — Pest classification model
-- [Segmenti](https://github.com/abderrahmenex86/segmenti) — Disease segmentation model
+## How it works
+
+Each scan loads the image, applies the same resize, centre-crop, and normalise
+steps the models were trained with, and runs inference on the native thread. The
+plant and pest classifiers return probabilities; the segmentation model returns a
+mask that is converted to RGBA and drawn over the photo.
+
+The models are trained in separate repositories, not inside this app.
+
+## Limits
+
+- Android only. The native modules are not configured for iOS.
+- The models are shipped as assets, so the APK carries their full size.
+- Species coverage is limited to what the plant classifier was trained on; an
+  unknown plant still returns a top-5 guess.
+
+## Stack
+
+React Native · Expo SDK 54 · Expo Router · NativeWind · MMKV · ONNX Runtime
+
+## Related
+
+- [Flora](https://github.com/abderrahmenex86/flora) for the plant classifier
+- [Pesti](https://github.com/abderrahmenex86/pesti) for the pest classifier
+- [Segmenti](https://github.com/abderrahmenex86/segmenti) for disease segmentation

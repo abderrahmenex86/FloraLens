@@ -22,7 +22,7 @@ uploaded photos.
 ## Run it
 
 ```bash
-git clone https://github.com/abderrahmeneex86/FloraLens
+git clone https://github.com/abderrahmenex86/FloraLens
 cd FloraLens
 npm install
 ```

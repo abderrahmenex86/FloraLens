@@ -14,7 +14,7 @@ import {
 import { EmptyState } from '../../components/EmptyState';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
-import { PLANT_IMAGES } from '../../lib/plantImages';
+import { getPlantCover } from '../../lib/plantAssets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const View = styled(RNView);
@@ -42,8 +42,7 @@ export default function Library() {
     }, [searchQuery]);
 
     const renderItem = ({ item }: { item: (typeof ALL_PLANTS)[0] }) => {
-        const coverImage =
-            (PLANT_IMAGES[item.id] && PLANT_IMAGES[item.id][0]) || null;
+        const coverImage = getPlantCover(item.id);
 
         return (
             <Pressable

@@ -16,7 +16,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { EmptyState } from '../../components/EmptyState';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
-import { PLANT_IMAGES } from '../../lib/plantImages';
+import { getPlantCover } from '../../lib/plantAssets';
 import { getGardenPlants, getScan, removeFromGarden } from '../../lib/storage';
 import type { GardenPlant } from '../../lib/types';
 
@@ -112,7 +112,7 @@ export default function Garden() {
                             name: 'Unknown Plant',
                             scientific: 'Unknown',
                         };
-                        const reference = PLANT_IMAGES[plant.classIndex]?.[0];
+                        const reference = getPlantCover(plant.classIndex);
                         const coverImage =
                             plant.imageUri ? { uri: plant.imageUri } : reference;
 

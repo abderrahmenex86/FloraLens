@@ -21,7 +21,7 @@ import {
     ToastAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PLANT_IMAGES } from '../../lib/plantImages';
+import { getPlantImages } from '../../lib/plantAssets';
 
 import { colors, radii, spacing } from '@/theme';
 import { DISEASE_CLASSES, PEST_CLASSES } from '../../lib/healthClasses';
@@ -137,7 +137,7 @@ export default function ResultScreen() {
     const isManualSelection = scan.selectedClassIndex != null;
     const disease = scan.diagnosis?.disease;
     const pest = scan.diagnosis?.pest;
-    const references = PLANT_IMAGES[mainMatch.classIndex] ?? [];
+    const references = getPlantImages(mainMatch.classIndex);
 
     const handleBack = () => {
         if (router.canGoBack()) router.back();

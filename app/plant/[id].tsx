@@ -22,7 +22,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import { colors, spacing } from '@/theme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
-import { PLANT_IMAGES } from '../../lib/plantImages';
+import { getPlantImages } from '../../lib/plantAssets';
 import { getGardenPlants, savePlantToGarden } from '../../lib/storage';
 
 const View = styled(RNView);
@@ -62,7 +62,7 @@ export default function PlantProfileScreen() {
         );
     }
 
-    const images = PLANT_IMAGES[classIndex] || [];
+    const images = getPlantImages(classIndex);
 
     const handleSave = () => {
         if (isSaved) return;

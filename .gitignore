@@ -56,3 +56,7 @@ ml/reports/*.json
 ml/**/__pycache__/
 __pycache__/
 *.pyc
+
+# Optional downloadable photo pack
+plant-pack/
+plant-pack-mini/

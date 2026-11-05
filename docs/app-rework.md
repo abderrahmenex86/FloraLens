@@ -66,8 +66,6 @@ app with the existing models and assets.
 
 ## Still to do
 
-- Compress the bundled plant library (WebP thumbnails) and make full images
-  optional.
 - Expo SDK 58 + `@expo/ui` Material You shell.
 - Real package id, release keystore, icon/splash, permission cleanup.
 - A calibrated OOD model and retrained plant/disease models when compute is

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://floralens.local/contracts/model.schema.json",
+  "title": "FloraLens Model Contract",
+  "type": "object",
+  "required": [
+    "model_id",
+    "task",
+    "version",
+    "input",
+    "output",
+    "classes_sha256",
+    "class_count",
+    "class_ids",
+    "calibration",
+    "files"
+  ],
+  "properties": {
+    "model_id": { "type": "string", "minLength": 1 },
+    "task": {
+      "type": "string",
+      "enum": ["classification", "segmentation", "multitask"]
+    },
+    "version": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "model_name": { "type": "string" },
+    "input": {
+      "type": "object",
+      "required": ["name", "shape", "dtype"],
+      "properties": {
+        "name": { "type": "string" },
+        "shape": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "dtype": { "type": "string", "enum": ["float32", "uint8"] },
+        "layout": { "type": "string", "enum": ["NCHW", "NHWC"] },
+        "preprocess": {
+          "type": "string",
+          "enum": ["imagenet", "none", "custom"]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["name", "shape", "dtype"],
+      "properties": {
+        "name": { "type": "string" },
+        "shape": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "minItems": 2
+        },
+        "dtype": { "type": "string", "enum": ["float32", "int64", "uint8"] }
+      }
+    },
+    "classes_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "class_count": { "type": "integer", "minimum": 1 },
+    "class_ids": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0 },
+      "minItems": 1
+    },
+    "calibration": {
+      "type": "object",
+      "required": ["temperature", "threshold"],
+      "properties": {
+        "temperature": { "type": "number", "exclusiveMinimum": 0 },
+        "threshold": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "quantization": {
+      "type": "string",
+      "enum": ["fp32", "fp16", "int8", "int8-dynamic"]
+    },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["sha256", "bytes"],
+        "properties": {
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "bytes": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "training": { "type": "object" }
+  },
+  "additionalProperties": true
+}

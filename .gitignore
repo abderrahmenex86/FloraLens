@@ -42,3 +42,15 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Python / ML
+ml/.venv/
+ml/data/
+ml/runs/
+ml/exports/
+ml/.pytest_cache/
+ml/.ruff_cache/
+ml/.mypy_cache/
+ml/**/__pycache__/
+__pycache__/
+*.pyc

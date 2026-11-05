@@ -1,0 +1,28 @@
+# Lightweight classifier screen. Run each candidate on the same 150-class /
+# 80-images-per-class subset for 15 epochs, 3 seeds, then take the top 3 to the
+# full 600-class run.
+screen:
+  classes: 150
+  images_per_class: 80
+  epochs: 15
+  seeds: [42, 43, 44]
+  input_size: 224
+candidates:
+  - mobilenetv3_large_100.ra_in1k
+  - mobilenetv4_conv_small.e2400_r224_in1k
+  - mobilenetv4_conv_medium.e500_r224_in1k
+  - efficientnet_b0.ra_in1k
+  - efficientvit_m2.r224_in1k
+  - fastvit_t8.apple_in1k
+  - repvit_m1.dist_in1k
+  - mobilevit_xxs.cvnets_in1k
+  - edgenext_small.usi_in1k
+metrics:
+  - top1
+  - top5
+  - macro_f1
+  - ood_auroc
+  - ece
+  - int8_size_mb
+  - latency_ms
+  - pss_mb

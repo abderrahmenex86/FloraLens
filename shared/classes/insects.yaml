@@ -1,0 +1,267 @@
+# FloraLens garden-insect class list (seed).
+#
+# This is deliberately coarse: family/order level where species ID from a phone
+# photo is not realistic. The model also gets a separate life-stage head
+# (adult / nymph / larva / pupa / egg) and a role head/label
+# (pest / beneficial / neutral / unknown).
+#
+# Non-commercial project: iNaturalist (including NC), IP102 (academic) and
+# InsectSet459 are usable. Keep attribution.
+
+version: "2026.11-anchor"
+target: insects
+classes:
+  - class_id: 0
+    scientific_name: Aphididae
+    common_name: Aphids
+    rank: family
+    taxon_id: 52381
+    family: Aphididae
+    role: pest
+    status: anchor
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 1
+    scientific_name: Coccinellidae
+    common_name: Ladybirds
+    rank: family
+    taxon_id: 48486
+    family: Coccinellidae
+    role: beneficial
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 2
+    scientific_name: Chrysopidae
+    common_name: Green lacewings
+    rank: family
+    taxon_id: 52425
+    family: Chrysopidae
+    role: beneficial
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 3
+    scientific_name: Syrphidae
+    common_name: Hoverflies
+    rank: family
+    taxon_id: 49995
+    family: Syrphidae
+    role: beneficial
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 4
+    scientific_name: Apidae
+    common_name: Bees
+    rank: family
+    taxon_id: 47221
+    family: Apidae
+    role: beneficial
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 5
+    scientific_name: Aleyrodidae
+    common_name: Whiteflies
+    rank: family
+    taxon_id: 154784
+    family: Aleyrodidae
+    role: pest
+    status: anchor
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 6
+    scientific_name: Pseudococcidae
+    common_name: Mealybugs
+    rank: family
+    taxon_id: 49574
+    family: Pseudococcidae
+    role: pest
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 7
+    scientific_name: Coccoidea
+    common_name: Scale insects
+    rank: superfamily
+    taxon_id: 60922
+    family: Coccoidea
+    role: pest
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 8
+    scientific_name: Thysanoptera
+    common_name: Thrips
+    rank: order
+    taxon_id: 83201
+    family: Thysanoptera
+    role: pest
+    status: anchor
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 9
+    scientific_name: Tetranychidae
+    common_name: Spider mites
+    rank: family
+    taxon_id: 128552
+    family: Tetranychidae
+    role: pest
+    status: anchor
+    sources: [inaturalist, own]
+    notes: "Mites are arachnids, not insects; label as an arthropod."
+
+  - class_id: 10
+    scientific_name: Formicidae
+    common_name: Ants
+    rank: family
+    taxon_id: 47336
+    family: Formicidae
+    role: neutral
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 11
+    scientific_name: Araneae
+    common_name: Spiders
+    rank: order
+    taxon_id: 47118
+    family: Araneae
+    role: beneficial
+    status: anchor
+    sources: [inaturalist, own]
+    notes: "Arachnid, not an insect."
+
+  - class_id: 12
+    scientific_name: Gastropoda
+    common_name: Snails and slugs
+    rank: class
+    taxon_id: 47114
+    family: Gastropoda
+    role: pest
+    status: candidate
+    sources: [inaturalist, own]
+
+  - class_id: 13
+    scientific_name: Lepidoptera
+    common_name: Butterflies and moths
+    rank: order
+    taxon_id: 47157
+    family: Lepidoptera
+    role: unknown
+    status: anchor
+    sources: [inaturalist, own]
+
+  - class_id: 14
+    scientific_name: Noctuidae
+    common_name: Owlet moths
+    rank: family
+    taxon_id: 48670
+    family: Noctuidae
+    role: pest
+    status: candidate
+    sources: [inaturalist, ip102, own]
+    notes: "Larvae (cutworms) are pests; adults pollinate."
+
+  - class_id: 15
+    scientific_name: Pieridae
+    common_name: Whites and yellows
+    rank: family
+    taxon_id: 48508
+    family: Pieridae
+    role: neutral
+    status: candidate
+    sources: [inaturalist, own]
+
+  - class_id: 16
+    scientific_name: Curculionidae
+    common_name: Weevils
+    rank: family
+    taxon_id: 48736
+    family: Curculionidae
+    role: pest
+    status: candidate
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 17
+    scientific_name: Cicadellidae
+    common_name: Leafhoppers
+    rank: family
+    taxon_id: 53237
+    family: Cicadellidae
+    role: pest
+    status: candidate
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 18
+    scientific_name: Miridae
+    common_name: Plant bugs
+    rank: family
+    taxon_id: 53505
+    family: Miridae
+    role: pest
+    status: candidate
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 19
+    scientific_name: Pentatomidae
+    common_name: Stink bugs
+    rank: family
+    taxon_id: 47742
+    family: Pentatomidae
+    role: pest
+    status: candidate
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 20
+    scientific_name: Acrididae
+    common_name: Grasshoppers
+    rank: family
+    taxon_id: 47649
+    family: Acrididae
+    role: pest
+    status: candidate
+    sources: [inaturalist, ip102, own]
+
+  - class_id: 21
+    scientific_name: Blattodea
+    common_name: Cockroaches and termites
+    rank: order
+    taxon_id: 81769
+    family: Blattodea
+    role: neutral
+    status: candidate
+    sources: [inaturalist, own]
+
+  - class_id: 22
+    scientific_name: Dermaptera
+    common_name: Earwigs
+    rank: order
+    taxon_id: 47793
+    family: Dermaptera
+    role: neutral
+    status: candidate
+    sources: [inaturalist, own]
+
+  - class_id: 23
+    scientific_name: Lepidoptera pupa
+    common_name: Cocoon or chrysalis
+    rank: complex
+    taxon_id: 47157
+    family: Lepidoptera
+    role: unknown
+    life_stage: pupa
+    status: anchor
+    sources: [inaturalist, own]
+    notes: "Life stage; species ID is usually impossible without rearing."
+
+  - class_id: 24
+    scientific_name: Other insect
+    common_name: Other insect
+    rank: complex
+    role: unknown
+    status: candidate
+    sources: [inaturalist, own]
+
+# TODO: expand to 60-100 regional taxa; keep the life-stage head separate.

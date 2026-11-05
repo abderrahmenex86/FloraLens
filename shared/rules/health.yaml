@@ -1,0 +1,140 @@
+# Health diagnosis rules. The model provides symptom tags and, when visible,
+# a lesion mask; this file turns symptoms + questionnaire context into ranked
+# possible causes. It deliberately abstains when the evidence is weak.
+#
+# Context keys and allowed values (keep in sync with the app questionnaire):
+#   watering:  frequent | regular | rare
+#   drainage:  good | poor
+#   soil:      wet | moist | dry
+#   light:     low | medium | high
+#   smell:     earthy | foul | none
+#   roots:     healthy | mushy | dark | not_inspected
+#   recent:    repot | move | fertiliser | weather | none
+
+version: "2026.11"
+rules:
+  - id: overwatering
+    title: Likely overwatering
+    category: abiotic
+    confidence: 0.55
+    when:
+      symptoms_all: [yellow_lower_leaves]
+      symptoms_any: [wilt, leaf_drop, mold_on_soil, edema]
+      context:
+        soil: wet
+    advice: >-
+      Let the top few centimetres of soil dry out, check that the pot drains,
+      and inspect the roots if the plant is still wilting. Do not fertilise
+      until it recovers.
+    evidence:
+      - yellowing lower leaves
+      - wet soil
+      - limited drainage
+
+  - id: root_rot
+    title: Possible root rot
+    category: abiotic
+    confidence: 0.7
+    when:
+      symptoms_any: [mushy_roots, dark_roots, soil_smell, stem_base_rot]
+      context:
+        smell: foul
+    advice: >-
+      Unpot the plant and inspect the roots. Healthy roots are firm and pale;
+      mushy or dark roots should be trimmed, and the plant repotted in fresh,
+      free-draining mix. Root rot cannot be confirmed from a leaf photo.
+    evidence:
+      - foul soil smell
+      - mushy or dark roots
+      - wilting with wet soil
+
+  - id: underwatering
+    title: Likely underwatering
+    category: abiotic
+    confidence: 0.6
+    when:
+      symptoms_all: [crisp_edges, dry_soil]
+      symptoms_any: [wilt, brown_tips, leaf_drop]
+    advice: >-
+      Water deeply until it drains from the pot, then check the soil moisture
+      again after an hour. Crisp edges will not heal; new growth should.
+    evidence:
+      - crisp leaf edges
+      - dry soil
+      - wilting
+
+  - id: low_light
+    title: Likely low light
+    category: abiotic
+    confidence: 0.5
+    when:
+      symptoms_any: [leggy_growth, small_leaves, pale_leaves, leaning_toward_light]
+      context:
+        light: low
+    advice: >-
+      Move the plant closer to a bright window or add a grow light. Increase
+      light gradually to avoid scorching the leaves.
+    evidence:
+      - leggy growth
+      - pale or small leaves
+      - low-light position
+
+  - id: sunburn
+    title: Possible sunburn
+    category: abiotic
+    confidence: 0.6
+    when:
+      symptoms_all: [bleached_patches]
+      symptoms_any: [brown_papery_spots]
+      context:
+        light: high
+    advice: >-
+      Move the plant out of direct midday sun and shade it for a week. Burned
+      patches will not recover; watch for new growth instead.
+    evidence:
+      - bleached patches
+      - brown papery spots
+      - strong direct light
+
+  - id: iron_deficiency
+    title: Possible iron deficiency
+    category: nutrient
+    confidence: 0.45
+    when:
+      symptoms_all: [interveinal_chlorosis]
+      context:
+        soil: moist
+    advice: >-
+      Check the soil pH and use a chelated iron fertiliser if the pH is too
+      high. Iron deficiency shows on young leaves first.
+    evidence:
+      - interveinal chlorosis on young leaves
+
+  - id: magnesium_deficiency
+    title: Possible magnesium deficiency
+    category: nutrient
+    confidence: 0.45
+    when:
+      symptoms_all: [interveinal_chlorosis]
+      context:
+        soil: moist
+    advice: >-
+      Apply a magnesium-containing fertiliser (Epsom salts or a balanced
+      micronutrient mix) and check that the pH is in range. Magnesium
+      deficiency usually starts on older leaves.
+    evidence:
+      - interveinal chlorosis on older leaves
+
+  - id: pest_damage
+    title: Possible pest damage
+    category: pest
+    confidence: 0.5
+    when:
+      symptoms_any: [holes, webbing, sticky_honeydew, curled_leaves, sooty_mold]
+    advice: >-
+      Check the undersides of leaves and new growth for insects. Use the
+      insect identification flow, then choose the least disruptive control
+      for that insect.
+    evidence:
+      - holes or curled leaves
+      - webbing or sticky honeydew

@@ -1,0 +1,17 @@
+# Segmentation candidates. Dataset: PlantSeg (non-commercial) + PlantVillage /
+# PlantDoc pseudo-masks. Output is a binary lesion mask in the new pipeline.
+architecture: segformer
+encoder: mit_b0
+class_list: shared/classes/disease.yaml
+data_manifest: data/processed/disease/manifest.jsonl
+output_dir: ml/runs/disease_segformer_b0
+input_size: 320
+num_classes: 2
+epochs: 40
+batch_size: 16
+learning_rate: 0.0003
+weight_decay: 0.0001
+loss: ce_dice
+num_workers: 8
+seed: 42
+amp: bf16

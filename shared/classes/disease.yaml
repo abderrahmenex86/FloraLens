@@ -1,0 +1,246 @@
+# FloraLens plant-health labels.
+#
+# This is not a taxonomy. Labels are host-conditioned: a citrus label is only
+# offered when the plant ID is citrus. Abiotic classes are combined with the
+# questionnaire/rule engine; they must never be presented as a standalone
+# photo diagnosis.
+
+version: "2026.11-anchor"
+target: disease
+classes:
+  - class_id: 0
+    scientific_name: Healthy
+    common_name: Healthy
+    rank: complex
+    kind: healthy
+    host: general
+    symptoms: []
+
+  # --- citrus ---------------------------------------------------------------
+  - class_id: 1
+    scientific_name: Citrus huanglongbing
+    common_name: Citrus greening (HLB)
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [yellow_shoots, blotchy_mottle, lopsided_fruit, vein_yellowing]
+    notes: "Quarantine disease; confirm with a local extension service."
+
+  - class_id: 2
+    scientific_name: Citrus canker
+    common_name: Citrus canker
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [raised_lesions, yellow_halo, leaf_drop]
+    notes: "Quarantine disease in many regions."
+
+  - class_id: 3
+    scientific_name: Citrus melanose
+    common_name: Citrus melanose
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [small_brown_spots, sandpaper_texture, tear_stain]
+
+  - class_id: 4
+    scientific_name: Citrus scab
+    common_name: Citrus scab
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [corky_scabs, distorted_leaves, warty_fruit]
+
+  - class_id: 5
+    scientific_name: Citrus sooty mold
+    common_name: Sooty mold
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [black_coating, sticky_honeydew, ant_activity]
+    notes: "A secondary symptom of scale/aphid/whitefly infestations."
+
+  - class_id: 6
+    scientific_name: Citrus tristeza virus
+    common_name: Citrus tristeza
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [vein_clearing, stem_pitting, dieback]
+
+  - class_id: 7
+    scientific_name: Phytophthora root rot
+    common_name: Citrus root rot
+    rank: complex
+    kind: biotic
+    host: citrus
+    symptoms: [root_rot, mushy_roots, canopy_thinning, dieback]
+    notes: "Requires root/soil inspection; not diagnosable from a leaf photo."
+
+  - class_id: 8
+    scientific_name: Iron deficiency
+    common_name: Iron chlorosis
+    rank: complex
+    kind: nutrient
+    host: citrus
+    symptoms: [interveinal_chlorosis, young_leaves, pale_new_growth]
+
+  - class_id: 9
+    scientific_name: Zinc deficiency
+    common_name: Zinc deficiency
+    rank: complex
+    kind: nutrient
+    host: citrus
+    symptoms: [small_leaves, mottled_leaves, rosetting]
+
+  - class_id: 10
+    scientific_name: Magnesium deficiency
+    common_name: Magnesium deficiency
+    rank: complex
+    kind: nutrient
+    host: citrus
+    symptoms: [interveinal_chlorosis, older_leaves, green_v_shape]
+
+  # --- apple ----------------------------------------------------------------
+  - class_id: 11
+    scientific_name: Apple scab
+    common_name: Apple scab
+    rank: complex
+    kind: biotic
+    host: apple
+    symptoms: [olive_spots, velvety_lesions, leaf_distortion, fruit_scab]
+
+  - class_id: 12
+    scientific_name: Apple black rot
+    common_name: Apple black rot
+    rank: complex
+    kind: biotic
+    host: apple
+    symptoms: [brown_lesions, concentric_rings, fruit_rot, canker]
+
+  - class_id: 13
+    scientific_name: Cedar apple rust
+    common_name: Cedar apple rust
+    rank: complex
+    kind: biotic
+    host: apple
+    symptoms: [orange_spots, yellow_halo, leaf_drop]
+    notes: "Requires a juniper/cedar alternate host nearby."
+
+  - class_id: 14
+    scientific_name: Fire blight
+    common_name: Fire blight
+    rank: complex
+    kind: biotic
+    host: apple
+    symptoms: [blackened_shoots, shepherd_crook, bacterial_oze, rapid_dieback]
+    notes: "Bacterial; quarantine/notification may apply."
+
+  - class_id: 15
+    scientific_name: Powdery mildew
+    common_name: Powdery mildew
+    rank: complex
+    kind: biotic
+    host: apple
+    symptoms: [white_powder, leaf_curl, stunted_shoots]
+
+  - class_id: 16
+    scientific_name: Sooty blotch and flyspeck
+    common_name: Sooty blotch / flyspeck
+    rank: complex
+    kind: biotic
+    host: apple
+    symptoms: [sooty_smudges, flyspeck_dots, fruit_cosmetic_damage]
+
+  - class_id: 17
+    scientific_name: Bitter pit
+    common_name: Bitter pit
+    rank: complex
+    kind: nutrient
+    host: apple
+    symptoms: [sunken_fruit_spots, bitter_taste, calcium_deficiency]
+
+  # --- abiotic / care -------------------------------------------------------
+  - class_id: 18
+    scientific_name: Overwatering
+    common_name: Overwatering
+    rank: complex
+    kind: abiotic
+    host: general
+    symptoms: [yellow_lower_leaves, wilt_with_wet_soil, leaf_drop, mold_on_soil, edema]
+    notes: "Requires the questionnaire (watering frequency, drainage, soil smell)."
+
+  - class_id: 19
+    scientific_name: Underwatering
+    common_name: Underwatering
+    rank: complex
+    kind: abiotic
+    host: general
+    symptoms: [crisp_edges, dry_soil, wilt, leaf_drop, brown_tips]
+
+  - class_id: 20
+    scientific_name: Root rot
+    common_name: Root rot
+    rank: complex
+    kind: abiotic
+    host: general
+    symptoms: [mushy_roots, dark_roots, soil_smell, stem_base_rot, wilt]
+    notes: "Inspect roots; a leaf photo alone is not sufficient."
+
+  - class_id: 21
+    scientific_name: Nitrogen deficiency
+    common_name: Nitrogen deficiency
+    rank: complex
+    kind: nutrient
+    host: general
+    symptoms: [pale_older_leaves, uniform_yellowing, stunted_growth]
+
+  - class_id: 22
+    scientific_name: Iron deficiency (general)
+    common_name: Iron chlorosis
+    rank: complex
+    kind: nutrient
+    host: general
+    symptoms: [interveinal_chlorosis, young_leaves, pale_new_growth]
+
+  - class_id: 23
+    scientific_name: Magnesium deficiency (general)
+    common_name: Magnesium deficiency
+    rank: complex
+    kind: nutrient
+    host: general
+    symptoms: [interveinal_chlorosis, older_leaves]
+
+  - class_id: 24
+    scientific_name: Low light
+    common_name: Low light / etiolation
+    rank: complex
+    kind: abiotic
+    host: general
+    symptoms: [leggy_growth, small_leaves, pale_leaves, leaning_toward_light]
+
+  - class_id: 25
+    scientific_name: Sunburn
+    common_name: Sunburn
+    rank: complex
+    kind: abiotic
+    host: general
+    symptoms: [bleached_patches, brown_papery_spots, sun_facing_leaves]
+
+  - class_id: 26
+    scientific_name: Pest damage
+    common_name: Pest damage
+    rank: complex
+    kind: biotic
+    host: general
+    symptoms: [holes, sticky_honeydew, webbing, curled_leaves, sooty_mold]
+    notes: "Point the user to the insect identification flow."
+
+  - class_id: 27
+    scientific_name: Unknown
+    common_name: Not enough information
+    rank: complex
+    kind: unknown
+    host: general
+    symptoms: []
+    notes: "Abstain rather than guess."

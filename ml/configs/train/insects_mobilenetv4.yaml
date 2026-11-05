@@ -1,0 +1,19 @@
+# Insect classifier. Same recipe; different class list and manifest.
+model_name: mobilenetv4_conv_small.e2400_r224_in1k
+class_list: shared/classes/insects.yaml
+data_manifest: data/processed/insects/manifest.jsonl
+output_dir: ml/runs/insects_mobilenetv4_s
+input_size: 224
+epochs: 30
+batch_size: 128
+lr_head: 0.001
+lr_backbone: 0.0001
+weight_decay: 0.05
+label_smoothing: 0.1
+drop_rate: 0.1
+drop_path_rate: 0.05
+class_balance: true
+num_workers: 8
+seed: 42
+amp: bf16
+pretrained: true

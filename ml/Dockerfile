@@ -2,7 +2,11 @@
 #
 # Build from the repository root so shared/ is available:
 #   docker build -f ml/Dockerfile -t <registry>/floralens-ml:0.1 .
-FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+#
+# Torch comes from the uv lock, not from a PyTorch base image. The Linux PyPI
+# wheel bundles the CUDA runtime, so it uses the Vast.ai GPU through the host
+# driver.
+FROM python:3.12-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \

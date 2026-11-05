@@ -149,7 +149,7 @@ uv run --project ml floralens quantize \
   --out ml/exports/plants_mobilenetv4_s/model.int8.onnx \
   --contract ml/exports/plants_mobilenetv4_s/contract.json
 
-python tools/validate_contracts.py \
+uv run --project ml python tools/validate_contracts.py \
   --contract ml/exports/plants_mobilenetv4_s/contract.json \
   --classes shared/classes/plants.yaml
 ```

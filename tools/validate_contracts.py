@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Validate a model contract against the shared class list and files."""
+"""Validate a model contract against the shared class list and files.
+
+Run with the ML environment so the class-list hash matches training:
+
+    uv run --project ml python tools/validate_contracts.py \
+      --contract ml/exports/plants/contract.json \
+      --classes shared/classes/plants.yaml
+"""
 
 from __future__ import annotations
 
@@ -9,7 +16,10 @@ import json
 import sys
 from pathlib import Path
 
-import yaml
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "ml" / "src"))
+
+from floralens_ml.taxonomy import load_class_list
 
 
 def sha256_file(path: Path) -> str:
@@ -20,14 +30,6 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def class_list_hash(path: Path) -> tuple[str, list[int]]:
-    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
-    classes = raw["classes"]
-    class_ids = sorted(entry["class_id"] for entry in classes)
-    canonical = json.dumps(raw, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-    return hashlib.sha256(canonical.encode()).hexdigest(), class_ids
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--contract", required=True)
@@ -36,7 +38,9 @@ def main() -> int:
     args = parser.parse_args()
 
     contract = json.loads(Path(args.contract).read_text(encoding="utf-8"))
-    expected_hash, class_ids = class_list_hash(Path(args.classes))
+    class_list = load_class_list(args.classes)
+    expected_hash = class_list.sha256()
+    class_ids = class_list.index_to_class_id
     errors: list[str] = []
 
     if contract.get("classes_sha256") != expected_hash:

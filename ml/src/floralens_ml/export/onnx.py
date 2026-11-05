@@ -38,13 +38,14 @@ def export_onnx(
     onnx_path = output_dir / "model.onnx"
     torch.onnx.export(
         model,
-        dummy,
+        (dummy,),
         onnx_path,
         input_names=["input"],
         output_names=["logits"],
         opset_version=opset,
         do_constant_folding=True,
         dynamic_axes=None,
+        dynamo=False,
     )
     contract = build_contract(
         model_id=model_id,

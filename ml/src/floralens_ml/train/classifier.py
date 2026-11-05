@@ -81,8 +81,8 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
         weights = class_weights(train_dataset.records, class_to_index)
         sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
         shuffle = False
-    train_loader = DataLoader(
-        train_dataset,
+    train_loader: Any = DataLoader(
+        train_dataset,  # type: ignore[arg-type]
         batch_size=int(config.get("batch_size", 128)),
         sampler=sampler,
         shuffle=shuffle,
@@ -91,8 +91,8 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
         drop_last=True,
         persistent_workers=int(config.get("num_workers", 8)) > 0,
     )
-    val_loader = DataLoader(
-        val_dataset,
+    val_loader: Any = DataLoader(
+        val_dataset,  # type: ignore[arg-type]
         batch_size=int(config.get("batch_size", 128)),
         shuffle=False,
         num_workers=int(config.get("num_workers", 8)),

@@ -17,7 +17,7 @@ Rules:
 Validate with:
 
 ```bash
-python tools/validate_contracts.py \
+uv run --project ml python tools/validate_contracts.py \
   --contract ml/exports/plants/model.json \
   --classes shared/classes/plants.yaml
 ```

@@ -29,6 +29,7 @@ eval = [
     "scikit-learn>=1.4",
     "onnx>=1.16",
     "onnxruntime>=1.18",
+    "onnxscript>=0.1",
 ]
 dedupe = [
     "imagehash>=4.3",

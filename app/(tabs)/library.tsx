@@ -1,7 +1,7 @@
 import { colors, radii, sizes } from '@/theme';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Search } from 'lucide-react-native';
+import { ChevronRight, Search, SearchX } from 'lucide-react-native';
 import { styled } from 'nativewind';
 import { useMemo, useState } from 'react';
 import {
@@ -11,9 +11,11 @@ import {
     Text,
     TextInput,
 } from 'react-native';
+import { EmptyState } from '../../components/EmptyState';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const View = styled(RNView);
 
@@ -27,6 +29,7 @@ ALL_PLANTS.sort((a, b) => a.name.localeCompare(b.name));
 export default function Library() {
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
+    const insets = useSafeAreaInsets();
 
     const filteredPlants = useMemo(() => {
         if (!searchQuery) return ALL_PLANTS;
@@ -45,6 +48,8 @@ export default function Library() {
         return (
             <Pressable
                 onPress={() => router.push(`/plant/${item.id}`)}
+                accessibilityRole='button'
+                accessibilityLabel={`Open ${item.name}`}
                 className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
                 {coverImage ?
                     <Image
@@ -110,7 +115,10 @@ export default function Library() {
                     placeholderTextColor='#1A1C1980'
                     value={searchQuery}
                     onChangeText={setSearchQuery}
+                    accessibilityLabel='Search plants'
                     className='flex-1 ml-3 font-vietnam text-base text-[#1A1C19] h-10'
+                    returnKeyType='search'
+                    autoCorrect={false}
                 />
             </View>
 
@@ -119,9 +127,18 @@ export default function Library() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 120 }}
+                contentContainerStyle={{ paddingBottom: 120 + insets.bottom }}
                 keyboardShouldPersistTaps='handled'
                 initialNumToRender={15}
+                ListEmptyComponent={
+                    <EmptyState
+                        icon={SearchX}
+                        title='No plants found'
+                        description={`Nothing matches "${searchQuery}". Try a common or scientific name.`}
+                        actionLabel='Clear search'
+                        onAction={() => setSearchQuery('')}
+                    />
+                }
             />
         </Screen>
     );

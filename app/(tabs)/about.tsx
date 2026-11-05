@@ -1,7 +1,9 @@
-import { Text } from 'react-native';
-import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
+import { Text, View as RNView } from 'react-native';
+import {
+    SafeAreaView as RNSafeAreaView,
+    useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { Flower2, Heart } from 'lucide-react-native';
-import { View as RNView } from 'react-native';
 import { styled } from 'nativewind';
 import { colors } from '@/theme';
 
@@ -9,8 +11,11 @@ const SafeAreaView = styled(RNSafeAreaView);
 const View = styled(RNView);
 
 export default function About() {
+    const insets = useSafeAreaInsets();
     return (
-        <SafeAreaView className='flex-1 bg-[#F4F7F2] flex justify-between p-8 pb-16'>
+        <SafeAreaView
+            className='flex-1 bg-[#F4F7F2] flex justify-between p-8'
+            style={{ paddingBottom: Math.max(insets.bottom, 16) + 88 }}>
             <View className='flex gap-4'>
                 <Text className='text-5xl font-jakarta-bold'>About</Text>
             </View>
@@ -23,8 +28,11 @@ export default function About() {
                     FloraLens
                 </Text>
                 <Text className='font-vietnam text-center text-[#1A1C19]'>
-                    Identify plants, prevent diseases, and manage pests easily
-                    using advanced on-device AI.
+                    Identify plants, spot pests, and understand plant health
+                    with on-device AI.
+                </Text>
+                <Text className='font-vietnam text-center text-[#1A1C19]/60 text-sm'>
+                    Photos and scans stay on your phone. No account, no uploads.
                 </Text>
             </View>
             <View className='font-vietnam p-6 pb-8 items-center'>
@@ -38,8 +46,7 @@ export default function About() {
                         fill='red'
                     />
                     <Text className='font-vietnam-bold text-[#1A1C19]'>
-                        {', '}
-                        by Humans.
+                        by humans.
                     </Text>
                 </View>
             </View>

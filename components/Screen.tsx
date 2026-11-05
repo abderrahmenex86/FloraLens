@@ -34,7 +34,9 @@ export function Screen({ children, className = '' }: ScreenProps) {
                 <View className='absolute top-[280px] -left-[100px] w-[220px] h-[220px] rounded-full bg-[#84B026]/10' />
             </View>
 
-            <View className={`flex-1 p-8 pb-[${insets.bottom}] ${className}`}>
+            <View
+                className={`flex-1 p-8 ${className}`}
+                style={{ paddingBottom: Math.max(insets.bottom, 16) + 16 }}>
                 {children}
             </View>
         </SafeAreaView>

@@ -2,20 +2,17 @@ import { InferenceSession, Tensor } from 'onnxruntime-react-native';
 import * as jpeg from 'jpeg-js';
 import * as base64js from 'base64-js';
 import { imageToPytorchTensor } from './tensorUtils';
+import type { ClassificationStats, PlantPrediction, SegmentationResult } from './types';
+import { UNKNOWN_CONFIDENCE, UNKNOWN_MARGIN } from './types';
 import { Asset } from 'expo-asset';
 import { Buffer } from 'buffer';
 global.Buffer = global.Buffer || Buffer;
 
-export interface Prediction {
-    classIndex: number;
-    confidenceScore: number;
-}
+export type Prediction = PlantPrediction;
 
-export interface SegmentationResult {
-    hasDisease: boolean;
-    diseaseClassIndex: number;
-    severity: number;
-    blendedBase64?: string;
+export interface ClassificationResult {
+    predictions: Prediction[];
+    stats: ClassificationStats;
 }
 
 class MLPipeline {
@@ -73,7 +70,7 @@ class MLPipeline {
         }
     }
 
-    async analyzePlant(base64Image: string): Promise<Prediction[]> {
+    async analyzePlant(base64Image: string): Promise<ClassificationResult> {
         if (!this.plantSession)
             throw new Error('Plant session not initialized.');
         const tensor = this.base64ToTensor(base64Image, 224).tensor;
@@ -85,16 +82,15 @@ class MLPipeline {
         );
     }
 
-    async analyzePest(base64Image: string): Promise<Prediction> {
+    async analyzePest(base64Image: string): Promise<ClassificationResult> {
         if (!this.pestSession) throw new Error('Pest session not initialized.');
         const tensor = this.base64ToTensor(base64Image, 224).tensor;
         const results = await this.pestSession.run({
             [this.pestSession.inputNames[0]]: tensor,
         });
-        const predictions = this.processClassification(
+        return this.processClassification(
             results[this.pestSession.outputNames[0]].data as Float32Array
         );
-        return predictions[0];
     }
 
     async analyzeDisease(base64Image: string): Promise<SegmentationResult> {
@@ -190,7 +186,7 @@ class MLPipeline {
         };
     }
 
-    private processClassification(logits: Float32Array): Prediction[] {
+    private processClassification(logits: Float32Array): ClassificationResult {
         let maxLogit = -Infinity;
         for (let i = 0; i < logits.length; i++) {
             if (logits[i] > maxLogit) maxLogit = logits[i];
@@ -205,15 +201,28 @@ class MLPipeline {
         }
 
         const predictions: Prediction[] = [];
+        let entropy = 0;
         for (let i = 0; i < logits.length; i++) {
+            const probability = expLogits[i] / sumExp;
             predictions.push({
                 classIndex: i,
-                confidenceScore: expLogits[i] / sumExp,
+                confidenceScore: probability,
             });
+            if (probability > 0) entropy -= probability * Math.log(probability);
         }
 
         predictions.sort((a, b) => b.confidenceScore - a.confidenceScore);
-        return predictions.slice(0, 5);
+        const top1 = predictions[0]?.confidenceScore ?? 0;
+        const top2 = predictions[1]?.confidenceScore ?? 0;
+        const margin = top1 - top2;
+        return {
+            predictions: predictions.slice(0, 5),
+            stats: {
+                entropy,
+                margin,
+                isUnknown: top1 < UNKNOWN_CONFIDENCE || margin < UNKNOWN_MARGIN,
+            },
+        };
     }
 }
 

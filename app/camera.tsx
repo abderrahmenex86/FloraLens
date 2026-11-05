@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { manipulateAsync } from 'expo-image-manipulator';
 import { styled } from 'nativewind';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,8 +21,9 @@ import {
     Image as ImageIcon,
 } from 'lucide-react-native';
 import { mlPipeline } from '../lib/mlPipeline';
-import { storage, StorageKeys } from '../lib/storage';
+import { saveScan } from '../lib/storage';
 import { colors } from '@/theme';
+import { StatusBar } from 'expo-status-bar';
 
 const View = styled(RNView);
 
@@ -33,9 +34,22 @@ export default function ScanScreen() {
         'idle'
     );
     const [photoUri, setPhotoUri] = useState<string | null>(null);
+    const [modelsReady, setModelsReady] = useState(false);
+    const [initError, setInitError] = useState<string | null>(null);
 
     useEffect(() => {
-        mlPipeline.init().then(() => mlPipeline.initHealthModels());
+        let mounted = true;
+        mlPipeline
+            .init()
+            .then(() => mlPipeline.initHealthModels())
+            .then(() => mounted && setModelsReady(true))
+            .catch((error) => {
+                console.error('Model init failed:', error);
+                if (mounted) setInitError('Models could not be loaded.');
+            });
+        return () => {
+            mounted = false;
+        };
     }, []);
 
     const pickImage = async (useCamera: boolean) => {
@@ -60,6 +74,13 @@ export default function ScanScreen() {
 
     const runFullAnalysis = async () => {
         if (!photoUri) return;
+        if (!modelsReady) {
+            ToastAndroid.show(
+                initError ?? 'Models are still loading. Try again in a moment.',
+                ToastAndroid.SHORT
+            );
+            return;
+        }
         try {
             setAiState('analyzing');
 
@@ -82,17 +103,18 @@ export default function ScanScreen() {
                 mlPipeline.analyzeDisease(manip520.base64!),
             ]);
 
-            storage.set(
-                StorageKeys.CURRENT_SESSION,
-                JSON.stringify({
-                    originalUri: photoUri,
-                    plant: plantResult,
-                    pest: pestResult,
+            const record = saveScan({
+                imageUri: photoUri,
+                diagnosis: {
+                    plant: plantResult.predictions,
+                    plantStats: plantResult.stats,
+                    pest: pestResult.predictions[0],
+                    pestStats: pestResult.stats,
                     disease: diseaseResult,
-                })
-            );
+                },
+            });
 
-            router.replace('/result/session');
+            router.replace(`/result/${record.id}`);
         } catch (error) {
             console.error('Analysis failed:', error);
             setAiState('reviewing');
@@ -105,12 +127,15 @@ export default function ScanScreen() {
 
     return (
         <View className='flex-1 bg-[#1A1C19]'>
+            <StatusBar style='light' />
             <View
                 className='absolute top-0 w-full flex-row justify-between px-6 z-20'
                 style={{ paddingTop: Math.max(insets.top, 16) }}>
                 <Pressable
                     onPress={() => router.back()}
                     disabled={aiState === 'analyzing'}
+                    accessibilityRole='button'
+                    accessibilityLabel='Close scanner'
                     className='bg-white/20 p-3 rounded-full'>
                     <X
                         size={24}
@@ -156,7 +181,7 @@ export default function ScanScreen() {
             : aiState === 'analyzing' ?
                 <View className='flex-1 items-center justify-center p-8 gap-6 bg-[#F4F7F2]'>
                     <ActivityIndicator
-                        size={64}
+                        size='large'
                         color={colors.primary}
                     />
                     <Text className='text-3xl font-jakarta-bold text-[#1A1C19]'>
@@ -169,13 +194,15 @@ export default function ScanScreen() {
                 </View>
             :   <View className='flex-1 justify-center bg-black'>
                     <Image
-                        source={{ uri: photoUri }}
+                        source={{ uri: photoUri ?? '' }}
                         style={{ width: '100%', aspectRatio: 1 }}
                         contentFit='cover'
                     />
                     <View className='absolute bottom-0 w-full pb-16 px-8 flex-row justify-between items-center'>
                         <Pressable
                             onPress={() => setAiState('idle')}
+                            accessibilityRole='button'
+                            accessibilityLabel='Retake photo'
                             className='bg-black/60 p-5 rounded-full'>
                             <RotateCcw
                                 size={28}
@@ -184,6 +211,8 @@ export default function ScanScreen() {
                         </Pressable>
                         <Pressable
                             onPress={runFullAnalysis}
+                            accessibilityRole='button'
+                            accessibilityLabel='Analyze photo'
                             className='bg-[#84B026] px-8 py-5 rounded-full flex-row items-center gap-3 shadow-lg shadow-black/50'>
                             <Check
                                 size={28}

@@ -18,11 +18,12 @@ import {
     ToastAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 import { colors, spacing } from '@/theme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
-import { getGardenPlants, saveToGarden } from '../../lib/storage';
+import { getGardenPlants, savePlantToGarden } from '../../lib/storage';
 
 const View = styled(RNView);
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -42,25 +43,39 @@ export default function PlantProfileScreen() {
         setIsSaved(garden.some((p) => p.classIndex === classIndex));
     }, [classIndex]);
 
-    if (!plantInfo) return null;
+    if (!plantInfo) {
+        return (
+            <View className='flex-1 bg-[#F4F7F2] items-center justify-center p-8 gap-4'>
+                <StatusBar style='dark' />
+                <Text className='text-2xl font-jakarta-bold text-[#1A1C19] text-center'>
+                    This plant is not in the library
+                </Text>
+                <Pressable
+                    onPress={() => router.replace('/library')}
+                    accessibilityRole='button'
+                    className='bg-[#2D5A27] px-6 py-4 rounded-2xl'>
+                    <Text className='font-jakarta-bold text-white'>
+                        Browse the library
+                    </Text>
+                </Pressable>
+            </View>
+        );
+    }
 
     const images = PLANT_IMAGES[classIndex] || [];
 
     const handleSave = () => {
         if (isSaved) return;
-        saveToGarden({
-            id: Date.now().toString(),
-            classIndex,
-            confidence: 1,
-            imageUri: '',
-            timestamp: Date.now(),
-        });
-        setIsSaved(true);
-        ToastAndroid.show('Added to Garden!', ToastAndroid.SHORT);
+        const added = savePlantToGarden(classIndex);
+        if (added) {
+            setIsSaved(true);
+            ToastAndroid.show('Added to Garden!', ToastAndroid.SHORT);
+        }
     };
 
     return (
         <View className='flex-1 bg-[#F4F7F2]'>
+            <StatusBar style='light' />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: spacing.scrollBottom }}>
@@ -96,6 +111,8 @@ export default function PlantProfileScreen() {
                     <View className='absolute top-0 w-full h-32 bg-black/30' />
                     <Pressable
                         onPress={() => router.back()}
+                        accessibilityRole='button'
+                        accessibilityLabel='Go back'
                         className='absolute bg-black/40 p-3 rounded-full'
                         style={{ top: Math.max(insets.top, 16), left: 16 }}>
                         <ArrowLeft
@@ -117,6 +134,8 @@ export default function PlantProfileScreen() {
                         </View>
                         <Pressable
                             onPress={handleSave}
+                            accessibilityRole='button'
+                            accessibilityLabel={isSaved ? 'Saved to garden' : 'Save to garden'}
                             className={`p-4 rounded-full ${isSaved ? 'bg-[#2D5A27]' : 'bg-[#84B026]/10'}`}>
                             {isSaved ?
                                 <BookmarkCheck

@@ -1,26 +1,38 @@
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii } from '@/theme';
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { ChevronRight, Sprout, Trash2 } from 'lucide-react-native';
 import { styled } from 'nativewind';
 import { useCallback, useState } from 'react';
-import { Pressable, View as RNView, ScrollView, Text } from 'react-native';
+import {
+    Alert,
+    Pressable,
+    View as RNView,
+    ScrollView,
+    Text,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 import { EmptyState } from '../../components/EmptyState';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { PLANT_IMAGES } from '../../lib/plantImages';
-import {
-    getGardenPlants,
-    removeFromGarden,
-    ScanRecord,
-} from '../../lib/storage';
+import { getGardenPlants, getScan, removeFromGarden } from '../../lib/storage';
+import type { GardenPlant } from '../../lib/types';
 
 const View = styled(RNView);
 
+function formatDate(timestamp: number): string {
+    return new Date(timestamp).toLocaleDateString(undefined, {
+        day: 'numeric',
+        month: 'short',
+    });
+}
+
 export default function Garden() {
     const router = useRouter();
-    const [gardenPlants, setGardenPlants] = useState<ScanRecord[]>([]);
+    const insets = useSafeAreaInsets();
+    const [gardenPlants, setGardenPlants] = useState<GardenPlant[]>([]);
 
     useFocusEffect(
         useCallback(() => {
@@ -28,14 +40,29 @@ export default function Garden() {
         }, []),
     );
 
-    const handleDelete = (id: string) => {
-        removeFromGarden(id);
-        setGardenPlants((prev) => prev.filter((p) => p.id !== id));
+    const confirmDelete = (plant: GardenPlant) => {
+        Alert.alert(
+            'Remove from garden?',
+            'The scan stays in your history unless you delete it there.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Remove',
+                    style: 'destructive',
+                    onPress: () => {
+                        removeFromGarden(plant.id);
+                        setGardenPlants(getGardenPlants());
+                    },
+                },
+            ],
+        );
     };
 
-    const renderRightActions = (id: string) => (
+    const renderRightActions = (plant: GardenPlant) => (
         <Pressable
-            onPress={() => handleDelete(id)}
+            onPress={() => confirmDelete(plant)}
+            accessibilityRole='button'
+            accessibilityLabel='Remove plant from garden'
             className='bg-red-500 justify-center items-end w-24 rounded-3xl mb-3 pr-6'>
             <Trash2
                 size={24}
@@ -43,6 +70,14 @@ export default function Garden() {
             />
         </Pressable>
     );
+
+    const openPlant = (plant: GardenPlant) => {
+        if (plant.scanId && getScan(plant.scanId)) {
+            router.push(`/result/${plant.scanId}`);
+        } else {
+            router.push(`/plant/${plant.classIndex}`);
+        }
+    };
 
     return (
         <Screen className='gap-6'>
@@ -62,57 +97,66 @@ export default function Garden() {
                     <EmptyState
                         icon={Sprout}
                         title='Your garden is empty'
-                        description='Save plants from your scans to track their health and get care reminders.'
+                        description='Save a plant from a scan, or add one from the library.'
+                        actionLabel='Scan a plant'
+                        onAction={() => router.push('/camera')}
                     />
                 </View>
             :   <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
-                        paddingBottom: spacing.scrollBottom,
+                        paddingBottom: 120 + insets.bottom,
                     }}>
                     {gardenPlants.map((plant) => {
                         const plantInfo = PLANT_CLASSES[plant.classIndex] || {
                             name: 'Unknown Plant',
                             scientific: 'Unknown',
                         };
-                        // Prefer high quality reference image for the garden, fallback to scan
-                        const coverImage = (PLANT_IMAGES[plant.classIndex] &&
-                            PLANT_IMAGES[plant.classIndex][0]) || {
-                            uri: plant.imageUri,
-                        };
+                        const reference = PLANT_IMAGES[plant.classIndex]?.[0];
+                        const coverImage =
+                            plant.imageUri ? { uri: plant.imageUri } : reference;
 
                         return (
                             <Swipeable
                                 key={plant.id}
                                 renderRightActions={() =>
-                                    renderRightActions(plant.id)
+                                    renderRightActions(plant)
                                 }>
                                 <Pressable
-                                    onPress={() =>
-                                        router.push(
-                                            `/plant/${plant.classIndex}`,
-                                        )
-                                    }
+                                    onPress={() => openPlant(plant)}
+                                    accessibilityRole='button'
+                                    accessibilityLabel={`Open ${plantInfo.name}`}
+                                    accessibilityHint='Swipe left or long press to remove'
+                                    onLongPress={() => confirmDelete(plant)}
                                     className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
-                                    <Image
-                                        source={coverImage}
-                                        style={{
-                                            width: 72,
-                                            height: 72,
-                                            borderRadius: radii.md,
-                                        }}
-                                        contentFit='cover'
-                                    />
+                                    {coverImage ?
+                                        <Image
+                                            source={coverImage}
+                                            style={{
+                                                width: 72,
+                                                height: 72,
+                                                borderRadius: radii.md,
+                                            }}
+                                            contentFit='cover'
+                                        />
+                                    :   <View className='w-[72px] h-[72px] rounded-2xl bg-[#F4F7F2] items-center justify-center'>
+                                            <Sprout
+                                                size={28}
+                                                color={colors.primary}
+                                            />
+                                        </View>
+                                    }
                                     <View className='flex-1 ml-4 justify-center'>
                                         <Text
                                             className='font-jakarta-bold text-[#1A1C19] text-xl mb-0.5'
                                             numberOfLines={1}>
                                             {plantInfo.name}
                                         </Text>
-                                        <Text
-                                            className='font-vietnam text-[#1A1C19]/60 text-base'
-                                            numberOfLines={1}>
-                                            {plantInfo.scientific}
+                                        <Text className='font-vietnam text-[#1A1C19]/60 text-sm'>
+                                            Added {formatDate(plant.timestamp)}
+                                            {plant.scanId ?
+                                                ' · from scan'
+                                            :   ' · from library'}
                                         </Text>
                                     </View>
                                     <View className='bg-[#F4F7F2] p-2 rounded-full'>

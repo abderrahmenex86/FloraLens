@@ -45,12 +45,14 @@ app-example
 
 # Python / ML
 ml/.venv/
+data/
 ml/data/
 ml/runs/
 ml/exports/
 ml/.pytest_cache/
 ml/.ruff_cache/
 ml/.mypy_cache/
+ml/reports/*.json
 ml/**/__pycache__/
 __pycache__/
 *.pyc

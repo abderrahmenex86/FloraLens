@@ -8,8 +8,10 @@ No server, no API calls, no uploaded photos.
 
 ## What it does
 
-- Runs two ONNX models through `onnxruntime-react-native`, so inference happens
-  on the phone with no network round trip.
+- Runs three ONNX models through `onnxruntime-react-native`, so inference
+  happens on the phone with no network round trip.
+- Rejects frames with no plant in them before classifying, so a laptop screen or
+  a wall does not become a confident cabbage.
 - Identifies the plant species from a 224x224 photo and degrades to a top-5 list
   when confidence is low.
 - Classifies 22 garden insects plus a `no_insect` class, so a healthy leaf is
@@ -25,9 +27,10 @@ cd FloraLens
 npm install
 ```
 
-Put the `.onnx` models in `assets/models/`. The two expected files are
-`plant_model.onnx` (118 garden species) and `insect_model.onnx` (23 classes).
-Both are gitignored; the export scripts live in `ml/`.
+Put the `.onnx` models in `assets/models/`. The three expected files are
+`plant_gate.onnx` (plant/no-plant), `plant_model.onnx` (118 garden species) and
+`insect_model.onnx` (23 classes). They are gitignored; the export scripts live
+in `ml/`.
 
 Build a development client, not Expo Go, because the ONNX and MMKV modules
 include native code:

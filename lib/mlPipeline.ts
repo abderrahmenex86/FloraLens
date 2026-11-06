@@ -20,24 +20,67 @@ export interface ClassificationResult {
 class MLPipeline {
     private plantSession: InferenceSession | null = null;
     private pestSession: InferenceSession | null = null;
+    private gateSession: InferenceSession | null = null;
 
     private isInitializingPlant = false;
     private isInitializingHealth = false;
 
     async init() {
-        if (this.plantSession || this.isInitializingPlant) return;
+        if ((this.plantSession && this.gateSession) || this.isInitializingPlant)
+            return;
         this.isInitializingPlant = true;
         try {
-            const modelAsset = Asset.fromModule(
+            const plantAsset = Asset.fromModule(
                 require('../assets/models/plant_model.onnx')
             );
-            await modelAsset.downloadAsync();
-            this.plantSession = await InferenceSession.create(
-                modelAsset.localUri || modelAsset.uri
+            const gateAsset = Asset.fromModule(
+                require('../assets/models/plant_gate.onnx')
             );
+            await Promise.all([
+                plantAsset.downloadAsync(),
+                gateAsset.downloadAsync(),
+            ]);
+            [this.plantSession, this.gateSession] = await Promise.all([
+                InferenceSession.create(
+                    plantAsset.localUri || plantAsset.uri
+                ),
+                InferenceSession.create(gateAsset.localUri || gateAsset.uri),
+            ]);
         } finally {
             this.isInitializingPlant = false;
         }
+    }
+
+    /**
+     * Two-class presence gate. Rejects a frame only when the not-plant
+     * probability is at least 85%, so real leaves still get through when the
+     * background is busy. Returns the plant probability for context.
+     */
+    async checkPlantPresence(
+        base64Image: string
+    ): Promise<{ isPlant: boolean; probability: number }> {
+        if (!this.gateSession)
+            throw new Error('Plant gate not initialized.');
+        const tensor = this.base64ToTensor(base64Image, 128).tensor;
+        const results = await this.gateSession.run({
+            [this.gateSession.inputNames[0]]: tensor,
+        });
+        const logits = results[
+            this.gateSession.outputNames[0]
+        ].data as Float32Array;
+        let maxLogit = -Infinity;
+        for (let i = 0; i < logits.length; i++) {
+            if (logits[i] > maxLogit) maxLogit = logits[i];
+        }
+        let sumExp = 0;
+        for (let i = 0; i < logits.length; i++) {
+            sumExp += Math.exp(logits[i] - maxLogit);
+        }
+        const probability =
+            logits.length === 0 ?
+                0
+            :   Math.exp(logits[0] - maxLogit) / sumExp;
+        return { isPlant: probability >= 0.15, probability };
     }
 
     async initHealthModels() {

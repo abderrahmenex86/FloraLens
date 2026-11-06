@@ -78,7 +78,8 @@ list path). ONNX exports use a dynamic batch axis.
 
 - INT8 quantization collapsed the MobileNetV3 gate (plant recall 99% → 8%);
   FP32 ships instead. RepViT was not quantized in this pass.
-- The app ships the garden model and the garden-insect model. The 1,023-class
+- The app ships the plant-presence gate, the garden model and the
+garden-insect model. The 1,023-class
   broad model and the IP102 pest model are training artifacts only.
 - The disease segmentation model was removed from the app: the scan flow now
   reports one plant match plus one insect match, which keeps the bundle at

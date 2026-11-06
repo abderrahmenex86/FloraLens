@@ -113,11 +113,18 @@ export default function ScanScreen() {
         try {
             setState('analyzing');
 
-            const manip224 = await manipulateAsync(
-                photoUri,
-                [{ resize: { width: 224, height: 224 } }],
-                { compress: 1, base64: true },
-            );
+            const [manip224, manip128] = await Promise.all([
+                manipulateAsync(
+                    photoUri,
+                    [{ resize: { width: 224, height: 224 } }],
+                    { compress: 1, base64: true },
+                ),
+                manipulateAsync(
+                    photoUri,
+                    [{ resize: { width: 128, height: 128 } }],
+                    { compress: 1, base64: true },
+                ),
+            ]);
 
             // Reject dark and blank frames before the classifier can be
             // confidently wrong about them.
@@ -126,6 +133,18 @@ export default function ScanScreen() {
                 setState('reviewing');
                 ToastAndroid.show(
                     gate.message ?? 'No plant detected in that photo.',
+                    ToastAndroid.LONG,
+                );
+                return;
+            }
+
+            const presence = await mlPipeline.checkPlantPresence(
+                manip128.base64!,
+            );
+            if (!presence.isPlant) {
+                setState('reviewing');
+                ToastAndroid.show(
+                    'No plant detected in that photo. Point the camera at a leaf.',
                     ToastAndroid.LONG,
                 );
                 return;

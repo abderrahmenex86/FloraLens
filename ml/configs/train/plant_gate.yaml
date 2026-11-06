@@ -1,0 +1,22 @@
+# Plant presence gate.
+#
+# Small binary classifier that runs before the species model. 128px input so it
+# stays cheap on device; see docs/gate-training.md for the data and commands.
+model_name: mobilenetv3_small_100.lamb_in1k
+class_list: shared/classes/plant_gate.yaml
+data_manifest: data/processed/gate/manifest.jsonl
+output_dir: ml/runs/plant_gate
+input_size: 128
+epochs: 10
+batch_size: 256
+lr_head: 0.001
+lr_backbone: 0.0003
+weight_decay: 0.05
+label_smoothing: 0.05
+drop_rate: 0.1
+drop_path_rate: 0.05
+class_balance: true
+num_workers: 8
+seed: 42
+amp: bf16
+pretrained: true

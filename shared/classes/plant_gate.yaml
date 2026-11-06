@@ -1,0 +1,17 @@
+# Plant presence gate: is there a plant in the frame at all?
+#
+# Two classes only. The app runs this before the species classifier so a wall,
+# a cat or a black frame is rejected instead of being classified confidently.
+version: "2026.11-gate"
+target: plants
+classes:
+  - class_id: 0
+    scientific_name: plant
+    common_name: Plant
+    rank: species
+    status: active
+  - class_id: 1
+    scientific_name: not_plant
+    common_name: Not a plant
+    rank: species
+    status: active

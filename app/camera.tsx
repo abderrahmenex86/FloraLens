@@ -126,6 +126,18 @@ export default function ScanScreen() {
                 ),
             ]);
 
+            // Reject dark and blank frames before the classifier can be
+            // confidently wrong about them.
+            const gate = mlPipeline.checkPhoto(manip224.base64!);
+            if (!gate.ok) {
+                setState('reviewing');
+                ToastAndroid.show(
+                    gate.message ?? 'No plant detected in that photo.',
+                    ToastAndroid.LONG,
+                );
+                return;
+            }
+
             const [plantResult, pestResult, diseaseResult] = await Promise.all([
                 mlPipeline.analyzePlant(manip224.base64!),
                 mlPipeline.analyzePest(manip224.base64!),

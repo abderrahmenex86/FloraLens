@@ -2,6 +2,7 @@ import { InferenceSession, Tensor } from 'onnxruntime-react-native';
 import * as jpeg from 'jpeg-js';
 import * as base64js from 'base64-js';
 import { imageToPytorchTensor } from './tensorUtils';
+import { assessRgba, type InputCheck } from './imageGate';
 import type { ClassificationStats, PlantPrediction, SegmentationResult } from './types';
 import { UNKNOWN_CONFIDENCE, UNKNOWN_MARGIN } from './types';
 import { Asset } from 'expo-asset';
@@ -174,12 +175,30 @@ class MLPipeline {
         }
     }
 
+    /**
+     * Cheap pixel checks that run before inference. A black or blank frame is
+     * rejected here instead of being classified and saved.
+     */
+    checkPhoto(base64Image: string): InputCheck {
+        const rawImageData = this.decodeImage(base64Image);
+        return assessRgba(
+            rawImageData.data,
+            rawImageData.width,
+            rawImageData.height
+        );
+    }
+
+    private decodeImage(base64Image: string): jpeg.RawImageData<Uint8Array> {
+        return jpeg.decode(base64js.toByteArray(base64Image), {
+            useTArray: true,
+        });
+    }
+
     private base64ToTensor(
         base64Image: string,
         size: number
     ): { tensor: Tensor; rawImageData: jpeg.RawImageData<Uint8Array> } {
-        const imgBuffer = base64js.toByteArray(base64Image);
-        const rawImageData = jpeg.decode(imgBuffer, { useTArray: true });
+        const rawImageData = this.decodeImage(base64Image);
         const tensorData = imageToPytorchTensor(rawImageData.data, size, size);
         return {
             tensor: new Tensor('float32', tensorData, [1, 3, size, size]),

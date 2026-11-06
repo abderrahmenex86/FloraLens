@@ -14,13 +14,13 @@ image still gets a high softmax score, so `UNKNOWN_CONFIDENCE` and
 | luma std dev | `< 6` | No plant detected in that photo. Point the camera at a leaf. |
 | share of flat 8x8 tiles (std `< 4`) | `> 0.85` | same |
 
-The camera calls `mlPipeline.checkPhoto(base64)` before the three models run.
+The camera calls `mlPipeline.checkPhoto(base64)` before the classifiers run.
 A rejected photo stays on the review screen, shows a toast, and is never saved
 as a scan, so history stays clean.
 
 ## Calibration
 
-Measured on the 364 library thumbnails at 224px:
+Measured on the 364 library thumbnails of the previous library at 224px:
 
 | Metric | Plants (min) | Plants (median) | Rejects |
 |---|---|---|---|

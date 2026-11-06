@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-per-class", type=int, default=5)
     parser.add_argument("--version", default="2026.11")
     parser.add_argument("--base-url", default="")
-    parser.add_argument("--license", default="CC BY-SA (Pl@ntNet-300K)")
+    parser.add_argument("--license", default="Wikipedia/Wikimedia contributors (CC BY-SA)")
     return parser.parse_args()
 
 

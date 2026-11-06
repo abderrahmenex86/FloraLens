@@ -6,28 +6,28 @@ full-resolution reference photos an optional download.
 ## Generated files
 
 ```text
-assets/images/plants_thumbs/<class_id>.webp   # bundled, 364 files, ~12 MB
+assets/images/garden_thumbs/<class_id>.webp   # bundled, 118 files, ~3 MB
 lib/plantThumbs.ts                            # static require map
-plant-pack/full/<class_id>/<n>.webp            # optional, 1,793 files, ~74 MB
-plant-pack/manifest.json                       # paths, sizes, checksums
+plant-pack-garden/full/<class_id>/<n>.webp     # optional, 118 files, ~6 MB
+plant-pack-garden/manifest.json                # paths, sizes, checksums
 ```
 
-The original `assets/images/plants/<class_id>_<slug>/*.jpg` stay as the source
-material. They are gitignored and are no longer required by the app bundle.
+The original `assets/images/garden/<class_id>_<slug>/*.jpg` stay as the source
+material. They are gitignored and are not required by the app bundle. Covers are
+fetched from Wikipedia/Wikimedia with `tools/fetch_garden_covers.py`.
 
 ## Rebuild
 
 ```bash
 python tools/build_plant_library.py \
-  --images-root assets/images/plants \
-  --thumbs-out assets/images/plants_thumbs \
-  --pack-out plant-pack \
-  --thumb-width 400 --full-width 720 \
-  --max-per-class 5
+  --images-root assets/images/garden \
+  --thumbs-out assets/images/garden_thumbs \
+  --pack-out plant-pack-garden \
+  --thumbs-module lib/plantThumbs.ts
 ```
 
 This rewrites `lib/plantThumbs.ts`. Commit the thumbnails and the module; do not
-commit `plant-pack/`.
+commit `plant-pack-garden/` or the source covers.
 
 ## Host the full pack
 

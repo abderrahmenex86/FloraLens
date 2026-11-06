@@ -290,6 +290,14 @@ export default function Settings() {
                             where they were taken.
                         </Text>
                         <Text
+                            className='mt-3 font-vietnam text-xs leading-5'
+                            style={{ color: colors.onSurfaceVariant }}>
+                            Plant cover photos come from Wikipedia and
+                            Wikimedia Commons contributors, mostly under
+                            CC BY-SA. The classifiers are trained on GBIF and
+                            Pl@ntNet images.
+                        </Text>
+                        <Text
                             className='mt-3 font-vietnam text-xs'
                             style={{ color: colors.onSurfaceVariant }}>
                             Version 1.0.0

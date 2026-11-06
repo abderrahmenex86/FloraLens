@@ -21,12 +21,12 @@ export function Screen({ children, className = '' }: ScreenProps) {
     return (
         <SafeAreaView className='flex-1'>
             <View
-                style={[StyleSheet.absoluteFillObject, { overflow: 'hidden' }]}>
+                style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
                 <LinearGradient
                     colors={['#FFFFFF', colors.background]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFillObject}
+                    style={StyleSheet.absoluteFill}
                 />
 
                 <View className='absolute -top-[60px] -right-[90px] w-[280px] h-[280px] rounded-full bg-[#2D5A27]/10' />

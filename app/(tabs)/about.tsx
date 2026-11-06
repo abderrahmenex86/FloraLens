@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
@@ -34,10 +34,6 @@ export default function About() {
         null,
     );
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        setPackStatus(getPlantPackStatus());
-    }, []);
 
     const refreshPack = () => setPackStatus(getPlantPackStatus());
 

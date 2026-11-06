@@ -1,13 +1,12 @@
 import { SplashScreen, Stack } from 'expo-router';
 import '@/global.css';
-import { colors } from '@/theme';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 
 const RootLayout = () => {
-    const [fontsLoaded] = useFonts({
+    const [fontsLoaded, fontError] = useFonts({
         'jakarta-light': require('../assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Light.ttf'),
         'jakarta-regular': require('../assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Regular.ttf'),
         'jakarta-medium': require('../assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Medium.ttf'),
@@ -24,17 +23,20 @@ const RootLayout = () => {
     });
 
     useEffect(() => {
-        if (fontsLoaded) {
+        if (fontError) {
+            console.warn('[layout] font loading failed', fontError);
+        }
+    }, [fontError]);
+
+    useEffect(() => {
+        if (fontsLoaded || fontError) {
             SplashScreen.hideAsync();
         }
-    }, [fontsLoaded]);
-    if (!fontsLoaded) return null;
+    }, [fontsLoaded, fontError]);
+    if (!fontsLoaded && !fontError) return null;
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <StatusBar
-                style='dark'
-                backgroundColor={colors.background}
-            />
+            <StatusBar style='dark' />
             <Stack
                 screenOptions={{
                     headerShown: false,

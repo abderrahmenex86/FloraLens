@@ -12,7 +12,7 @@ import {
     Text,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Swipeable } from 'react-native-gesture-handler';
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { EmptyState } from '../../components/EmptyState';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
@@ -65,7 +65,7 @@ export default function Home() {
             onPress={() => confirmDelete(scan)}
             accessibilityRole='button'
             accessibilityLabel='Delete scan'
-            className='bg-red-500 justify-center items-end w-24 rounded-3xl mb-3 pr-6'>
+            className='bg-red-500 justify-center items-end w-24 mr-1 rounded-3xl mb-3 pr-6'>
             <Trash2
                 size={24}
                 color='white'
@@ -120,7 +120,7 @@ export default function Home() {
                             onAction={() => router.push('/camera')}
                         />
                     :   recentScans.map((scan) => (
-                            <Swipeable
+                            <ReanimatedSwipeable
                                 key={scan.id}
                                 renderRightActions={() =>
                                     renderRightActions(scan)
@@ -158,7 +158,7 @@ export default function Home() {
                                         </Text>
                                     </View>
                                 </Pressable>
-                            </Swipeable>
+                            </ReanimatedSwipeable>
                         ))
                     }
                 </ScrollView>

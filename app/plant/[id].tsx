@@ -8,7 +8,7 @@ import {
     Sun,
 } from 'lucide-react-native';
 import { styled } from 'nativewind';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Dimensions,
     Pressable,
@@ -36,12 +36,9 @@ export default function PlantProfileScreen() {
     const classIndex = Number(id);
     const plantInfo = PLANT_CLASSES[classIndex];
 
-    const [isSaved, setIsSaved] = useState(false);
-
-    useEffect(() => {
-        const garden = getGardenPlants();
-        setIsSaved(garden.some((p) => p.classIndex === classIndex));
-    }, [classIndex]);
+    const [isSaved, setIsSaved] = useState(() =>
+        getGardenPlants().some((p) => p.classIndex === classIndex),
+    );
 
     if (!plantInfo) {
         return (

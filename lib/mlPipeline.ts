@@ -6,7 +6,8 @@ import type { ClassificationStats, PlantPrediction, SegmentationResult } from '.
 import { UNKNOWN_CONFIDENCE, UNKNOWN_MARGIN } from './types';
 import { Asset } from 'expo-asset';
 import { Buffer } from 'buffer';
-global.Buffer = global.Buffer || Buffer;
+const globalScope = globalThis as typeof globalThis & { Buffer?: typeof Buffer };
+globalScope.Buffer ??= Buffer;
 
 export type Prediction = PlantPrediction;
 

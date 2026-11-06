@@ -62,7 +62,7 @@ export default function Settings() {
 
     const refreshPack = () => setPackStatus(getPlantPackStatus());
 
-    const handleSeedDemo = () => {
+    const handleSeedDemo = !__DEV__ ? undefined : () => {
         if (seeding) return;
         Alert.alert(
             'Fill with demo data?',

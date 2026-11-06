@@ -46,7 +46,7 @@ const RootLayout = () => {
                     <Stack.Screen name='(tabs)' />
                     <Stack.Screen
                         name='camera'
-                        options={{ animation: 'fade' }}
+                        options={{ animation: 'none' }}
                     />
                     <Stack.Screen
                         name='settings'

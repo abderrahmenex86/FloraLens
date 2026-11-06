@@ -70,6 +70,13 @@
       ],
       "onnxruntime-react-native",
       "expo-asset",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "FloraLens uses the camera to photograph leaves.",
+          "recordAudioAndroid": false
+        }
+      ],
       "expo-image",
       "expo-status-bar"
     ],

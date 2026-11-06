@@ -305,6 +305,7 @@ export default function Settings() {
                     </View>
                 </View>
 
+                {(packStatus.configured || packStatus.installed) && (
                 <View className='mt-8'>
                     <View className='mb-2 flex-row items-center gap-2'>
                         <Images
@@ -324,8 +325,7 @@ export default function Settings() {
                             className='font-vietnam text-sm'
                             style={{ color: colors.onSurfaceVariant }}>
                             Thumbnails are bundled. Download the full-resolution
-                            photos once to keep them offline. About{' '}
-                            {formatBytes(74 * 1024 * 1024)}. Use Wi-Fi.
+                            photos once to keep them offline. Use Wi-Fi.
                         </Text>
 
                         {error ?
@@ -415,6 +415,7 @@ export default function Settings() {
                         }
                     </View>
                 </View>
+                )}
             </ScrollView>
         </Screen>
     );

@@ -29,7 +29,9 @@ date the plant was added and `wateringDays` to 7. New saves set both.
 
 - **Garden**: each row shows the status under the added date, red when due. The
   droplet button marks the plant watered (resets the timer, haptic, reschedules
-  reminders). It fills with the primary colour while the plant is due.
+  reminders). It fills with the primary colour while the plant is due. Tapping
+  the status opens a sheet with 3, 7, 14 and 30-day intervals; the choice is
+  stored per plant and reschedules that plant's reminder.
 - **Home**: a "Needs water" section appears above Recent scans only when
   something is due, with the same quick-water button. The section header links
   to the garden.
@@ -57,12 +59,12 @@ Pixel 8a, debug and release builds:
   (red, filled button) when forced due.
 - Home shows the "Needs water" card with a working quick-water action.
 - Tapping water resets the status to "Water in 7 days" and reschedules.
+- Changing the interval to 3 days updates the row to "Water in 3 days" and moves
+  the `dumpsys alarm` RTC_WAKEUP entry to the new due date at 09:00.
 - Enabling reminders shows the system permission dialog; after allowing,
   `dumpsys alarm` shows the RTC_WAKEUP alarm for the due date at 09:00.
 
 ## Not done yet
 
-- No per-plant interval editor (everything defaults to 7 days; the field is
-  ready for one).
 - No reminder time picker; 09:00 is fixed.
 - Reminders are local only; no push.

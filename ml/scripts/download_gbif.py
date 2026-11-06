@@ -22,12 +22,12 @@ import requests
 import yaml
 
 API = "https://api.gbif.org/v1"
-# GBIF normalises occurrence licenses to these URLs; SA variants come back as
-# UNSUPPORTED, so they are not selectable through the search filter.
+# GBIF accepts these enum names as repeated `license` params. The SA variants
+# are not selectable (GBIF reports them as UNSUPPORTED), so they are omitted.
 LICENSES = [
-    "http://creativecommons.org/publicdomain/zero/1.0/legalcode",
-    "http://creativecommons.org/licenses/by/4.0/legalcode",
-    "http://creativecommons.org/licenses/by-nc/4.0/legalcode",
+    "CC0_1_0",
+    "CC_BY_4_0",
+    "CC_BY_NC_4_0",
 ]
 PAGE = 300
 

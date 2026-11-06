@@ -70,10 +70,19 @@ needs to be.
 - Package/label/permissions inspected with `aapt2`.
 - `allowBackup=false`.
 - Home and empty state render in a standalone release build with no Metro.
+- Pixel 8a (arm64, Android 17): installed the 166 MB release, cold start
+  **0.5–1.0 s**, PSS **96 MB** at home.
+- Camera permission prompt, system camera, crop, on-device analysis and result
+  all work from the release build.
+- The camera permission dialog still says "take pictures and record video"
+  because Android groups camera and video under CAMERA; RECORD_AUDIO is not in
+  the manifest.
+- Only `CAMERA` is granted; no media, microphone or overlay permission.
 
 ## Pending
 
-- Unlock the Pixel 8a and run the camera/haptics/pack-download pass.
-- Build an arm64 APK with `EXPO_PUBLIC_PLANT_PACK_URL` set to test the hosted pack.
+- Build an arm64 APK with `EXPO_PUBLIC_PLANT_PACK_URL` set to test the hosted
+  pack on the phone (the code path is already validated on the emulator with
+  the 5-photo mini pack).
 - SDK 58 + `@expo/ui` + Material You.
 - Release keystore, R8, store listing, privacy policy.

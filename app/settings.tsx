@@ -4,11 +4,13 @@ import {
     Alert,
     Pressable,
     ScrollView,
+    Switch,
     Text,
     View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import {
+    Bell,
     Download,
     Images,
     Languages,
@@ -20,6 +22,13 @@ import {
 } from 'lucide-react-native';
 import { Screen } from '../components/Screen';
 import { useAppTheme, type ThemeMode } from '@/lib/appTheme';
+import { getGardenPlants } from '@/lib/storage';
+import {
+    ensureNotificationPermission,
+    remindersEnabled,
+    setRemindersEnabled,
+    syncWateringNotifications,
+} from '@/lib/watering';
 import {
     deletePlantPack,
     downloadPlantPack,
@@ -39,6 +48,7 @@ export default function Settings() {
     const router = useRouter();
     const { colors, mode, setMode, scheme } = useAppTheme();
 
+    const [reminders, setReminders] = useState(() => remindersEnabled());
     const [packStatus, setPackStatus] = useState<PlantPackStatus>(() =>
         getPlantPackStatus(),
     );
@@ -49,6 +59,22 @@ export default function Settings() {
     const [error, setError] = useState<string | null>(null);
 
     const refreshPack = () => setPackStatus(getPlantPackStatus());
+
+    const handleReminders = async (next: boolean) => {
+        if (next) {
+            const granted = await ensureNotificationPermission();
+            if (!granted) {
+                Alert.alert(
+                    'Notifications are off',
+                    'Allow notifications for FloraLens in system settings to get watering reminders.',
+                );
+                return;
+            }
+        }
+        setRemindersEnabled(next);
+        setReminders(next);
+        await syncWateringNotifications(getGardenPlants());
+    };
 
     const handleDownload = async () => {
         setError(null);
@@ -174,6 +200,49 @@ export default function Settings() {
                         `Following the system, currently ${scheme}.`
                     :   'Fixed appearance for this device.'}
                 </Text>
+
+                <View className='mt-8'>
+                    <Text
+                        className='mb-2 font-jakarta-bold text-base'
+                        style={{ color: colors.ink }}>
+                        Reminders
+                    </Text>
+                    <View
+                        className='flex-row items-center justify-between rounded-2xl px-4 py-4'
+                        style={{ backgroundColor: colors.surface }}>
+                        <View className='flex-1 flex-row items-center gap-3 pr-3'>
+                            <Bell
+                                size={20}
+                                color={colors.onSurfaceVariant}
+                            />
+                            <View className='flex-1'>
+                                <Text
+                                    className='font-vietnam text-base'
+                                    style={{ color: colors.ink }}>
+                                    Watering reminders
+                                </Text>
+                                <Text
+                                    className='mt-0.5 font-vietnam text-xs'
+                                    style={{
+                                        color: colors.onSurfaceVariant,
+                                    }}>
+                                    One nudge on the morning each plant is due.
+                                </Text>
+                            </View>
+                        </View>
+                        <Switch
+                            value={reminders}
+                            onValueChange={handleReminders}
+                            trackColor={{
+                                false: colors.outline,
+                                true: colors.primary,
+                            }}
+                            thumbColor={
+                                reminders ? colors.onPrimary : colors.surface
+                            }
+                        />
+                    </View>
+                </View>
 
                 <View className='mt-8'>
                     <Text

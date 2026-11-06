@@ -49,6 +49,10 @@ export interface GardenPlant {
     confidence: number;
     imageUri: string;
     timestamp: number;
+    /** Last time the user marked this plant as watered. */
+    lastWateredAt?: number;
+    /** Watering interval in days. */
+    wateringDays?: number;
 }
 
 export const UNKNOWN_CONFIDENCE = 0.5;

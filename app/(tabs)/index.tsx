@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Settings } from 'lucide-react-native';
+import { Droplets, Settings } from 'lucide-react-native';
 import { useCallback, useMemo, useState } from 'react';
 import {
     Pressable,
@@ -15,8 +15,14 @@ import { useAppTheme } from '@/lib/appTheme';
 import { getDailyPicks } from '../../lib/dailyPicks';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
-import { getScanHistory } from '../../lib/storage';
-import type { ScanRecord } from '../../lib/types';
+import { getGardenPlants, getScanHistory, waterPlant } from '../../lib/storage';
+import { hapticLight } from '../../lib/haptics';
+import {
+    duePlants,
+    syncWateringNotifications,
+    wateringLabel,
+} from '../../lib/watering';
+import type { GardenPlant, ScanRecord } from '../../lib/types';
 
 function formatDate(timestamp: number): string {
     return new Date(timestamp).toLocaleDateString(undefined, {
@@ -29,14 +35,26 @@ export default function Home() {
     const router = useRouter();
     const { colors } = useAppTheme();
     const [recent, setRecent] = useState<ScanRecord[]>([]);
+    const [garden, setGarden] = useState<GardenPlant[]>([]);
 
     const picks = useMemo(() => getDailyPicks(3), []);
 
     useFocusEffect(
         useCallback(() => {
             setRecent(getScanHistory().slice(0, 3));
+            setGarden(getGardenPlants());
         }, []),
     );
+
+    const thirsty = duePlants(garden);
+
+    const handleWater = (plant: GardenPlant) => {
+        waterPlant(plant.id);
+        hapticLight();
+        const next = getGardenPlants();
+        setGarden(next);
+        syncWateringNotifications(next).catch(() => {});
+    };
 
     return (
         <Screen>
@@ -71,6 +89,76 @@ export default function Home() {
                         scans and your garden never leave the device, and there
                         is no account to create.
                     </Text>
+
+                    {thirsty.length > 0 ?
+                        <View className='mt-6 gap-3'>
+                            <SectionHeader
+                                title='Needs water'
+                                onPress={() => router.push('/garden')}
+                                actionLabel='Open the garden'
+                            />
+                            {thirsty.slice(0, 3).map((plant) => (
+                                <View
+                                    key={plant.id}
+                                    className='flex-row items-center rounded-3xl p-3'
+                                    style={{
+                                        backgroundColor: colors.surface,
+                                    }}>
+                                    {plant.imageUri ?
+                                        <Image
+                                            source={{ uri: plant.imageUri }}
+                                            style={{
+                                                width: 44,
+                                                height: 44,
+                                                borderRadius: 12,
+                                            }}
+                                            contentFit='cover'
+                                        />
+                                    :   <View
+                                            className='items-center justify-center rounded-xl'
+                                            style={{
+                                                width: 44,
+                                                height: 44,
+                                                backgroundColor:
+                                                    colors.background,
+                                            }}>
+                                            <Droplets
+                                                size={20}
+                                                color={colors.primary}
+                                            />
+                                        </View>
+                                    }
+                                    <View className='ml-3 flex-1 justify-center'>
+                                        <Text
+                                            className='font-jakarta-bold text-base'
+                                            numberOfLines={1}
+                                            style={{ color: colors.ink }}>
+                                            {PLANT_CLASSES[plant.classIndex]
+                                                ?.name ?? 'Your plant'}
+                                        </Text>
+                                        <Text
+                                            className='mt-0.5 font-vietnam text-xs'
+                                            style={{ color: colors.danger }}>
+                                            {wateringLabel(plant)}
+                                        </Text>
+                                    </View>
+                                    <Pressable
+                                        onPress={() => handleWater(plant)}
+                                        accessibilityRole='button'
+                                        accessibilityLabel={`Mark ${PLANT_CLASSES[plant.classIndex]?.name ?? 'plant'} as watered`}
+                                        className='rounded-full p-3'
+                                        style={{
+                                            backgroundColor: colors.primary,
+                                        }}>
+                                        <Droplets
+                                            size={18}
+                                            color={colors.onPrimary}
+                                        />
+                                    </Pressable>
+                                </View>
+                            ))}
+                        </View>
+                    :   null}
 
                     <View className='mt-8 gap-3'>
                         <SectionHeader

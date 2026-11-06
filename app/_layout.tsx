@@ -1,9 +1,22 @@
 import { SplashScreen, Stack } from 'expo-router';
+import * as Notifications from 'expo-notifications';
+import { AppState } from 'react-native';
+import { getGardenPlants } from '@/lib/storage';
+import { syncWateringNotifications } from '@/lib/watering';
 import '@/global.css';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppThemeProvider } from '@/lib/appTheme';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
 
 const RootLayout = () => {
     const [fontsLoaded, fontError] = useFonts({
@@ -33,6 +46,17 @@ const RootLayout = () => {
             SplashScreen.hideAsync();
         }
     }, [fontsLoaded, fontError]);
+
+    useEffect(() => {
+        const sync = () => {
+            syncWateringNotifications(getGardenPlants()).catch(() => {});
+        };
+        sync();
+        const subscription = AppState.addEventListener('change', (state) => {
+            if (state === 'active') sync();
+        });
+        return () => subscription.remove();
+    }, []);
 
     if (!fontsLoaded && !fontError) return null;
 

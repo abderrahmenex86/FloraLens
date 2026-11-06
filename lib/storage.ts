@@ -157,7 +157,27 @@ export function getGardenPlants(): GardenPlant[] {
     return safeParse<GardenPlant[]>(
         storage.getString(StorageKeys.GARDEN),
         [],
-    ).sort((a, b) => b.timestamp - a.timestamp);
+    )
+        .map((plant) => ({
+            ...plant,
+            lastWateredAt: plant.lastWateredAt ?? plant.timestamp,
+            wateringDays: plant.wateringDays ?? 7,
+        }))
+        .sort((a, b) => b.timestamp - a.timestamp);
+}
+
+export function waterPlant(id: string, at = Date.now()): void {
+    const garden = getGardenPlants().map((plant) =>
+        plant.id === id ? { ...plant, lastWateredAt: at } : plant,
+    );
+    storage.set(StorageKeys.GARDEN, JSON.stringify(garden));
+}
+
+export function setWateringDays(id: string, days: number): void {
+    const garden = getGardenPlants().map((plant) =>
+        plant.id === id ? { ...plant, wateringDays: Math.max(1, days) } : plant,
+    );
+    storage.set(StorageKeys.GARDEN, JSON.stringify(garden));
 }
 
 export function isInGarden(scanId: string | undefined): boolean {
@@ -208,6 +228,8 @@ export function saveToGarden(params: {
         confidence: params.confidence,
         imageUri: params.imageUri,
         timestamp: Date.now(),
+        lastWateredAt: Date.now(),
+        wateringDays: 7,
     });
     storage.set(StorageKeys.GARDEN, JSON.stringify(garden));
     return true;

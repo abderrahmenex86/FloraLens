@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Sprout, Trash2 } from 'lucide-react-native';
+import { Droplets, Sprout, Trash2 } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { EmptyState } from '../../components/EmptyState';
@@ -10,7 +10,18 @@ import { SwipePager } from '../../components/SwipePager';
 import { useAppTheme } from '@/lib/appTheme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
-import { getGardenPlants, getScan, removeFromGarden } from '../../lib/storage';
+import {
+    getGardenPlants,
+    getScan,
+    removeFromGarden,
+    waterPlant,
+} from '../../lib/storage';
+import { hapticLight } from '../../lib/haptics';
+import {
+    syncWateringNotifications,
+    wateringLabel,
+    wateringStatus,
+} from '../../lib/watering';
 import type { GardenPlant } from '../../lib/types';
 
 function formatDate(timestamp: number): string {
@@ -47,6 +58,14 @@ export default function Garden() {
                 },
             ],
         );
+    };
+
+    const handleWater = (plant: GardenPlant) => {
+        waterPlant(plant.id);
+        hapticLight();
+        const next = getGardenPlants();
+        setGardenPlants(next);
+        syncWateringNotifications(next).catch(() => {});
     };
 
     const openPlant = (plant: GardenPlant) => {
@@ -138,21 +157,55 @@ export default function Garden() {
                                                 ' · from scan'
                                             :   ' · from library'}
                                         </Text>
+                                        <Text
+                                            className='mt-0.5 font-vietnam-medium text-sm'
+                                            style={{
+                                                color:
+                                                    wateringStatus(plant).due ?
+                                                        colors.danger
+                                                    :   colors.primary,
+                                            }}>
+                                            {wateringLabel(plant)}
+                                        </Text>
                                     </View>
-                                    <Pressable
-                                        onPress={() => confirmDelete(plant)}
-                                        accessibilityRole='button'
-                                        accessibilityLabel={`Remove ${plantInfo.name} from garden`}
-                                        hitSlop={8}
-                                        className='rounded-full p-3'
-                                        style={{
-                                            backgroundColor: colors.background,
-                                        }}>
-                                        <Trash2
-                                            size={18}
-                                            color={colors.onSurfaceVariant}
-                                        />
-                                    </Pressable>
+                                    <View className='flex-row items-center gap-2'>
+                                        <Pressable
+                                            onPress={() => handleWater(plant)}
+                                            accessibilityRole='button'
+                                            accessibilityLabel={`Mark ${plantInfo.name} as watered`}
+                                            hitSlop={8}
+                                            className='rounded-full p-3'
+                                            style={{
+                                                backgroundColor:
+                                                    wateringStatus(plant).due ?
+                                                        colors.primary
+                                                    :   colors.background,
+                                            }}>
+                                            <Droplets
+                                                size={18}
+                                                color={
+                                                    wateringStatus(plant).due ?
+                                                        colors.onPrimary
+                                                    :   colors.primary
+                                                }
+                                            />
+                                        </Pressable>
+                                        <Pressable
+                                            onPress={() => confirmDelete(plant)}
+                                            accessibilityRole='button'
+                                            accessibilityLabel={`Remove ${plantInfo.name} from garden`}
+                                            hitSlop={8}
+                                            className='rounded-full p-3'
+                                            style={{
+                                                backgroundColor:
+                                                    colors.background,
+                                            }}>
+                                            <Trash2
+                                                size={18}
+                                                color={colors.onSurfaceVariant}
+                                            />
+                                        </Pressable>
+                                    </View>
                                 </Pressable>
                             );
                         })}

@@ -36,6 +36,8 @@ def main() -> int:
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         for shard in shards:
             split = shard.name.split("-")[0]
+            if split == "validation":
+                split = "val"
             if split not in {"train", "val", "test"}:
                 raise SystemExit(f"unexpected shard name: {shard.name}")
 

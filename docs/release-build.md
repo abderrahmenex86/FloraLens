@@ -79,10 +79,33 @@ needs to be.
   the manifest.
 - Only `CAMERA` is granted; no media, microphone or overlay permission.
 
+## SDK 58 migration
+
+The app runs on Expo SDK 58 (`expo 58.0.23`, RN 0.88.1, React 19.3,
+TypeScript 6). Three things broke and are handled in-tree:
+
+- **New architecture is the only architecture.** `newArchEnabled` and
+  `edgeToEdgeEnabled` are no longer valid config keys; both were removed.
+  `expo-status-bar` no longer accepts `backgroundColor` under edge-to-edge.
+- **Gradle 9.** `onnxruntime-react-native` 1.24.3 still ships a Gradle 8 build
+  script (AGP 7.4.2 classpath, `gradle.util.VersionNumber`). `npm run
+  postinstall` runs `scripts/patch-onnx-gradle.js` to strip both.
+- **`react-native-css` shim.** nativewind 5 has `react-native-css` replace every
+  `import ... from 'react-native'` with a partial component shim. The shim does
+  not re-export `AssetRegistry`, so `expo-asset` threw
+  `Cannot read property 'getAssetByID' of undefined`, `useFonts` never
+  resolved, and the app stayed on a blank screen. `scripts/patch-react-native-css.js`
+  appends a forwarder for every export the shim does not define.
+
+Verified on the Android 16 emulator (debug, Metro): home, garden, library, about,
+plant detail, system camera → crop → on-device analysis → result, save to
+garden, and swipe-to-delete. `tsc --noEmit`, `expo lint` and `expo-doctor`
+(20/20) pass.
+
 ## Pending
 
 - Build an arm64 APK with `EXPO_PUBLIC_PLANT_PACK_URL` set to test the hosted
   pack on the phone (the code path is already validated on the emulator with
   the 5-photo mini pack).
-- SDK 58 + `@expo/ui` + Material You.
+- SDK 58 is in; `@expo/ui` + Material You dynamic color is next.
 - Release keystore, R8, store listing, privacy policy.

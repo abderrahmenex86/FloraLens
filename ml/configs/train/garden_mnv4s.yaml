@@ -1,10 +1,10 @@
-# Garden / houseplant species model (27 curated taxa, GBIF photos).
+# 1,023-class model: 1,000 Pl@ntNet species + 23 GBIF garden/houseplant taxa.
 model_name: mobilenetv4_conv_small.e2400_r224_in1k
-class_list: shared/classes/plants.yaml
-data_manifest: data/processed/garden/manifest.jsonl
+class_list: shared/classes/garden.yaml
+data_manifest: data/processed/garden_gbif/manifest_256.jsonl
 output_dir: ml/runs/garden_mnv4s
 input_size: 224
-epochs: 20
+epochs: 40
 batch_size: 128
 lr_head: 0.001
 lr_backbone: 0.0001
@@ -13,8 +13,8 @@ label_smoothing: 0.1
 drop_rate: 0.1
 drop_path_rate: 0.05
 class_balance: true
-num_workers: 12
-prefetch_factor: 4
+num_workers: 14
+prefetch_factor: 2
 channels_last: true
 compile: false
 seed: 42

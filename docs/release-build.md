@@ -53,12 +53,12 @@ cd android
   -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=1g"
 ```
 
-Sizes from this pass:
+Sizes from this pass (SDK 58 + Material You shell):
 
 | Build | APK |
 |---|---|
-| x86_64 release | 173 MB |
-| arm64 release | 166 MB |
+| x86_64 release | 169 MB |
+| arm64 release | 162 MB |
 
 The release is signed with the debug keystore; replace it before publishing.
 R8/minify is still disabled, so the dex is 42 MB and the APK is larger than it
@@ -101,6 +101,10 @@ Verified on the Android 16 emulator (debug, Metro): home, garden, library, about
 plant detail, system camera → crop → on-device analysis → result, save to
 garden, and swipe-to-delete. `tsc --noEmit`, `expo lint` and `expo-doctor`
 (20/20) pass.
+
+The x86_64 **release** build was installed without Metro and renders the native
+Material You shell, including the Material Symbols XML drawables and the
+Compose empty state, so the asset path works outside the dev server.
 
 ## Pending
 

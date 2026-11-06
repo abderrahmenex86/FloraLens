@@ -55,3 +55,7 @@ Android 16 emulator, debug + Metro: Home (native app bar, hero card, native
 tab bar), Garden, Library (search + native empty state with working action),
 About, plant detail, camera → crop → on-device analysis → result, save to
 garden, swipe-to-delete. `tsc --noEmit`, `expo lint` and `expo-doctor` pass.
+
+The x86_64 release APK was also installed and launched without Metro: the
+native shell, the Material Symbols drawables and the Compose empty state all
+render, so the XML assets survive release packaging.

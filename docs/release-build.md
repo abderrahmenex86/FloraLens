@@ -123,6 +123,9 @@ SDK 58 + Material You build on the Pixel 8a (Android 17):
 - Build an arm64 APK with `EXPO_PUBLIC_PLANT_PACK_URL` set to test the hosted
   pack on the phone (the code path is already validated on the emulator with
   the 5-photo mini pack).
-- `@expo/ui` Material You shell is in (see `docs/material-you.md`); the
-  remaining polish is Compose cards/chips on the detail screens.
+- `@expo/ui` Material You shell is in (see `docs/material-you.md`), including
+  wallpaper colors, theme modes and the five-item bar. Remaining polish:
+  Compose cards/chips on the detail screens.
+- Rebuild the arm64 APK after the shell pass; the build on the phone predates
+  the icon, theme modes and new navigation.
 - Release keystore, R8, store listing, privacy policy.

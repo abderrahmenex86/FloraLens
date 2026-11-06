@@ -1,61 +1,77 @@
-# Material You shell
+# App shell: Material You, theme modes, navigation
 
-The app chrome is native Material 3, rendered by Jetpack Compose through
-`@expo/ui`. Content that Compose cannot express (lists with swipe actions,
-photos, the camera flow) stays in React Native and reads the same palette.
+The chrome is native Material 3 through `@expo/ui`. Lists, photos and the camera
+flow stay in React Native and read the same palette.
 
-## Palette
+## Palette and theme modes
 
-`lib/materialTheme.ts` builds one Material 3 palette at startup with
-`getMaterialColors({ scheme: 'light', seedColor })` and exposes:
+`lib/appTheme.tsx` owns the theme:
 
-- `colors` — semantic tokens for React Native surfaces (`background`, `primary`,
-  `ink`, `surface`, `onSurfaceVariant`, …).
-- `hostTheme` — the matching props (`colorScheme`, `seedColor`) for every
-  `Host`, so Compose children theme identically.
-- `withAlpha(color, alpha)` — Material roles are `#RRGGBBAA`; replace the alpha
-  channel instead of concatenating, or Compose throws `Unknown color`.
+- `getMaterialColors({ scheme })` reads the wallpaper on Android 12+, so the app
+  follows Material You dynamic color. Below Android 12 it falls back to a
+  palette seeded from the FloraLens green (`#2D5A27`), using the same
+  `SchemeTonalSpot` algorithm.
+- `mode` is `system`, `light` or `dark`, stored in MMKV under `theme_mode`.
+- `system` resolves through `useColorScheme()`, so the app follows the device
+  toggle.
+- The provider also sets the status bar style and the native window background
+  (`expo-system-ui`), which avoids a white flash during route transitions.
+- `hostTheme` carries `colorScheme` (and the seed when wallpaper colors are not
+  available) to every Compose `Host`.
 
-`USE_WALLPAPER_COLORS` in the same file switches the source:
+`app.json` has `"userInterfaceStyle": "automatic"`. The native side needs that
+value to report dark mode, so changing it requires `expo prebuild`.
 
-| Value | Palette |
-|---|---|
-| `false` (current) | Seeded from `#2D5A27`, the FloraLens green. Works on every API level. |
-| `true` | Wallpaper-derived on Android 12+ (`Material 3 Dynamic Colors`). |
+Material roles are `#RRGGBBAA`. Use `withAlpha(color, alpha)` to change
+opacity; concatenating produces a 9-digit color and Compose throws
+`Unknown color`.
 
-Wallpaper colors turn a plant app blue, so the brand seed is the default.
+## Navigation
+
+Five destinations: Home, My scans, Scan, Garden, Library.
+
+- Home, My scans, Garden and Library are real tabs.
+- Scan is not a tab page. The middle item pushes `/camera`, a full-screen stack
+  route with its own close button, so the camera never becomes a swipe target.
+- `components/SwipePager.tsx` handles horizontal swipes between the four tab
+  pages. Vertical drags fail the gesture, so lists scroll normally.
+- Swipe-to-delete on rows is gone because it competed with paging. Rows delete
+  through a trash button and long press.
+
+## Screens
+
+Home opens with the name, a two-line privacy note and a settings button, then
+Recent scans (three) and Today's picks (three library plants seeded by the
+local date, `lib/dailyPicks.ts`). Section headers carry an arrow to the full
+list.
+
+Settings is a modal route and holds appearance, language (coming soon), About
+FloraLens and the optional offline photo pack.
 
 ## Components
 
 | File | Android | iOS / web |
 |---|---|---|
 | `components/material/AppBar.*` | `TopAppBar` (`windowInsets={{}}`, the screen owns the safe area) | large React Native title |
-| `components/material/TabBar.*` | `NavigationBar` + `NavigationBarItem` + Material Symbols | React Navigation `BottomTabBar` |
-| `components/material/HeroCard.*` | `Card` + `Row` + `FilledTonalIconButton`, `clickable` on the card | `Pressable` card |
+| `components/material/TabBar.*` | `NavigationBar` + `NavigationBarItem` + Material Symbols | React Native bar with the same five items |
 | `components/EmptyState.*` | `Card` + `Icon` + `Text` + `Button` | rounded `View` + `Pressable` |
 
-Platform files keep `@expo/ui` out of iOS and web bundles entirely. Shared prop
-types live in `appBarTypes.ts`, `heroCardTypes.ts` and `emptyStateTypes.ts`
-because TypeScript resolves the neutral file, not the `.android` one.
+Platform files keep `@expo/ui` out of iOS and web bundles. Shared prop types live
+in `appBarTypes.ts` and `emptyStateTypes.ts` because TypeScript resolves the
+neutral file, not the `.android` one.
 
 ## Gotchas
 
-- `Host` with `matchContents` does not report its height back inside a
-  `FlatList` cell; the empty state collapsed to zero. It now has a fixed
-  320 dp host and the card fills it.
-- The tab bar is no longer an absolute floating pill, so screens dropped the
-  `120 + insets.bottom` list padding and the tab bar supplies its own system
-  bar insets.
-- Icons come from `@expo/material-symbols` and are imported as XML assets in
-  Android-only files.
+- `Host` with `matchContents` does not report its height inside a `FlatList`
+  cell; the empty state collapsed to zero. It now has a fixed 320 dp host.
+- The tab bar is not an absolute floating pill, so screens do not add bottom
+  padding for it; Compose applies the system bar insets.
+- Icons come from `@expo/material-symbols` as XML drawables, imported only in
+  Android files. They survive release packaging.
 
 ## Verified
 
-Android 16 emulator, debug + Metro: Home (native app bar, hero card, native
-tab bar), Garden, Library (search + native empty state with working action),
-About, plant detail, camera → crop → on-device analysis → result, save to
-garden, swipe-to-delete. `tsc --noEmit`, `expo lint` and `expo-doctor` pass.
-
-The x86_64 release APK was also installed and launched without Metro: the
-native shell, the Material Symbols drawables and the Compose empty state all
-render, so the XML assets survive release packaging.
+Android 16 emulator, debug + Metro: five-item bar, camera action, swipe paging
+between all four pages, light/dark/system (device night mode toggled under the
+app), settings persistence, themed result and plant detail screens, library
+search and empty state. `tsc --noEmit`, `expo lint` and `expo-doctor` pass.

@@ -207,7 +207,7 @@ export default function Settings() {
                     <Text
                         className='mb-2 font-jakarta-bold text-base'
                         style={{ color: colors.ink }}>
-                        About us
+                        About FloraLens
                     </Text>
                     <View
                         className='rounded-2xl p-5'
@@ -215,11 +215,10 @@ export default function Settings() {
                         <Text
                             className='font-vietnam text-base leading-6'
                             style={{ color: colors.ink }}>
-                            FloraLens is built by one person who wanted a plant
-                            identifier that works without a signal. The models
-                            run on your phone, so you can scan in a garden with
-                            no reception, and your photos stay where they were
-                            taken.
+                            FloraLens identifies plants without a signal. The
+                            models run on your phone, so you can scan in a
+                            garden with no reception, and your photos stay
+                            where they were taken.
                         </Text>
                         <Text
                             className='mt-3 font-vietnam text-xs'

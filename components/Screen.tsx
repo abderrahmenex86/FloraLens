@@ -1,8 +1,5 @@
 import { ReactNode, useCallback } from 'react';
-import {
-    SafeAreaView as RNSafeAreaView,
-    useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
 import { styled } from 'nativewind';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View as RNView } from 'react-native';
@@ -43,7 +40,6 @@ export function Screen({
     animate = true,
 }: ScreenProps) {
     const { colors, scheme } = useAppTheme();
-    const insets = useSafeAreaInsets();
     const pathname = usePathname();
 
     const offset = useSharedValue(0);
@@ -75,7 +71,9 @@ export function Screen({
     const top = scheme === 'dark' ? colors.background : '#FFFFFF';
 
     return (
-        <SafeAreaView className='flex-1'>
+        <SafeAreaView
+            className='flex-1'
+            edges={['top', 'left', 'right']}>
             <Animated.View style={[styles.fill, animatedStyle]}>
                 <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
                     <LinearGradient
@@ -104,10 +102,7 @@ export function Screen({
 
                 <View
                     className={`flex-1 px-5 ${className}`}
-                    style={{
-                        paddingTop: 4,
-                        paddingBottom: Math.max(insets.bottom, 8) + 8,
-                    }}>
+                    style={{ paddingTop: 4, paddingBottom: 8 }}>
                     {children}
                 </View>
             </Animated.View>

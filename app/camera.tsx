@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Text,
     View as RNView,
@@ -53,25 +53,46 @@ export default function ScanScreen() {
         };
     }, []);
 
-    const pickImage = async (useCamera: boolean) => {
-        const result =
-            useCamera ?
-                await ImagePicker.launchCameraAsync({
-                    allowsEditing: true,
-                    aspect: [1, 1],
-                    quality: 1,
-                })
-            :   await ImagePicker.launchImageLibraryAsync({
-                    allowsEditing: true,
-                    aspect: [1, 1],
-                    quality: 1,
-                });
+    const pickImage = useCallback(async (useCamera: boolean) => {
+        try {
+            const result =
+                useCamera ?
+                    await ImagePicker.launchCameraAsync({
+                        allowsEditing: true,
+                        aspect: [1, 1],
+                        quality: 1,
+                    })
+                :   await ImagePicker.launchImageLibraryAsync({
+                        allowsEditing: true,
+                        aspect: [1, 1],
+                        quality: 1,
+                    });
 
-        if (!result.canceled) {
-            setPhotoUri(result.assets[0].uri);
-            setAiState('reviewing');
+            if (!result.canceled) {
+                setPhotoUri(result.assets[0].uri);
+                setAiState('reviewing');
+            }
+        } catch (error) {
+            console.error('Image picker failed:', error);
+            ToastAndroid.show(
+                'The camera could not be opened.',
+                ToastAndroid.SHORT
+            );
         }
-    };
+    }, []);
+
+    // Tapping Scan should land in the system camera, with its own gallery
+    // shortcut available from the preview. If the user cancels we fall back to
+    // the picker screen.
+    const autoOpened = useRef(false);
+    useEffect(() => {
+        if (autoOpened.current) return;
+        autoOpened.current = true;
+        const timer = setTimeout(() => {
+            pickImage(true);
+        }, 250);
+        return () => clearTimeout(timer);
+    }, [pickImage]);
 
     const runFullAnalysis = async () => {
         if (!photoUri) return;
@@ -214,7 +235,11 @@ export default function ScanScreen() {
                     />
                     <View className='absolute bottom-0 w-full pb-16 px-8 flex-row justify-between items-center'>
                         <Pressable
-                            onPress={() => setAiState('idle')}
+                            onPress={() => {
+                                setAiState('idle');
+                                setPhotoUri(null);
+                                pickImage(true);
+                            }}
                             accessibilityRole='button'
                             accessibilityLabel='Retake photo'
                             className='bg-black/60 p-5 rounded-full'>
@@ -223,12 +248,23 @@ export default function ScanScreen() {
                                 color='white'
                             />
                         </Pressable>
-                        <Pressable
-                            onPress={runFullAnalysis}
-                            accessibilityRole='button'
-                            accessibilityLabel='Analyze photo'
-                            className='px-8 py-5 rounded-full flex-row items-center gap-3 shadow-lg shadow-black/50'
-                            style={{ backgroundColor: colors.accent }}>
+                        <View className='flex-row items-center gap-3'>
+                            <Pressable
+                                onPress={() => pickImage(false)}
+                                accessibilityRole='button'
+                                accessibilityLabel='Choose another photo from the gallery'
+                                className='bg-black/60 p-5 rounded-full'>
+                                <ImageIcon
+                                    size={26}
+                                    color='white'
+                                />
+                            </Pressable>
+                            <Pressable
+                                onPress={runFullAnalysis}
+                                accessibilityRole='button'
+                                accessibilityLabel='Analyze photo'
+                                className='px-8 py-5 rounded-full flex-row items-center gap-3 shadow-lg shadow-black/50'
+                                style={{ backgroundColor: colors.accent }}>
                             <Check
                                 size={28}
                                 color={colors.onAccent}
@@ -239,7 +275,8 @@ export default function ScanScreen() {
                                 style={{ color: colors.onAccent }}>
                                 Analyze
                             </Text>
-                        </Pressable>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             }

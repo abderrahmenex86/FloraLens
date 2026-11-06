@@ -33,6 +33,8 @@ Five destinations: Home, My scans, Scan, Garden, Library.
 - Home, My scans, Garden and Library are real tabs.
 - Scan is not a tab page. The middle item pushes `/camera`, a full-screen stack
   route with its own close button, so the camera never becomes a swipe target.
+  That route opens the system camera on mount; cancelling falls back to the
+  picker screen, and the review step keeps a gallery button next to Analyze.
 - `components/SwipePager.tsx` handles horizontal swipes between the four tab
   pages. Vertical drags fail the gesture, so lists scroll normally.
 - Each tab page slides in 26 px from its side and fades up over ~240 ms. The

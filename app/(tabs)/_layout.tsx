@@ -13,6 +13,7 @@ export default function HomeLayout() {
             }}
             screenOptions={{
                 headerShown: false,
+                animation: 'none',
             }}>
             <Tabs.Screen
                 name='index'

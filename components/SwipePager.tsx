@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { usePathname, useRouter, type Href } from 'expo-router';
+import { hapticLight } from '@/lib/haptics';
 
 /** Tab order used for horizontal paging. */
 const ORDER: Href[] = ['/', '/scans', '/garden', '/library'];
@@ -30,6 +31,7 @@ export function SwipePager({ children }: { children: ReactNode }) {
 
             const next = event.translationX < 0 ? index + 1 : index - 1;
             if (next >= 0 && next < ORDER.length) {
+                hapticLight();
                 router.navigate(ORDER[next]);
             }
         });

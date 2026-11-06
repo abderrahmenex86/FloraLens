@@ -97,7 +97,7 @@ export default function Settings() {
         :   'Preparing…';
 
     return (
-        <Screen>
+        <Screen animate={false}>
             <View className='flex-row items-center justify-between py-2'>
                 <Text
                     className='font-jakarta-extrabold text-3xl'

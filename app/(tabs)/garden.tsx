@@ -56,7 +56,9 @@ export default function Garden() {
                     style: 'destructive',
                     onPress: () => {
                         removeFromGarden(plant.id);
-                        setGardenPlants(getGardenPlants());
+                        const next = getGardenPlants();
+                        setGardenPlants(next);
+                        syncWateringNotifications(next).catch(() => {});
                     },
                 },
             ],

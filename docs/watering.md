@@ -51,8 +51,10 @@ date the plant was added and `wateringDays` to 7. New saves set both.
 `syncWateringNotifications(plants)` cancels the previous schedule and creates one
 notification per plant (max 40) at 09:00 local on its due date. Overdue plants
 get the next morning. It runs at app start, when the app returns to the
-foreground, after watering, and when the toggle changes. Android gets a
-`watering` notification channel.
+foreground, after watering, after removing a plant, and when the toggle
+changes. Syncs are serialised so two triggers (app start plus a water tap)
+cannot both cancel and schedule, which used to leave duplicate alarms for the
+same plant. Android gets a `watering` notification channel.
 
 Permissions added by the `expo-notifications` plugin: `POST_NOTIFICATIONS`,
 `RECEIVE_BOOT_COMPLETED` and `WAKE_LOCK`. The release manifest keeps the camera

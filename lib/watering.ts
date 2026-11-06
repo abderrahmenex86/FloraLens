@@ -94,13 +94,24 @@ export async function ensureNotificationPermission(): Promise<boolean> {
     return requested.granted;
 }
 
+let syncChain: Promise<void> = Promise.resolve();
+
 /**
  * Rebuilds the scheduled watering reminders. One notification per plant, at
  * 09:00 on its due date; overdue plants get one for the next morning.
+ *
+ * Calls are serialised: two overlapping syncs would both cancel and then both
+ * schedule, leaving duplicate alarms for the same plant.
  */
-export async function syncWateringNotifications(
+export function syncWateringNotifications(
     plants: GardenPlant[],
 ): Promise<void> {
+    const run = syncChain.then(() => runWateringSync(plants));
+    syncChain = run.catch(() => {});
+    return run;
+}
+
+async function runWateringSync(plants: GardenPlant[]): Promise<void> {
     await Notifications.cancelAllScheduledNotificationsAsync();
     if (!remindersEnabled() || plants.length === 0) return;
     if (!(await ensureNotificationPermission())) return;

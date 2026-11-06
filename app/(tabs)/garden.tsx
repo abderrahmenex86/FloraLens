@@ -1,8 +1,8 @@
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Droplets, Sprout, Trash2 } from 'lucide-react-native';
+import { Check, Droplets, Sprout, Trash2 } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { EmptyState } from '../../components/EmptyState';
 import { AppBar } from '../../components/material/AppBar';
 import { Screen } from '../../components/Screen';
@@ -14,6 +14,7 @@ import {
     getGardenPlants,
     getScan,
     removeFromGarden,
+    setWateringDays,
     waterPlant,
 } from '../../lib/storage';
 import { hapticLight } from '../../lib/haptics';
@@ -35,6 +36,7 @@ export default function Garden() {
     const router = useRouter();
     const { colors } = useAppTheme();
     const [gardenPlants, setGardenPlants] = useState<GardenPlant[]>([]);
+    const [editing, setEditing] = useState<GardenPlant | null>(null);
 
     useFocusEffect(
         useCallback(() => {
@@ -66,6 +68,16 @@ export default function Garden() {
         const next = getGardenPlants();
         setGardenPlants(next);
         syncWateringNotifications(next).catch(() => {});
+    };
+
+    const chooseInterval = (days: number) => {
+        if (!editing) return;
+        setWateringDays(editing.id, days);
+        hapticLight();
+        const next = getGardenPlants();
+        setGardenPlants(next);
+        syncWateringNotifications(next).catch(() => {});
+        setEditing(null);
     };
 
     const openPlant = (plant: GardenPlant) => {
@@ -157,16 +169,23 @@ export default function Garden() {
                                                 ' · from scan'
                                             :   ' · from library'}
                                         </Text>
-                                        <Text
-                                            className='mt-0.5 font-vietnam-medium text-sm'
-                                            style={{
-                                                color:
-                                                    wateringStatus(plant).due ?
-                                                        colors.danger
-                                                    :   colors.primary,
-                                            }}>
-                                            {wateringLabel(plant)}
-                                        </Text>
+                                        <Pressable
+                                            onPress={() => setEditing(plant)}
+                                            accessibilityRole='button'
+                                            accessibilityLabel={`Change the watering interval for ${plantInfo.name}`}
+                                            hitSlop={6}>
+                                            <Text
+                                                className='mt-0.5 font-vietnam-medium text-sm'
+                                                style={{
+                                                    color:
+                                                        wateringStatus(plant)
+                                                            .due ?
+                                                            colors.danger
+                                                        :   colors.primary,
+                                                }}>
+                                                {wateringLabel(plant)}
+                                            </Text>
+                                        </Pressable>
                                     </View>
                                     <View className='flex-row items-center gap-2'>
                                         <Pressable
@@ -212,6 +231,78 @@ export default function Garden() {
                     </ScrollView>
                 }
             </SwipePager>
+
+            <Modal
+                visible={editing !== null}
+                transparent
+                animationType='fade'
+                onRequestClose={() => setEditing(null)}>
+                <Pressable
+                    className='flex-1 justify-end'
+                    style={{ backgroundColor: '#00000080' }}
+                    onPress={() => setEditing(null)}>
+                    <Pressable
+                        className='rounded-t-[32px] px-6 pb-8 pt-6'
+                        style={{ backgroundColor: colors.background }}
+                        onPress={(event) => event.stopPropagation()}>
+                        <Text
+                            className='font-jakarta-extrabold text-2xl'
+                            style={{ color: colors.ink }}>
+                            Watering interval
+                        </Text>
+                        <Text
+                            className='mt-1 font-vietnam text-sm'
+                            style={{ color: colors.onSurfaceVariant }}>
+                            {editing ?
+                                PLANT_CLASSES[editing.classIndex]?.name
+                            :   ''}
+                        </Text>
+
+                        <View className='mt-4'>
+                            {[3, 7, 14, 30].map((days) => {
+                                const selected =
+                                    (editing?.wateringDays ?? 7) === days;
+                                return (
+                                    <Pressable
+                                        key={days}
+                                        onPress={() => chooseInterval(days)}
+                                        accessibilityRole='button'
+                                        accessibilityState={{ selected }}
+                                        accessibilityLabel={`Water every ${days} days`}
+                                        className='flex-row items-center justify-between border-b py-4'
+                                        style={{
+                                            borderColor: colors.outline,
+                                        }}>
+                                        <Text
+                                            className='font-vietnam text-base'
+                                            style={{ color: colors.ink }}>
+                                            Every {days} days
+                                        </Text>
+                                        {selected ?
+                                            <Check
+                                                size={20}
+                                                color={colors.primary}
+                                            />
+                                        :   null}
+                                    </Pressable>
+                                );
+                            })}
+                        </View>
+
+                        <Pressable
+                            onPress={() => setEditing(null)}
+                            accessibilityRole='button'
+                            className='mt-5 items-center rounded-2xl py-4'
+                            style={{ backgroundColor: colors.surface }}>
+                            <Text
+                                className='font-jakarta-bold'
+                                style={{ color: colors.ink }}>
+                                Cancel
+                            </Text>
+                        </Pressable>
+                    </Pressable>
+                </Pressable>
+            </Modal>
         </Screen>
     );
 }

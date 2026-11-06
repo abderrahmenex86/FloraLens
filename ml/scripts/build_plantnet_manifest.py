@@ -61,6 +61,14 @@ def main() -> int:
         for row in csv.DictReader(fh):
             rows_by_species[int(row["species_id"])].append(row)
 
+    # The parquet mirror remaps class folders, so resolve files by hash instead
+    # of rebuilding `{split}/{species_id:04d}/{hash}.jpg`.
+    index: dict[str, Path] = {}
+    for path in args.images.rglob("*.jpg"):
+        index[path.stem] = path
+    if not index:
+        raise SystemExit(f"no images under {args.images}")
+
     counts = {sid: len(rows) for sid, rows in rows_by_species.items()}
     selected = [sid for sid, count in counts.items() if count >= args.min_images]
     selected.sort(key=lambda sid: (-counts[sid], sid))
@@ -74,6 +82,7 @@ def main() -> int:
     records: list[str] = []
     kept: Counter[int] = Counter()
     missing = 0
+    split_mismatch = 0
     unreadable = 0
     too_small = 0
 
@@ -88,13 +97,12 @@ def main() -> int:
             split = row["split"]
             if split not in SPLITS:
                 continue
-            path = (
-                args.images
-                / split
-                / f"{species_id:04d}"
-                / f"{row['PN_hash']}.jpg"
-            )
-            if not path.exists():
+
+            resolved = index.get(row["PN_hash"])
+            if resolved is not None and resolved.parts[-3] != split:
+                split_mismatch += 1
+            path = index.get(row["PN_hash"])
+            if path is None:
                 missing += 1
                 continue
 
@@ -175,7 +183,8 @@ def main() -> int:
 
     print(
         f"classes: {len(selected)}  images: {len(records)}  "
-        f"missing: {missing}  unreadable: {unreadable}  too_small: {too_small}"
+        f"missing: {missing}  split_mismatch: {split_mismatch}  "
+        f"unreadable: {unreadable}  too_small: {too_small}"
     )
     print("splits:", dict(by_split))
     print("min/max images per class:", min(kept.values()), max(kept.values()))

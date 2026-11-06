@@ -23,6 +23,7 @@ import {
 import { Screen } from '../components/Screen';
 import { useAppTheme, type ThemeMode } from '@/lib/appTheme';
 import { getGardenPlants } from '@/lib/storage';
+import { seedDemoData } from '@/lib/demoSeed';
 import {
     ensureNotificationPermission,
     remindersEnabled,
@@ -57,8 +58,38 @@ export default function Settings() {
         total: number;
     } | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [seeding, setSeeding] = useState(false);
 
     const refreshPack = () => setPackStatus(getPlantPackStatus());
+
+    const handleSeedDemo = () => {
+        if (seeding) return;
+        Alert.alert(
+            'Fill with demo data?',
+            'This removes the current scans and garden, then adds ten scans and five garden plants.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Fill it',
+                    onPress: async () => {
+                        setSeeding(true);
+                        try {
+                            const count = await seedDemoData();
+                            Alert.alert('Demo ready', `${count} scans added.`);
+                        } catch (seedError) {
+                            console.error('Demo seed failed:', seedError);
+                            Alert.alert(
+                                'Could not fill the app',
+                                'Try again once the models have loaded.',
+                            );
+                        } finally {
+                            setSeeding(false);
+                        }
+                    },
+                },
+            ],
+        );
+    };
 
     const handleReminders = async (next: boolean) => {
         if (next) {
@@ -297,11 +328,17 @@ export default function Settings() {
                             CC BY-SA. The classifiers are trained on GBIF and
                             Pl@ntNet images.
                         </Text>
-                        <Text
-                            className='mt-3 font-vietnam text-xs'
-                            style={{ color: colors.onSurfaceVariant }}>
-                            Version 1.0.0
-                        </Text>
+                        <Pressable
+                            onLongPress={handleSeedDemo}
+                            delayLongPress={800}
+                            accessibilityRole='button'
+                            accessibilityLabel='Version 1.0.0'>
+                            <Text
+                                className='mt-3 font-vietnam text-xs'
+                                style={{ color: colors.onSurfaceVariant }}>
+                                {seeding ? 'Filling demo data…' : 'Version 1.0.0'}
+                            </Text>
+                        </Pressable>
                     </View>
                 </View>
 

@@ -44,7 +44,7 @@ def export_onnx(
         output_names=["logits"],
         opset_version=opset,
         do_constant_folding=True,
-        dynamic_axes=None,
+        dynamic_axes={"input": {0: "batch"}, "logits": {0: "batch"}},
         dynamo=False,
     )
     contract = build_contract(

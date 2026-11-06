@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "reactnativeflora",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#2D5A27",
@@ -15,7 +14,6 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.CAMERA"
@@ -71,7 +69,9 @@
         }
       ],
       "onnxruntime-react-native",
-      "expo-asset"
+      "expo-asset",
+      "expo-image",
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true,

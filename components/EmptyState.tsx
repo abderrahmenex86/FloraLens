@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 import { ScanSearch, SearchX, Sprout, type LucideIcon } from 'lucide-react-native';
-import { colors } from '@/lib/materialTheme';
+import { useAppTheme } from '@/lib/appTheme';
 import type { EmptyStateIcon, EmptyStateProps } from './emptyStateTypes';
 
 const FALLBACK_ICONS: Record<EmptyStateIcon, LucideIcon> = {
@@ -20,6 +20,7 @@ export function EmptyState({
     actionLabel,
     onAction,
 }: EmptyStateProps) {
+    const { colors } = useAppTheme();
     const Icon = FALLBACK_ICONS[iconName];
     return (
         <View

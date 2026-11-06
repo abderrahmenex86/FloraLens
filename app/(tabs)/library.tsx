@@ -1,5 +1,5 @@
 import { radii, sizes } from '@/theme';
-import { colors } from '@/lib/materialTheme';
+import { useAppTheme } from '@/lib/appTheme';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { ChevronRight, Search } from 'lucide-react-native';
@@ -15,6 +15,7 @@ import {
 import { EmptyState } from '../../components/EmptyState';
 import { AppBar } from '../../components/material/AppBar';
 import { Screen } from '../../components/Screen';
+import { SwipePager } from '../../components/SwipePager';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
 
@@ -28,6 +29,7 @@ const ALL_PLANTS = Object.entries(PLANT_CLASSES).map(([id, data]) => ({
 ALL_PLANTS.sort((a, b) => a.name.localeCompare(b.name));
 
 export default function Library() {
+    const { colors } = useAppTheme();
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
@@ -102,7 +104,8 @@ export default function Library() {
     };
 
     return (
-        <Screen className='gap-6'>
+        <Screen className='gap-4'>
+            <SwipePager>
             <AppBar
                 title='Library'
                 subtitle={`Explore ${ALL_PLANTS.length} species`}
@@ -110,11 +113,7 @@ export default function Library() {
 
             <View
                 className='flex-row items-center px-4 py-3 rounded-2xl shadow-sm shadow-black/5'
-                style={{
-                    backgroundColor: colors.surface,
-                    borderWidth: 1,
-                    borderColor: colors.outline,
-                }}>
+                style={{ backgroundColor: colors.surfaceHigh }}>
                 <Search
                     size={20}
                     color={colors.accent}
@@ -150,6 +149,7 @@ export default function Library() {
                     />
                 }
             />
+            </SwipePager>
         </Screen>
     );
 }

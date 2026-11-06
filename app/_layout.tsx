@@ -3,7 +3,7 @@ import '@/global.css';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
+import { AppThemeProvider } from '@/lib/appTheme';
 
 const RootLayout = () => {
     const [fontsLoaded, fontError] = useFonts({
@@ -33,17 +33,27 @@ const RootLayout = () => {
             SplashScreen.hideAsync();
         }
     }, [fontsLoaded, fontError]);
+
     if (!fontsLoaded && !fontError) return null;
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <StatusBar style='dark' />
-            <Stack
-                screenOptions={{
-                    headerShown: false,
-                }}>
-                <Stack.Screen name='(tabs)' />
-                <Stack.Screen name='camera' />
-            </Stack>
+            <AppThemeProvider>
+                <Stack
+                    screenOptions={{
+                        headerShown: false,
+                    }}>
+                    <Stack.Screen name='(tabs)' />
+                    <Stack.Screen
+                        name='camera'
+                        options={{ animation: 'fade' }}
+                    />
+                    <Stack.Screen
+                        name='settings'
+                        options={{ presentation: 'modal' }}
+                    />
+                </Stack>
+            </AppThemeProvider>
         </GestureHandlerRootView>
     );
 };

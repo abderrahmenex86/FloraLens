@@ -1,27 +1,17 @@
-import { radii } from '@/theme';
-import { colors } from '@/lib/materialTheme';
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { ChevronRight, Sprout, Trash2 } from 'lucide-react-native';
-import { styled } from 'nativewind';
+import { Sprout, Trash2 } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
-import {
-    Alert,
-    Pressable,
-    View as RNView,
-    ScrollView,
-    Text,
-} from 'react-native';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { EmptyState } from '../../components/EmptyState';
 import { AppBar } from '../../components/material/AppBar';
 import { Screen } from '../../components/Screen';
+import { SwipePager } from '../../components/SwipePager';
+import { useAppTheme } from '@/lib/appTheme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
 import { getGardenPlants, getScan, removeFromGarden } from '../../lib/storage';
 import type { GardenPlant } from '../../lib/types';
-
-const View = styled(RNView);
 
 function formatDate(timestamp: number): string {
     return new Date(timestamp).toLocaleDateString(undefined, {
@@ -32,6 +22,7 @@ function formatDate(timestamp: number): string {
 
 export default function Garden() {
     const router = useRouter();
+    const { colors } = useAppTheme();
     const [gardenPlants, setGardenPlants] = useState<GardenPlant[]>([]);
 
     useFocusEffect(
@@ -58,19 +49,6 @@ export default function Garden() {
         );
     };
 
-    const renderRightActions = (plant: GardenPlant) => (
-        <Pressable
-            onPress={() => confirmDelete(plant)}
-            accessibilityRole='button'
-            accessibilityLabel='Remove plant from garden'
-            className='bg-red-500 justify-center items-end w-24 mr-1 rounded-3xl mb-3 pr-6'>
-            <Trash2
-                size={24}
-                color='white'
-            />
-        </Pressable>
-    );
-
     const openPlant = (plant: GardenPlant) => {
         if (plant.scanId && getScan(plant.scanId)) {
             router.push(`/result/${plant.scanId}`);
@@ -80,47 +58,46 @@ export default function Garden() {
     };
 
     return (
-        <Screen className='gap-6'>
-            <AppBar
-                title='Garden'
-                subtitle={`${gardenPlants.length} ${gardenPlants.length === 1 ? 'Plant' : 'Plants'} in your greenhouse`}
-            />
+        <Screen>
+            <SwipePager>
+                <AppBar
+                    title='Garden'
+                    subtitle={`${gardenPlants.length} ${gardenPlants.length === 1 ? 'plant' : 'plants'} in your greenhouse`}
+                />
 
-            {gardenPlants.length === 0 ?
-                <View className='flex-1 justify-center pb-10'>
-                    <EmptyState
-                        iconName='sprout'
-                        title='Your garden is empty'
-                        description='Save a plant from a scan, or add one from the library.'
-                        actionLabel='Scan a plant'
-                        onAction={() => router.push('/camera')}
-                    />
-                </View>
-            :   <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 24 }}>
-                    {gardenPlants.map((plant) => {
-                        const plantInfo = PLANT_CLASSES[plant.classIndex] || {
-                            name: 'Unknown Plant',
-                            scientific: 'Unknown',
-                        };
-                        const reference = getPlantCover(plant.classIndex);
-                        const coverImage =
-                            plant.imageUri ? { uri: plant.imageUri } : reference;
+                {gardenPlants.length === 0 ?
+                    <View className='flex-1 justify-center pb-8 pt-6'>
+                        <EmptyState
+                            iconName='sprout'
+                            title='Your garden is empty'
+                            description='Save a plant from a scan, or add one from the library.'
+                            actionLabel='Scan a plant'
+                            onAction={() => router.push('/camera')}
+                        />
+                    </View>
+                :   <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingTop: 12, paddingBottom: 24 }}>
+                        {gardenPlants.map((plant) => {
+                            const plantInfo = PLANT_CLASSES[plant.classIndex] || {
+                                name: 'Unknown Plant',
+                                scientific: 'Unknown',
+                            };
+                            const reference = getPlantCover(plant.classIndex);
+                            const coverImage =
+                                plant.imageUri ?
+                                    { uri: plant.imageUri }
+                                :   reference;
 
-                        return (
-                            <ReanimatedSwipeable
-                                key={plant.id}
-                                renderRightActions={() =>
-                                    renderRightActions(plant)
-                                }>
+                            return (
                                 <Pressable
+                                    key={plant.id}
                                     onPress={() => openPlant(plant)}
                                     accessibilityRole='button'
                                     accessibilityLabel={`Open ${plantInfo.name}`}
-                                    accessibilityHint='Swipe left or long press to remove'
+                                    accessibilityHint='Long press to remove'
                                     onLongPress={() => confirmDelete(plant)}
-                                    className='flex-row items-center p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'
+                                    className='mb-3 flex-row items-center rounded-3xl p-4 active:opacity-80'
                                     style={{ backgroundColor: colors.surface }}>
                                     {coverImage ?
                                         <Image
@@ -128,12 +105,12 @@ export default function Garden() {
                                             style={{
                                                 width: 72,
                                                 height: 72,
-                                                borderRadius: radii.md,
+                                                borderRadius: 16,
                                             }}
                                             contentFit='cover'
                                         />
                                     :   <View
-                                            className='w-[72px] h-[72px] rounded-2xl items-center justify-center'
+                                            className='h-[72px] w-[72px] items-center justify-center rounded-2xl'
                                             style={{
                                                 backgroundColor:
                                                     colors.background,
@@ -144,9 +121,9 @@ export default function Garden() {
                                             />
                                         </View>
                                     }
-                                    <View className='flex-1 ml-4 justify-center'>
+                                    <View className='ml-4 flex-1 justify-center'>
                                         <Text
-                                            className='font-jakarta-bold text-xl mb-0.5'
+                                            className='mb-0.5 font-jakarta-bold text-xl'
                                             numberOfLines={1}
                                             style={{ color: colors.ink }}>
                                             {plantInfo.name}
@@ -162,22 +139,26 @@ export default function Garden() {
                                             :   ' · from library'}
                                         </Text>
                                     </View>
-                                    <View
-                                        className='p-2 rounded-full'
+                                    <Pressable
+                                        onPress={() => confirmDelete(plant)}
+                                        accessibilityRole='button'
+                                        accessibilityLabel={`Remove ${plantInfo.name} from garden`}
+                                        hitSlop={8}
+                                        className='rounded-full p-3'
                                         style={{
                                             backgroundColor: colors.background,
                                         }}>
-                                        <ChevronRight
-                                            size={20}
-                                            color={colors.primary}
+                                        <Trash2
+                                            size={18}
+                                            color={colors.onSurfaceVariant}
                                         />
-                                    </View>
+                                    </Pressable>
                                 </Pressable>
-                            </ReanimatedSwipeable>
-                        );
-                    })}
-                </ScrollView>
-            }
+                            );
+                        })}
+                    </ScrollView>
+                }
+            </SwipePager>
         </Screen>
     );
 }

@@ -5,7 +5,7 @@ import {
     TopAppBar,
 } from '@expo/ui/jetpack-compose';
 import { fillMaxWidth } from '@expo/ui/jetpack-compose/modifiers';
-import { colors, hostTheme } from '@/lib/materialTheme';
+import { useAppTheme } from '@/lib/appTheme';
 import type { AppBarProps } from './appBarTypes';
 
 /**
@@ -13,6 +13,7 @@ import type { AppBarProps } from './appBarTypes';
  * already applies the status bar inset.
  */
 export function AppBar({ title, subtitle }: AppBarProps) {
+    const { colors, hostTheme } = useAppTheme();
     return (
         <Host
             {...hostTheme}

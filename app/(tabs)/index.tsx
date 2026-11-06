@@ -1,30 +1,22 @@
-import { radii, sizes } from '@/theme';
-import { colors } from '@/lib/materialTheme';
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Trash2 } from 'lucide-react-native';
-import { styled } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { Settings } from 'lucide-react-native';
+import { useCallback, useMemo, useState } from 'react';
 import {
-    Alert,
     Pressable,
-    View as RNView,
     ScrollView,
     Text,
+    View,
 } from 'react-native';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { EmptyState } from '../../components/EmptyState';
-import { AppBar } from '../../components/material/AppBar';
-import { HeroCard } from '../../components/material/HeroCard';
 import { Screen } from '../../components/Screen';
+import { SectionHeader } from '../../components/SectionHeader';
+import { SwipePager } from '../../components/SwipePager';
+import { useAppTheme } from '@/lib/appTheme';
+import { getDailyPicks } from '../../lib/dailyPicks';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
-import {
-    deleteScan,
-    getScanHistory,
-} from '../../lib/storage';
+import { getPlantCover } from '../../lib/plantAssets';
+import { getScanHistory } from '../../lib/storage';
 import type { ScanRecord } from '../../lib/types';
-
-const View = styled(RNView);
 
 function formatDate(timestamp: number): string {
     return new Date(timestamp).toLocaleDateString(undefined, {
@@ -35,107 +27,106 @@ function formatDate(timestamp: number): string {
 
 export default function Home() {
     const router = useRouter();
-    const [recentScans, setRecentScans] = useState<ScanRecord[]>([]);
+    const { colors } = useAppTheme();
+    const [recent, setRecent] = useState<ScanRecord[]>([]);
+
+    const picks = useMemo(() => getDailyPicks(3), []);
 
     useFocusEffect(
         useCallback(() => {
-            setRecentScans(getScanHistory());
+            setRecent(getScanHistory().slice(0, 3));
         }, []),
     );
 
-    const confirmDelete = (scan: ScanRecord) => {
-        Alert.alert(
-            'Delete this scan?',
-            'The photo and diagnosis will be removed from your history.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: () => {
-                        deleteScan(scan.id);
-                        setRecentScans(getScanHistory());
-                    },
-                },
-            ],
-        );
-    };
-
-    const renderRightActions = (scan: ScanRecord) => (
-        <Pressable
-            onPress={() => confirmDelete(scan)}
-            accessibilityRole='button'
-            accessibilityLabel='Delete scan'
-            className='bg-red-500 justify-center items-end w-24 mr-1 rounded-3xl mb-3 pr-6'>
-            <Trash2
-                size={24}
-                color='white'
-            />
-        </Pressable>
-    );
-
     return (
-        <Screen className='gap-6'>
-            <AppBar title='FloraLens' />
-
-            <HeroCard
-                title='Identify Plant'
-                onPress={() => router.push('/camera')}
-            />
-
-            <View className='flex-1 gap-4'>
-                <Text
-                    className='text-2xl font-jakarta-bold'
-                    style={{ color: colors.ink }}>
-                    Recent scans
-                </Text>
+        <Screen>
+            <SwipePager>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: 24 }}>
-                    {recentScans.length === 0 ?
-                        <EmptyState
-                            iconName='scan'
-                            title='No scans yet'
-                            description='Scan a leaf to start your history. Everything stays on this device.'
-                            actionLabel='Scan a plant'
-                            onAction={() => router.push('/camera')}
+                    <View className='flex-row items-start justify-between'>
+                        <Text
+                            className='font-jakarta-extrabold text-4xl'
+                            style={{ color: colors.ink }}>
+                            FloraLens
+                        </Text>
+                        <Pressable
+                            onPress={() => router.push('/settings')}
+                            accessibilityRole='button'
+                            accessibilityLabel='Open settings'
+                            hitSlop={10}
+                            className='rounded-full p-2.5 active:opacity-70'
+                            style={{ backgroundColor: colors.surface }}>
+                            <Settings
+                                size={22}
+                                color={colors.ink}
+                            />
+                        </Pressable>
+                    </View>
+
+                    <Text
+                        className='mt-2 font-vietnam text-base leading-6'
+                        style={{ color: colors.onSurfaceVariant }}>
+                        FloraLens identifies plants on your phone. Photos,
+                        scans and your garden never leave the device, and there
+                        is no account to create.
+                    </Text>
+
+                    <View className='mt-8 gap-3'>
+                        <SectionHeader
+                            title='Recent scans'
+                            onPress={() => router.push('/scans')}
+                            actionLabel='See all scans'
                         />
-                    :   recentScans.map((scan) => (
-                            <ReanimatedSwipeable
-                                key={scan.id}
-                                renderRightActions={() =>
-                                    renderRightActions(scan)
-                                }>
+
+                        {recent.length === 0 ?
+                            <View
+                                className='rounded-3xl p-5'
+                                style={{ backgroundColor: colors.surface }}>
+                                <Text
+                                    className='font-jakarta-bold text-base'
+                                    style={{ color: colors.ink }}>
+                                    No scans yet
+                                </Text>
+                                <Text
+                                    className='mt-1 font-vietnam text-sm'
+                                    style={{
+                                        color: colors.onSurfaceVariant,
+                                    }}>
+                                    Your first scan will show up here.
+                                </Text>
+                            </View>
+                        :   recent.map((scan) => (
                                 <Pressable
+                                    key={scan.id}
                                     onPress={() =>
                                         router.push(`/result/${scan.id}`)
                                     }
                                     accessibilityRole='button'
                                     accessibilityLabel={`Open scan of ${PLANT_CLASSES[scan.classIndex]?.name ?? 'unknown plant'}`}
-                                    accessibilityHint='Swipe left or long press to delete'
-                                    onLongPress={() => confirmDelete(scan)}
-                                    className='flex-row items-center p-4 rounded-3xl shadow-sm mb-3 active:opacity-80'
-                                    style={{ backgroundColor: colors.surface }}>
+                                    className='flex-row items-center rounded-3xl p-3 active:opacity-80'
+                                    style={{
+                                        backgroundColor: colors.surface,
+                                    }}>
                                     <Image
                                         source={{ uri: scan.imageUri }}
                                         style={{
-                                            width: sizes.thumbnail,
-                                            height: sizes.thumbnail,
-                                            borderRadius: radii.md,
+                                            width: 56,
+                                            height: 56,
+                                            borderRadius: 14,
                                         }}
                                         contentFit='cover'
                                     />
-                                    <View className='flex-1 ml-4 justify-center'>
+                                    <View className='ml-3 flex-1 justify-center'>
                                         <Text
-                                            className='font-jakarta-bold text-xl'
+                                            className='font-jakarta-bold text-base'
+                                            numberOfLines={1}
                                             style={{ color: colors.ink }}>
-                                            {
-                                                PLANT_CLASSES[scan.classIndex]
-                                                    ?.name ?? 'Unknown plant'
-                                            }
+                                            {PLANT_CLASSES[scan.classIndex]
+                                                ?.name ?? 'Unknown plant'}
                                         </Text>
                                         <Text
-                                            className='font-vietnam text-sm mt-0.5'
+                                            className='mt-0.5 font-vietnam text-xs'
                                             style={{
                                                 color: colors.onSurfaceVariant,
                                             }}>
@@ -146,11 +137,85 @@ export default function Home() {
                                         </Text>
                                     </View>
                                 </Pressable>
-                            </ReanimatedSwipeable>
-                        ))
-                    }
+                            ))
+                        }
+                    </View>
+
+                    <View className='mt-8 gap-3'>
+                        <SectionHeader
+                            title="Today's picks"
+                            onPress={() => router.push('/library')}
+                            actionLabel='Browse the library'
+                        />
+
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            style={{ marginHorizontal: -20 }}
+                            contentContainerStyle={{
+                                gap: 12,
+                                paddingHorizontal: 20,
+                            }}>
+                            {picks.map((plant) => {
+                                const cover = getPlantCover(plant.id);
+                                return (
+                                    <Pressable
+                                        key={plant.id}
+                                        onPress={() =>
+                                            router.push(`/plant/${plant.id}`)
+                                        }
+                                        accessibilityRole='button'
+                                        accessibilityLabel={`Open ${plant.name}`}
+                                        className='active:opacity-80'
+                                        style={{ width: 132 }}>
+                                        {cover ?
+                                            <Image
+                                                source={cover}
+                                                style={{
+                                                    width: 132,
+                                                    height: 132,
+                                                    borderRadius: 20,
+                                                }}
+                                                contentFit='cover'
+                                            />
+                                        :   <View
+                                                className='items-center justify-center rounded-[20px]'
+                                                style={{
+                                                    width: 132,
+                                                    height: 132,
+                                                    backgroundColor:
+                                                        colors.surface,
+                                                }}>
+                                                <Text
+                                                    className='font-jakarta-bold text-2xl'
+                                                    style={{
+                                                        color: colors.primary,
+                                                    }}>
+                                                    {plant.name.charAt(0)}
+                                                </Text>
+                                            </View>
+                                        }
+                                        <Text
+                                            className='mt-2 font-jakarta-bold text-sm'
+                                            numberOfLines={1}
+                                            style={{ color: colors.ink }}>
+                                            {plant.name}
+                                        </Text>
+                                        <Text
+                                            className='mt-0.5 font-vietnam text-xs'
+                                            numberOfLines={1}
+                                            style={{
+                                                color: colors.onSurfaceVariant,
+                                            }}>
+                                            {plant.scientific}
+                                        </Text>
+                                    </Pressable>
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
                 </ScrollView>
-            </View>
+            </SwipePager>
         </Screen>
     );
 }

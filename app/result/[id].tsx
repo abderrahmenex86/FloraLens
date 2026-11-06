@@ -23,7 +23,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getPlantImages } from '../../lib/plantAssets';
 
-import { colors } from '@/lib/materialTheme';
+import { useAppTheme, withAlpha } from '@/lib/appTheme';
 import { radii, spacing } from '@/theme';
 import { DISEASE_CLASSES, PEST_CLASSES } from '../../lib/healthClasses';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
@@ -73,31 +73,43 @@ function legacyScan(): ScanRecord | null {
 
 function MissingScan() {
     const router = useRouter();
+    const { colors } = useAppTheme();
     return (
-        <View className='flex-1 bg-[#F4F7F2] items-center justify-center p-8 gap-4'>
-            <StatusBar style='dark' />
+        <View
+            className='flex-1 items-center justify-center gap-4 p-8'
+            style={{ backgroundColor: colors.background }}>
             <ShieldAlert
                 size={48}
                 color={colors.danger}
             />
-            <Text className='text-2xl font-jakarta-bold text-[#1A1C19] text-center'>
+            <Text
+                className='text-center font-jakarta-bold text-2xl'
+                style={{ color: colors.ink }}>
                 This scan is no longer available
             </Text>
-            <Text className='font-vietnam text-[#1A1C19]/70 text-center'>
+            <Text
+                className='text-center font-vietnam'
+                style={{ color: colors.onSurfaceVariant }}>
                 It may have been deleted, or the app was cleared. Start a new
                 scan, or go back to your history.
             </Text>
             <Pressable
                 onPress={() => router.replace('/')}
                 accessibilityRole='button'
-                className='bg-[#2D5A27] px-6 py-4 rounded-2xl'>
-                <Text className='font-jakarta-bold text-white'>Go home</Text>
+                className='rounded-2xl px-6 py-4'
+                style={{ backgroundColor: colors.primary }}>
+                <Text
+                    className='font-jakarta-bold'
+                    style={{ color: colors.onPrimary }}>
+                    Go home
+                </Text>
             </Pressable>
         </View>
     );
 }
 
 export default function ResultScreen() {
+    const { colors } = useAppTheme();
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const params = useLocalSearchParams<{ id?: string | string[] }>();
@@ -170,12 +182,14 @@ export default function ResultScreen() {
     };
 
     return (
-        <View className='flex-1 bg-[#F4F7F2]'>
+        <View className='flex-1'
+            style={{ backgroundColor: colors.background }}>
             <StatusBar style='light' />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: spacing.scrollBottom }}>
-                <View className='h-[420px] w-full relative bg-[#2D5A27]'>
+                <View className='relative h-[420px] w-full'
+                    style={{ backgroundColor: colors.primary }}>
                     <Image
                         source={{ uri: scan.imageUri }}
                         style={{ flex: 1 }}
@@ -202,17 +216,26 @@ export default function ResultScreen() {
                     </Pressable>
                 </View>
 
-                <View className='bg-[#F4F7F2] -mt-10 rounded-t-[40px] p-8 px-6 flex-1'>
+                <View className='-mt-10 flex-1 rounded-t-[40px] px-6 p-8'
+                    style={{ backgroundColor: colors.background }}>
                     <View className='flex-row justify-between items-start mb-4'>
                         <View className='flex-1 pr-4'>
-                            <Text className='text-4xl font-jakarta-extrabold text-[#1A1C19] mb-1'>
+                            <Text className='mb-1 font-jakarta-extrabold text-4xl'
+                                style={{ color: colors.ink }}>
                                 {plantInfo.name}
                             </Text>
-                            <Text className='text-lg font-vietnam-medium text-[#2D5A27] italic'>
+                            <Text className='font-vietnam-medium text-lg italic'
+                                style={{ color: colors.primary }}>
                                 {plantInfo.scientific}
                             </Text>
                             <Text
-                                className={`font-vietnam-bold mt-2 ${uncertain ? 'text-[#1A1C19]/70' : 'text-[#2D5A27]'}`}>
+                                className='mt-2 font-vietnam-bold'
+                                style={{
+                                    color:
+                                        uncertain ?
+                                            colors.onSurfaceVariant
+                                        :   colors.primary,
+                                }}>
                                 {isManualSelection ?
                                     'You selected this'
                                 : uncertain ?
@@ -220,7 +243,10 @@ export default function ResultScreen() {
                                 :   `${formatConfidence(mainMatch.confidenceScore)} match`}
                             </Text>
                             {uncertain && (
-                                <Text className='font-vietnam text-[#1A1C19]/60 mt-1 text-sm'>
+                                <Text className='mt-1 font-vietnam text-sm'
+                                    style={{
+                                        color: colors.onSurfaceVariant,
+                                    }}>
                                     This plant may not be in the library. Try a
                                     close-up of one leaf in good light.
                                 </Text>
@@ -234,11 +260,17 @@ export default function ResultScreen() {
                                     'Already saved to garden'
                                 :   'Save to garden'
                             }
-                            className={`p-4 rounded-full ${isSavedToGarden ? 'bg-[#2D5A27]' : 'bg-[#84B026]/10'}`}>
+                            className='rounded-full p-4'
+                            style={{
+                                backgroundColor:
+                                    isSavedToGarden ?
+                                        colors.primary
+                                    :   withAlpha(colors.accent, '1A'),
+                            }}>
                             {isSavedToGarden ?
                                 <BookmarkCheck
                                     size={28}
-                                    color={colors.background}
+                                    color={colors.onPrimary}
                                 />
                             :   <BookmarkPlus
                                     size={28}
@@ -248,15 +280,18 @@ export default function ResultScreen() {
                         </Pressable>
                     </View>
 
-                    <View className='bg-[#EAF1E8] p-5 rounded-3xl gap-4 shadow-sm shadow-black/5 mb-8'>
+                    <View className='mb-8 gap-4 rounded-3xl p-5'
+                        style={{ backgroundColor: colors.surface }}>
                         <View className='flex-row items-center gap-4'>
-                            <View className='bg-[#EAF1E8] p-3 rounded-full'>
+                            <View className='rounded-full p-3'
+                                style={{ backgroundColor: colors.surfaceHigh }}>
                                 <Sun
                                     size={20}
                                     color={colors.primary}
                                 />
                             </View>
-                            <Text className='flex-1 font-vietnam text-[#1A1C19]'>
+                            <Text className='flex-1 font-vietnam'
+                                style={{ color: colors.ink }}>
                                 {plantInfo.care || 'Provide adequate care.'}
                             </Text>
                         </View>
@@ -264,10 +299,12 @@ export default function ResultScreen() {
 
                     {plantMatches.length > 1 && (
                         <>
-                            <Text className='text-lg font-jakarta-bold text-[#1A1C19] mb-4'>
+                            <Text className='mb-4 font-jakarta-bold text-lg'
+                                style={{ color: colors.ink }}>
                                 Not the right plant?
                             </Text>
-                            <View className='bg-[#EAF1E8] rounded-3xl p-2 shadow-sm shadow-black/5 mb-8'>
+                            <View className='mb-8 rounded-3xl p-2'
+                                style={{ backgroundColor: colors.surface }}>
                                 {plantMatches.map((alt, index) => {
                                     if (index === selectedPlantIdx) return null;
                                     const altData = PLANT_CLASSES[alt.classIndex];
@@ -280,19 +317,29 @@ export default function ResultScreen() {
                                             accessibilityRole='button'
                                             accessibilityLabel={`Select ${altData?.name ?? 'unknown plant'}`}
                                             className='flex-row items-center p-3 active:opacity-50'>
-                                            <View className='bg-[#F4F7F2] p-2 rounded-full mr-3'>
+                                            <View className='mr-3 rounded-full p-2'
+                                                style={{
+                                                    backgroundColor:
+                                                        colors.background,
+                                                }}>
                                                 <Search
                                                     size={18}
                                                     color={colors.accent}
                                                 />
                                             </View>
                                             <View className='flex-1'>
-                                                <Text className='font-jakarta-bold text-[#1A1C19]'>
+                                                <Text className='font-jakarta-bold'
+                                                    style={{
+                                                        color: colors.ink,
+                                                    }}>
                                                     {altData?.name ??
                                                         'Unknown plant'}
                                                 </Text>
                                             </View>
-                                            <Text className='font-vietnam-bold text-[#2D5A27]'>
+                                            <Text className='font-vietnam-bold'
+                                                style={{
+                                                    color: colors.primary,
+                                                }}>
                                                 {formatConfidence(
                                                     alt.confidenceScore,
                                                 )}
@@ -306,7 +353,8 @@ export default function ResultScreen() {
 
                     {references.length > 0 && (
                         <>
-                            <Text className='text-lg font-jakarta-bold text-[#1A1C19] mb-3'>
+                            <Text className='mb-3 font-jakarta-bold text-lg'
+                                style={{ color: colors.ink }}>
                                 Reference photos
                             </Text>
                             <ScrollView
@@ -330,11 +378,13 @@ export default function ResultScreen() {
                         </>
                     )}
 
-                    <Text className='text-2xl font-jakarta-bold text-[#1A1C19] mb-4 mt-4'>
+                    <Text className='mb-4 mt-4 font-jakarta-bold text-2xl'
+                        style={{ color: colors.ink }}>
                         Diagnostics
                     </Text>
 
-                    <View className='bg-[#EAF1E8] p-5 rounded-3xl shadow-sm shadow-black/5 mb-4 border border-[#F4F7F2]'>
+                    <View className='mb-4 rounded-3xl p-5'
+                        style={{ backgroundColor: colors.surface }}>
                         <View className='flex-row items-center gap-3 mb-4'>
                             {disease?.hasDisease ?
                                 <ShieldAlert
@@ -346,12 +396,14 @@ export default function ResultScreen() {
                                     color={colors.accent}
                                 />
                             }
-                            <Text className='font-jakarta-bold text-xl text-[#1A1C19]'>
+                            <Text className='font-jakarta-bold text-xl'
+                                style={{ color: colors.ink }}>
                                 Disease check
                             </Text>
                         </View>
                         {!disease ?
-                            <Text className='font-vietnam text-[#1A1C19]/70'>
+                            <Text className='font-vietnam'
+                            style={{ color: colors.onSurfaceVariant }}>
                                 Not available for this saved scan.
                             </Text>
                         : disease.hasDisease ?
@@ -368,33 +420,42 @@ export default function ResultScreen() {
                                         contentFit='contain'
                                     />
                                 )}
-                                <Text className='font-jakarta-bold text-[#E25A38] text-lg mb-1 mt-4'>
+                                <Text className='mb-1 mt-4 font-jakarta-bold text-lg'
+                                    style={{ color: colors.danger }}>
                                     {
                                         DISEASE_CLASSES[
                                             disease.diseaseClassIndex
                                         ]?.name
                                     }
                                 </Text>
-                                <Text className='font-vietnam text-[#1A1C19]/70 leading-relaxed'>
+                                <Text className='font-vietnam leading-relaxed'
+                                    style={{
+                                        color: colors.onSurfaceVariant,
+                                    }}>
                                     {
                                         DISEASE_CLASSES[
                                             disease.diseaseClassIndex
                                         ]?.treatment
                                     }
                                 </Text>
-                                <Text className='font-vietnam text-[#1A1C19]/60 mt-2 text-sm'>
+                                <Text className='mt-2 font-vietnam text-sm'
+                                    style={{
+                                        color: colors.onSurfaceVariant,
+                                    }}>
                                     About{' '}
                                     {Math.round(disease.severity * 100)}% of the
                                     image shows this pattern.
                                 </Text>
                             </>
-                        :   <Text className='font-vietnam text-[#1A1C19]/70'>
+                        :   <Text className='font-vietnam'
+                            style={{ color: colors.onSurfaceVariant }}>
                                 No significant disease markers detected.
                             </Text>
                         }
                     </View>
 
-                    <View className='bg-[#EAF1E8] p-5 rounded-3xl shadow-sm shadow-black/5 mb-10 border border-[#F4F7F2]'>
+                    <View className='mb-10 rounded-3xl p-5'
+                        style={{ backgroundColor: colors.surface }}>
                         <View className='flex-row items-center gap-3 mb-4'>
                             {pest && pest.confidenceScore >= PEST_CONFIDENCE ?
                                 <Bug
@@ -406,24 +467,31 @@ export default function ResultScreen() {
                                     color={colors.accent}
                                 />
                             }
-                            <Text className='font-jakarta-bold text-xl text-[#1A1C19]'>
+                            <Text className='font-jakarta-bold text-xl'
+                                style={{ color: colors.ink }}>
                                 Pest check
                             </Text>
                         </View>
                         {!pest ?
-                            <Text className='font-vietnam text-[#1A1C19]/70'>
+                            <Text className='font-vietnam'
+                            style={{ color: colors.onSurfaceVariant }}>
                                 Not available for this saved scan.
                             </Text>
                         : pest.confidenceScore >= PEST_CONFIDENCE ?
                             <>
-                                <Text className='font-jakarta-bold text-[#E25A38] text-lg mb-1'>
+                                <Text className='mb-1 font-jakarta-bold text-lg'
+                                    style={{ color: colors.danger }}>
                                     {PEST_CLASSES[pest.classIndex]?.name}
                                 </Text>
-                                <Text className='font-vietnam text-[#1A1C19]/70 leading-relaxed'>
+                                <Text className='font-vietnam leading-relaxed'
+                                    style={{
+                                        color: colors.onSurfaceVariant,
+                                    }}>
                                     {PEST_CLASSES[pest.classIndex]?.treatment}
                                 </Text>
                             </>
-                        :   <Text className='font-vietnam text-[#1A1C19]/70'>
+                        :   <Text className='font-vietnam'
+                            style={{ color: colors.onSurfaceVariant }}>
                                 No pests detected with high confidence.
                             </Text>
                         }

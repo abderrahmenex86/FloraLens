@@ -12,12 +12,13 @@ import {
     padding,
     weight,
 } from '@expo/ui/jetpack-compose/modifiers';
-import { colors, hostTheme, withAlpha } from '@/lib/materialTheme';
+import { useAppTheme, withAlpha } from '@/lib/appTheme';
 import type { HeroCardProps } from './heroCardTypes';
 import CameraIcon from '@expo/material-symbols/photo_camera.xml';
 
 /** Native Material 3 primary action card. */
 export function HeroCard({ title, onPress }: HeroCardProps) {
+    const { colors, hostTheme } = useAppTheme();
     return (
         <Host
             {...hostTheme}

@@ -11,7 +11,7 @@ import {
     fillMaxWidth,
     padding,
 } from '@expo/ui/jetpack-compose/modifiers';
-import { colors, hostTheme } from '@/lib/materialTheme';
+import { useAppTheme } from '@/lib/appTheme';
 import type { EmptyStateIcon, EmptyStateProps } from './emptyStateTypes';
 import ScanIcon from '@expo/material-symbols/center_focus_strong.xml';
 import SproutIcon from '@expo/material-symbols/potted_plant.xml';
@@ -37,6 +37,7 @@ export function EmptyState({
     actionLabel,
     onAction,
 }: EmptyStateProps) {
+    const { colors, hostTheme } = useAppTheme();
     return (
         <Host
             {...hostTheme}

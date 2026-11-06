@@ -22,12 +22,13 @@ import {
 } from 'lucide-react-native';
 import { mlPipeline } from '../lib/mlPipeline';
 import { saveScan } from '../lib/storage';
-import { colors, withAlpha } from '@/lib/materialTheme';
+import { useAppTheme, withAlpha } from '@/lib/appTheme';
 import { StatusBar } from 'expo-status-bar';
 
 const View = styled(RNView);
 
 export default function ScanScreen() {
+    const { colors } = useAppTheme();
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const [aiState, setAiState] = useState<'idle' | 'reviewing' | 'analyzing'>(
@@ -165,9 +166,11 @@ export default function ScanScreen() {
                         style={{ backgroundColor: colors.primary }}>
                         <CameraIcon
                             size={24}
-                            color='white'
+                            color={colors.onPrimary}
                         />
-                        <Text className='font-jakarta-bold text-white text-lg'>
+                        <Text
+                            className='font-jakarta-bold text-lg'
+                            style={{ color: colors.onPrimary }}>
                             Open Camera
                         </Text>
                     </Pressable>
@@ -184,15 +187,21 @@ export default function ScanScreen() {
                     </Pressable>
                 </View>
             : aiState === 'analyzing' ?
-                <View className='flex-1 items-center justify-center p-8 gap-6 bg-[#F4F7F2]'>
+                <View
+                    className='flex-1 items-center justify-center gap-6 p-8'
+                    style={{ backgroundColor: colors.background }}>
                     <ActivityIndicator
                         size='large'
                         color={colors.primary}
                     />
-                    <Text className='text-3xl font-jakarta-bold text-[#1A1C19]'>
+                    <Text
+                        className='font-jakarta-bold text-3xl'
+                        style={{ color: colors.ink }}>
                         Running Diagnostics
                     </Text>
-                    <Text className='font-vietnam text-[#1A1C19]/70 text-center'>
+                    <Text
+                        className='text-center font-vietnam'
+                        style={{ color: colors.onSurfaceVariant }}>
                         Classifying species, pests, and segmenting diseases
                         locally.
                     </Text>
@@ -222,10 +231,12 @@ export default function ScanScreen() {
                             style={{ backgroundColor: colors.accent }}>
                             <Check
                                 size={28}
-                                color='white'
+                                color={colors.onAccent}
                                 strokeWidth={3}
                             />
-                            <Text className='font-jakarta-bold text-white text-xl'>
+                            <Text
+                                className='font-jakarta-bold text-xl'
+                                style={{ color: colors.onAccent }}>
                                 Analyze
                             </Text>
                         </Pressable>

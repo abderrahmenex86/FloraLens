@@ -19,16 +19,16 @@ export default function HomeLayout() {
                 options={{ title: 'Home' }}
             />
             <Tabs.Screen
+                name='scans'
+                options={{ title: 'My scans' }}
+            />
+            <Tabs.Screen
                 name='garden'
                 options={{ title: 'Garden' }}
             />
             <Tabs.Screen
                 name='library'
                 options={{ title: 'Library' }}
-            />
-            <Tabs.Screen
-                name='about'
-                options={{ title: 'About' }}
             />
         </Tabs>
     );

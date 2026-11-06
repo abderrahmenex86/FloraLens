@@ -1,10 +1,11 @@
 import { Pressable, Text, View } from 'react-native';
 import { Camera } from 'lucide-react-native';
-import { colors, withAlpha } from '@/lib/materialTheme';
+import { useAppTheme, withAlpha } from '@/lib/appTheme';
 import type { HeroCardProps } from './heroCardTypes';
 
 /** Non-Android primary action card. Android uses Compose (`HeroCard.android.tsx`). */
 export function HeroCard({ title, onPress }: HeroCardProps) {
+    const { colors } = useAppTheme();
     return (
         <Pressable
             onPress={onPress}

@@ -38,13 +38,27 @@ def session() -> requests.Session:
     return s
 
 
-def match_taxon(s: requests.Session, name: str) -> dict | None:
-    response = s.get(f"{API}/species/match", params={"name": name}, timeout=30)
-    response.raise_for_status()
-    payload = response.json()
-    if payload.get("matchType") in {"NONE", "HIGHERRANK"}:
-        return None
-    return payload
+def match_taxon(
+    s: requests.Session, name: str, rank: str | None = None
+) -> dict | None:
+    attempts: list[dict[str, str]] = []
+    if rank:
+        attempts.append({"name": name, "rank": rank})
+    attempts.append({"name": name})
+    # Hybrids are written with a multiplication sign that the matcher rejects.
+    if "\u00d7" in name:
+        attempts.append({"name": name.replace("\u00d7", "").strip()})
+        attempts.append({"name": " ".join(name.replace("\u00d7", "").split())})
+
+    for params in attempts:
+        response = s.get(f"{API}/species/match", params=params, timeout=30)
+        response.raise_for_status()
+        payload = response.json()
+        if payload.get("matchType") not in {"NONE", "HIGHERRANK"} and payload.get(
+            "usageKey"
+        ):
+            return payload
+    return None
 
 
 def search_occurrences(
@@ -117,7 +131,7 @@ def main() -> int:
             class_id = int(entry["class_id"])
             name = entry["scientific_name"]
 
-            match = match_taxon(s, name)
+            match = match_taxon(s, name, entry.get("rank"))
             if not match:
                 print(f"[skip] {name}: no GBIF match")
                 continue

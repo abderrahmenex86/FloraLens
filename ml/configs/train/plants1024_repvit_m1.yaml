@@ -1,11 +1,11 @@
 # 1,023-class model: 1,000 Pl@ntNet species + 23 GBIF garden/houseplant taxa.
 model_name: repvit_m1.dist_in1k
 class_list: shared/classes/plants_1024.yaml
-data_manifest: data/processed/combined/manifest.jsonl
+data_manifest: data/processed/combined/manifest_256.jsonl
 output_dir: ml/runs/plants1024_repvit_m1
 input_size: 224
 epochs: 12
-batch_size: 128
+batch_size: 256
 lr_head: 0.001
 lr_backbone: 0.0001
 weight_decay: 0.05
@@ -13,8 +13,8 @@ label_smoothing: 0.1
 drop_rate: 0.1
 drop_path_rate: 0.05
 class_balance: true
-num_workers: 12
-prefetch_factor: 4
+num_workers: 14
+prefetch_factor: 8
 channels_last: true
 compile: false
 seed: 42

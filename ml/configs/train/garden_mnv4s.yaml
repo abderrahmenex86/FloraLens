@@ -5,7 +5,7 @@ data_manifest: data/processed/garden_gbif/manifest_256.jsonl
 output_dir: ml/runs/garden_mnv4s
 input_size: 224
 epochs: 40
-batch_size: 128
+batch_size: 256
 lr_head: 0.001
 lr_backbone: 0.0001
 weight_decay: 0.05
@@ -14,7 +14,7 @@ drop_rate: 0.1
 drop_path_rate: 0.05
 class_balance: true
 num_workers: 14
-prefetch_factor: 2
+prefetch_factor: 1
 channels_last: true
 compile: false
 seed: 42

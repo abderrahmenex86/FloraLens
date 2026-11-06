@@ -71,7 +71,7 @@ needs to be.
 - `allowBackup=false`.
 - Home and empty state render in a standalone release build with no Metro.
 - Pixel 8a (arm64, Android 17): installed the 166 MB release, cold start
-  **0.5–1.0 s**, PSS **96 MB** at home.
+  **0.5–1.0 s**, PSS **96 MB** at home. (SDK 54 build.)
 - Camera permission prompt, system camera, crop, on-device analysis and result
   all work from the release build.
 - The camera permission dialog still says "take pictures and record video"
@@ -105,6 +105,18 @@ garden, and swipe-to-delete. `tsc --noEmit`, `expo lint` and `expo-doctor`
 The x86_64 **release** build was installed without Metro and renders the native
 Material You shell, including the Material Symbols XML drawables and the
 Compose empty state, so the asset path works outside the dev server.
+
+SDK 58 + Material You build on the Pixel 8a (Android 17):
+
+- Cold start **0.42–0.47 s**; PSS **197 MB** at home with two scans stored
+  (the 96 MB figure above is the SDK 54 build on a clean install).
+- Native `TopAppBar`, `NavigationBar`, Compose cards and Material Symbols all
+  render in release.
+- Full flow exercised on device: system camera → crop → on-device analysis →
+  result, with the ONNX models loaded from the bundled assets on arm64.
+- PSS after an analysis run is ~675 MB: the three ONNX sessions stay resident
+  for the life of the process and expo-image keeps the decoded photos cached.
+  Worth revisiting if memory becomes a constraint.
 
 ## Pending
 

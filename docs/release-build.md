@@ -126,6 +126,7 @@ SDK 58 + Material You build on the Pixel 8a (Android 17):
 - `@expo/ui` Material You shell is in (see `docs/material-you.md`), including
   wallpaper colors, theme modes and the five-item bar. Remaining polish:
   Compose cards/chips on the detail screens.
-- Rebuild the arm64 APK after the shell pass; the build on the phone predates
-  the icon, theme modes and new navigation.
+- The arm64 APK was rebuilt after the shell pass (162 MB, `application-icon`
+  points at the new adaptive icon) and is waiting to be installed on the
+  phone.
 - Release keystore, R8, store listing, privacy policy.

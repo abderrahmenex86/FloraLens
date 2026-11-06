@@ -1,0 +1,209 @@
+version: 2026.11-insects
+target: insects
+classes:
+- class_id: 0
+  scientific_name: Aphididae
+  common_name: Aphids
+  rank: family
+  family: Aphididae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 1
+  scientific_name: Coccinellidae
+  common_name: Ladybirds
+  rank: family
+  family: Coccinellidae
+  role: beneficial
+  sources:
+  - gbif
+  status: active
+- class_id: 2
+  scientific_name: Chrysopidae
+  common_name: Green lacewings
+  rank: family
+  family: Chrysopidae
+  role: beneficial
+  sources:
+  - gbif
+  status: active
+- class_id: 3
+  scientific_name: Syrphidae
+  common_name: Hoverflies
+  rank: family
+  family: Syrphidae
+  role: beneficial
+  sources:
+  - gbif
+  status: active
+- class_id: 4
+  scientific_name: Apidae
+  common_name: Bees
+  rank: family
+  family: Apidae
+  role: beneficial
+  sources:
+  - gbif
+  status: active
+- class_id: 5
+  scientific_name: Aleyrodidae
+  common_name: Whiteflies
+  rank: family
+  family: Aleyrodidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 6
+  scientific_name: Pseudococcidae
+  common_name: Mealybugs
+  rank: family
+  family: Pseudococcidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 7
+  scientific_name: Coccoidea
+  common_name: Scale insects
+  rank: superfamily
+  family: Coccoidea
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 8
+  scientific_name: Thysanoptera
+  common_name: Thrips
+  rank: order
+  family: Thysanoptera
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 9
+  scientific_name: Tetranychidae
+  common_name: Spider mites
+  rank: family
+  family: Tetranychidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 10
+  scientific_name: Formicidae
+  common_name: Ants
+  rank: family
+  family: Formicidae
+  role: neutral
+  sources:
+  - gbif
+  status: active
+- class_id: 11
+  scientific_name: Araneae
+  common_name: Spiders
+  rank: order
+  family: Araneae
+  role: beneficial
+  sources:
+  - gbif
+  status: active
+- class_id: 12
+  scientific_name: Gastropoda
+  common_name: Snails and slugs
+  rank: class
+  family: Gastropoda
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 13
+  scientific_name: Noctuidae
+  common_name: Owlet moths
+  rank: family
+  family: Noctuidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 14
+  scientific_name: Pieridae
+  common_name: Whites and yellows
+  rank: family
+  family: Pieridae
+  role: neutral
+  sources:
+  - gbif
+  status: active
+- class_id: 15
+  scientific_name: Curculionidae
+  common_name: Weevils
+  rank: family
+  family: Curculionidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 16
+  scientific_name: Cicadellidae
+  common_name: Leafhoppers
+  rank: family
+  family: Cicadellidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 17
+  scientific_name: Miridae
+  common_name: Plant bugs
+  rank: family
+  family: Miridae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 18
+  scientific_name: Pentatomidae
+  common_name: Stink bugs
+  rank: family
+  family: Pentatomidae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 19
+  scientific_name: Acrididae
+  common_name: Grasshoppers
+  rank: family
+  family: Acrididae
+  role: pest
+  sources:
+  - gbif
+  status: active
+- class_id: 20
+  scientific_name: Blattodea
+  common_name: Cockroaches and termites
+  rank: order
+  family: Blattodea
+  role: neutral
+  sources:
+  - gbif
+  status: active
+- class_id: 21
+  scientific_name: Dermaptera
+  common_name: Earwigs
+  rank: order
+  family: Dermaptera
+  role: neutral
+  sources:
+  - gbif
+  status: active
+- class_id: 22
+  scientific_name: no_insect
+  common_name: No insect
+  rank: complex
+  role: neutral
+  sources:
+  - plantnet300k
+  status: active

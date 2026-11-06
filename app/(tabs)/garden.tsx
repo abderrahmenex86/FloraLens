@@ -7,6 +7,7 @@ import { EmptyState } from '../../components/EmptyState';
 import { AppBar } from '../../components/material/AppBar';
 import { Screen } from '../../components/Screen';
 import { SwipePager } from '../../components/SwipePager';
+import { WateringCalendar } from '../../components/WateringCalendar';
 import { useAppTheme } from '@/lib/appTheme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
@@ -109,6 +110,18 @@ export default function Garden() {
                 :   <ScrollView
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{ paddingTop: 12, paddingBottom: 24 }}>
+                        <WateringCalendar
+                            plants={gardenPlants}
+                            onWater={handleWater}
+                            onOpen={openPlant}
+                        />
+
+                        <Text
+                            className='mb-3 mt-2 font-jakarta-bold text-2xl'
+                            style={{ color: colors.ink }}>
+                            In the garden
+                        </Text>
+
                         {gardenPlants.map((plant) => {
                             const plantInfo = PLANT_CLASSES[plant.classIndex] || {
                                 name: 'Unknown Plant',

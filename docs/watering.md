@@ -19,7 +19,9 @@ date the plant was added and `wateringDays` to 7. New saves set both.
 
 `lib/watering.ts`:
 
-- `dueAt(plant)` — `lastWateredAt + wateringDays`.
+- `dueAt(plant)` — the local midnight of `lastWateredAt + wateringDays`, so
+  intervals are calendar days rather than exact 24-hour blocks. `startOfDay`
+  does the normalisation and keeps DST from shifting the date.
 - `wateringStatus(plant)` — `{ due, inDays, overdueDays }`.
 - `wateringLabel(plant)` — "Water today", "Water in N days", or
   "Water now · Nd overdue".
@@ -32,6 +34,11 @@ date the plant was added and `wateringDays` to 7. New saves set both.
   reminders). It fills with the primary colour while the plant is due. Tapping
   the status opens a sheet with 3, 7, 14 and 30-day intervals; the choice is
   stored per plant and reschedules that plant's reminder.
+- **Garden calendar**: a month grid above the garden list. Days with at least
+  one plant are filled with a dot; overdue plants are grouped under today.
+  Tapping a day lists the plants due that day with a quick-water button. The
+  month can be paged with the arrows. Tapping a plant opens its scan or
+  library entry.
 - **Home**: a "Needs water" section appears above Recent scans only when
   something is due, with the same quick-water button. The section header links
   to the garden.

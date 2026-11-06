@@ -15,10 +15,19 @@ export function plantName(plant: GardenPlant): string {
     return PLANT_CLASSES[plant.classIndex]?.name ?? 'Your plant';
 }
 
+/** Local midnight for a timestamp; watering is a calendar-day promise. */
+export function startOfDay(at: number): number {
+    const date = new Date(at);
+    date.setHours(0, 0, 0, 0);
+    return date.getTime();
+}
+
 export function dueAt(plant: GardenPlant): number {
     const last = plant.lastWateredAt ?? plant.timestamp;
     const days = plant.wateringDays ?? DEFAULT_WATERING_DAYS;
-    return last + days * DAY_MS;
+    const due = new Date(last);
+    due.setDate(due.getDate() + days);
+    return startOfDay(due.getTime());
 }
 
 export type WateringStatus = {

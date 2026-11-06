@@ -136,6 +136,7 @@ export default function Library() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
+                style={{ marginTop: 12 }}
                 contentContainerStyle={{ paddingBottom: 24 }}
                 keyboardShouldPersistTaps='handled'
                 initialNumToRender={15}

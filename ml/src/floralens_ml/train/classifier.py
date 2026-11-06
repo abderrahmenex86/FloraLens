@@ -54,6 +54,9 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
 
     _seed_everything(int(config.get("seed", 42)))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if device.type == "cuda":
+        torch.backends.cudnn.benchmark = True
+    torch.set_float32_matmul_precision("high")
     output_dir = ensure_dir(config["output_dir"])
     class_list = load_class_list(config["class_list"])
     class_to_index = class_list.label_map
@@ -81,22 +84,29 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
         weights = class_weights(train_dataset.records, class_to_index)
         sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
         shuffle = False
+    workers = int(config.get("num_workers", 8))
+    prefetch = int(config.get("prefetch_factor", 4))
+    loader_kwargs: dict[str, Any] = {
+        "num_workers": workers,
+        "pin_memory": device.type == "cuda",
+        "persistent_workers": workers > 0,
+    }
+    if workers > 0:
+        loader_kwargs["prefetch_factor"] = prefetch
+
     train_loader: Any = DataLoader(
         train_dataset,  # type: ignore[arg-type]
         batch_size=int(config.get("batch_size", 128)),
         sampler=sampler,
         shuffle=shuffle,
-        num_workers=int(config.get("num_workers", 8)),
-        pin_memory=True,
         drop_last=True,
-        persistent_workers=int(config.get("num_workers", 8)) > 0,
+        **loader_kwargs,
     )
     val_loader: Any = DataLoader(
         val_dataset,  # type: ignore[arg-type]
         batch_size=int(config.get("batch_size", 128)),
         shuffle=False,
-        num_workers=int(config.get("num_workers", 8)),
-        pin_memory=True,
+        **loader_kwargs,
     )
 
     model = build_classifier(
@@ -106,6 +116,11 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
         drop_rate=float(config.get("drop_rate", 0.0)),
         drop_path_rate=float(config.get("drop_path_rate", 0.0)),
     ).to(device)
+    channels_last = bool(config.get("channels_last", True)) and device.type == "cuda"
+    if channels_last:
+        model = model.to(memory_format=torch.channels_last)
+    if bool(config.get("compile", False)):
+        model = torch.compile(model)
     optimizer = torch.optim.AdamW(
         _param_groups(
             model,
@@ -134,10 +149,13 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
         best_macro_f1 = checkpoint.get("best_macro_f1", best_macro_f1)
 
     for epoch in range(start_epoch, epochs):
+        epoch_started = time.time()
         model.train()
         running_loss = 0.0
         for images, targets, _ in tqdm(train_loader, desc=f"train {epoch + 1}/{epochs}"):
             images = images.to(device, non_blocking=True)
+            if channels_last:
+                images = images.contiguous(memory_format=torch.channels_last)
             targets = targets.to(device, non_blocking=True)
             optimizer.zero_grad(set_to_none=True)
             with torch.autocast(
@@ -157,6 +175,8 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
             running_loss += float(loss.detach()) * images.size(0)
         scheduler.step()
 
+        epoch_seconds = time.time() - epoch_started
+        images_per_s = len(train_dataset) / max(epoch_seconds, 1e-6)
         model.eval()
         all_logits, all_targets = [], []
         with torch.no_grad():
@@ -172,6 +192,7 @@ def train_classifier(config: dict[str, Any]) -> dict[str, Any]:
         )
         metrics["epoch"] = epoch + 1
         metrics["train_loss"] = running_loss / max(1, len(train_dataset))
+        metrics["images_per_s"] = images_per_s
         metrics["lr_head"] = optimizer.param_groups[-1]["lr"]
         history.append(metrics)
         print(json.dumps(metrics))

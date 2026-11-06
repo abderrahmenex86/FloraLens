@@ -14,6 +14,9 @@ drop_rate: 0.1
 drop_path_rate: 0.05
 class_balance: true
 num_workers: 12
+prefetch_factor: 4
+channels_last: true
+compile: false
 seed: 42
 amp: bf16
 pretrained: true

@@ -1,0 +1,22 @@
+# Pl@ntNet species screen: 345 species (>=80 images), 400 images/class cap.
+model_name: efficientvit_m2.r224_in1k
+class_list: shared/classes/plantnet_screen.yaml
+data_manifest: data/processed/plantnet/manifest.jsonl
+output_dir: ml/runs/plantnet_efficientvit_m2
+input_size: 224
+epochs: 12
+batch_size: 128
+lr_head: 0.001
+lr_backbone: 0.0001
+weight_decay: 0.05
+label_smoothing: 0.1
+drop_rate: 0.1
+drop_path_rate: 0.05
+class_balance: true
+num_workers: 12
+prefetch_factor: 4
+channels_last: true
+compile: false
+seed: 42
+amp: bf16
+pretrained: true

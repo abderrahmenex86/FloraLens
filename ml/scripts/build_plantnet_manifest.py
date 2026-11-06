@@ -45,6 +45,7 @@ def main() -> int:
     parser.add_argument("--min-images", type=int, default=80)
     parser.add_argument("--max-classes", type=int, default=None)
     parser.add_argument("--max-per-class", type=int, default=400)
+    parser.add_argument("--min-short-side", type=int, default=256)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--class-list", required=True, type=Path)
@@ -73,6 +74,8 @@ def main() -> int:
     records: list[str] = []
     kept: Counter[int] = Counter()
     missing = 0
+    unreadable = 0
+    too_small = 0
 
     for species_id in selected:
         rows = rows_by_species[species_id][:]
@@ -95,8 +98,15 @@ def main() -> int:
                 missing += 1
                 continue
 
-            with Image.open(path) as image:
-                width, height = image.size
+            try:
+                with Image.open(path) as image:
+                    width, height = image.size
+            except Exception:
+                unreadable += 1
+                continue
+            if min(width, height) < args.min_short_side:
+                too_small += 1
+                continue
 
             record = {
                 "image_id": f"pn-{row['PN_hash']}",
@@ -163,7 +173,10 @@ def main() -> int:
         payload = json.loads(line)
         by_split[payload["split"]] += 1
 
-    print(f"classes: {len(selected)}  images: {len(records)}  missing: {missing}")
+    print(
+        f"classes: {len(selected)}  images: {len(records)}  "
+        f"missing: {missing}  unreadable: {unreadable}  too_small: {too_small}"
+    )
     print("splits:", dict(by_split))
     print("min/max images per class:", min(kept.values()), max(kept.values()))
     print(f"wrote {args.out}")

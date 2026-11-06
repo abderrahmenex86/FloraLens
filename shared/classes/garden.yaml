@@ -1,0 +1,829 @@
+version: 2026.11-garden
+target: plants
+classes:
+- class_id: 0
+  scientific_name: Monstera deliciosa
+  common_name: Swiss cheese plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 1
+  scientific_name: Epipremnum aureum
+  common_name: Golden pothos
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 2
+  scientific_name: Dracaena trifasciata
+  common_name: Snake plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 3
+  scientific_name: Ficus elastica
+  common_name: Rubber fig
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 4
+  scientific_name: Ficus benjamina
+  common_name: Weeping fig
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 5
+  scientific_name: Aloe vera
+  common_name: Aloe vera
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 6
+  scientific_name: Chlorophytum comosum
+  common_name: Spider plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 7
+  scientific_name: Goeppertia orbifolia
+  common_name: Calathea orbifolia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 8
+  scientific_name: Philodendron hederaceum
+  common_name: Heartleaf philodendron
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 9
+  scientific_name: Zamioculcas zamiifolia
+  common_name: ZZ plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 10
+  scientific_name: Spathiphyllum wallisii
+  common_name: Peace lily
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 11
+  scientific_name: Anthurium andraeanum
+  common_name: Flamingo flower
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 12
+  scientific_name: Hedera helix
+  common_name: Common ivy
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 13
+  scientific_name: Aglaonema commutatum
+  common_name: Chinese evergreen
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 14
+  scientific_name: Maranta leuconeura
+  common_name: Prayer plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 15
+  scientific_name: Peperomia obtusifolia
+  common_name: Baby rubber plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 16
+  scientific_name: Pilea peperomioides
+  common_name: Chinese money plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 17
+  scientific_name: Tradescantia zebrina
+  common_name: Inch plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 18
+  scientific_name: Syngonium podophyllum
+  common_name: Arrowhead vine
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 19
+  scientific_name: Dieffenbachia seguine
+  common_name: Dumb cane
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 20
+  scientific_name: Codiaeum variegatum
+  common_name: Croton
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 21
+  scientific_name: Begonia rex
+  common_name: Painted begonia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 22
+  scientific_name: Oxalis triangularis
+  common_name: Purple shamrock
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 23
+  scientific_name: Aspidistra elatior
+  common_name: Cast iron plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 24
+  scientific_name: Chamaedorea elegans
+  common_name: Parlour palm
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 25
+  scientific_name: Dracaena marginata
+  common_name: Dragon tree
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 26
+  scientific_name: Yucca elephantipes
+  common_name: Spineless yucca
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 27
+  scientific_name: Kalanchoe blossfeldiana
+  common_name: Flaming Katy
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 28
+  scientific_name: Schlumbergera truncata
+  common_name: Christmas cactus
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 29
+  scientific_name: Echeveria elegans
+  common_name: Mexican snowball
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 30
+  scientific_name: Haworthiopsis fasciata
+  common_name: Zebra plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 31
+  scientific_name: Curio rowleyanus
+  common_name: String of pearls
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 32
+  scientific_name: Tillandsia ionantha
+  common_name: Air plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 33
+  scientific_name: Nephrolepis exaltata
+  common_name: Boston fern
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 34
+  scientific_name: Phalaenopsis amabilis
+  common_name: Moth orchid
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 35
+  scientific_name: Saintpaulia ionantha
+  common_name: African violet
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 36
+  scientific_name: Cyclamen persicum
+  common_name: Persian cyclamen
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 37
+  scientific_name: Euphorbia pulcherrima
+  common_name: Poinsettia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 38
+  scientific_name: Bougainvillea
+  common_name: Bougainvillea
+  rank: genus
+  sources:
+  - gbif
+  status: active
+- class_id: 39
+  scientific_name: Cestrum nocturnum
+  common_name: Night-blooming jasmine
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 40
+  scientific_name: Duranta erecta
+  common_name: Golden dewdrop
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 41
+  scientific_name: Jasminum grandiflorum
+  common_name: Spanish jasmine
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 42
+  scientific_name: Jasminum sambac
+  common_name: Arabian jasmine
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 43
+  scientific_name: Chrysanthemum morifolium
+  common_name: Garden chrysanthemum
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 44
+  scientific_name: Pelargonium graveolens
+  common_name: Rose-scented geranium
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 45
+  scientific_name: Pelargonium hortorum
+  common_name: Zonal geranium
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 46
+  scientific_name: Lavandula angustifolia
+  common_name: English lavender
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 47
+  scientific_name: Salvia rosmarinus
+  common_name: Rosemary
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 48
+  scientific_name: Mentha spicata
+  common_name: Spearmint
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 49
+  scientific_name: Ocimum basilicum
+  common_name: Sweet basil
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 50
+  scientific_name: Rosa chinensis
+  common_name: China rose
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 51
+  scientific_name: Hibiscus rosa-sinensis
+  common_name: Hibiscus
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 52
+  scientific_name: Nerium oleander
+  common_name: Oleander
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 53
+  scientific_name: Petunia integrifolia
+  common_name: Petunia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 54
+  scientific_name: Tagetes erecta
+  common_name: Marigold
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 55
+  scientific_name: Helianthus annuus
+  common_name: Sunflower
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 56
+  scientific_name: Hydrangea macrophylla
+  common_name: Hydrangea
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 57
+  scientific_name: Gardenia jasminoides
+  common_name: Gardenia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 58
+  scientific_name: Camellia japonica
+  common_name: Camellia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 59
+  scientific_name: Wisteria sinensis
+  common_name: Wisteria
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 60
+  scientific_name: Clematis vitalba
+  common_name: Traveller's joy
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 61
+  scientific_name: Lantana camara
+  common_name: Lantana
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 62
+  scientific_name: Plumbago auriculata
+  common_name: Cape leadwort
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 63
+  scientific_name: Gazania rigens
+  common_name: Treasure flower
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 64
+  scientific_name: Impatiens walleriana
+  common_name: Busy lizzie
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 65
+  scientific_name: Zinnia elegans
+  common_name: Zinnia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 66
+  scientific_name: Dahlia pinnata
+  common_name: Dahlia
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 67
+  scientific_name: Tulipa gesneriana
+  common_name: Tulip
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 68
+  scientific_name: Narcissus poeticus
+  common_name: Poet's narcissus
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 69
+  scientific_name: Iris germanica
+  common_name: Bearded iris
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 70
+  scientific_name: Agapanthus africanus
+  common_name: African lily
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 71
+  scientific_name: Osteospermum ecklonis
+  common_name: African daisy
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 72
+  scientific_name: Euphorbia milii
+  common_name: Crown of thorns
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 73
+  scientific_name: Agave americana
+  common_name: Century plant
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 74
+  scientific_name: Opuntia ficus-indica
+  common_name: Prickly pear
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 75
+  scientific_name: Solanum lycopersicum
+  common_name: Tomato
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 76
+  scientific_name: Capsicum annuum
+  common_name: Pepper
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 77
+  scientific_name: Solanum melongena
+  common_name: Aubergine
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 78
+  scientific_name: Cucumis sativus
+  common_name: Cucumber
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 79
+  scientific_name: Cucurbita pepo
+  common_name: Courgette
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 80
+  scientific_name: Cucumis melo
+  common_name: Melon
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 81
+  scientific_name: Citrullus lanatus
+  common_name: Watermelon
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 82
+  scientific_name: Fragaria ananassa
+  common_name: Strawberry
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 83
+  scientific_name: Lactuca sativa
+  common_name: Lettuce
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 84
+  scientific_name: Spinacia oleracea
+  common_name: Spinach
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 85
+  scientific_name: Brassica oleracea
+  common_name: Cabbage
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 86
+  scientific_name: Daucus carota
+  common_name: Carrot
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 87
+  scientific_name: Allium cepa
+  common_name: Onion
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 88
+  scientific_name: Allium sativum
+  common_name: Garlic
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 89
+  scientific_name: Allium porrum
+  common_name: Leek
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 90
+  scientific_name: Petroselinum crispum
+  common_name: Parsley
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 91
+  scientific_name: Coriandrum sativum
+  common_name: Coriander
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 92
+  scientific_name: Thymus vulgaris
+  common_name: Thyme
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 93
+  scientific_name: Origanum vulgare
+  common_name: Oregano
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 94
+  scientific_name: Salvia officinalis
+  common_name: Sage
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 95
+  scientific_name: Foeniculum vulgare
+  common_name: Fennel
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 96
+  scientific_name: Pisum sativum
+  common_name: Pea
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 97
+  scientific_name: Phaseolus vulgaris
+  common_name: Green bean
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 98
+  scientific_name: Vicia faba
+  common_name: Broad bean
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 99
+  scientific_name: Beta vulgaris
+  common_name: Beetroot
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 100
+  scientific_name: Raphanus sativus
+  common_name: Radish
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 101
+  scientific_name: Solanum tuberosum
+  common_name: Potato
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 102
+  scientific_name: Citrus limon
+  common_name: Lemon
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 103
+  scientific_name: Citrus sinensis
+  common_name: Orange
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 104
+  scientific_name: Citrus reticulata
+  common_name: Mandarin
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 105
+  scientific_name: Olea europaea
+  common_name: Olive
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 106
+  scientific_name: Ficus carica
+  common_name: Fig
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 107
+  scientific_name: Punica granatum
+  common_name: Pomegranate
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 108
+  scientific_name: Vitis vinifera
+  common_name: Grape
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 109
+  scientific_name: Prunus persica
+  common_name: Peach
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 110
+  scientific_name: Prunus dulcis
+  common_name: Almond
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 111
+  scientific_name: Malus domestica
+  common_name: Apple
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 112
+  scientific_name: Pyrus communis
+  common_name: Pear
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 113
+  scientific_name: Eriobotrya japonica
+  common_name: Loquat
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 114
+  scientific_name: Diospyros kaki
+  common_name: Persimmon
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 115
+  scientific_name: Morus alba
+  common_name: White mulberry
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 116
+  scientific_name: Ceratonia siliqua
+  common_name: Carob
+  rank: species
+  sources:
+  - gbif
+  status: active
+- class_id: 117
+  scientific_name: Phoenix dactylifera
+  common_name: Date palm
+  rank: species
+  sources:
+  - gbif
+  status: active

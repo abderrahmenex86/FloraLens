@@ -23,7 +23,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getPlantImages } from '../../lib/plantAssets';
 
-import { colors, radii, spacing } from '@/theme';
+import { colors } from '@/lib/materialTheme';
+import { radii, spacing } from '@/theme';
 import { DISEASE_CLASSES, PEST_CLASSES } from '../../lib/healthClasses';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import {

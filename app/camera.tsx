@@ -22,7 +22,7 @@ import {
 } from 'lucide-react-native';
 import { mlPipeline } from '../lib/mlPipeline';
 import { saveScan } from '../lib/storage';
-import { colors } from '@/theme';
+import { colors, withAlpha } from '@/lib/materialTheme';
 import { StatusBar } from 'expo-status-bar';
 
 const View = styled(RNView);
@@ -146,7 +146,11 @@ export default function ScanScreen() {
 
             {aiState === 'idle' ?
                 <View className='flex-1 items-center justify-center p-8 gap-6'>
-                    <View className='bg-[#84B026]/20 p-8 rounded-full mb-4'>
+                    <View
+                        className='p-8 rounded-full mb-4'
+                        style={{
+                            backgroundColor: withAlpha(colors.primary, '33'),
+                        }}>
                         <Sparkles
                             size={64}
                             color={colors.accent}
@@ -157,7 +161,8 @@ export default function ScanScreen() {
                     </Text>
                     <Pressable
                         onPress={() => pickImage(true)}
-                        className='w-full bg-[#2D5A27] p-5 rounded-[24px] flex-row items-center justify-center gap-3'>
+                        className='w-full p-5 rounded-[24px] flex-row items-center justify-center gap-3'
+                        style={{ backgroundColor: colors.primary }}>
                         <CameraIcon
                             size={24}
                             color='white'
@@ -213,7 +218,8 @@ export default function ScanScreen() {
                             onPress={runFullAnalysis}
                             accessibilityRole='button'
                             accessibilityLabel='Analyze photo'
-                            className='bg-[#84B026] px-8 py-5 rounded-full flex-row items-center gap-3 shadow-lg shadow-black/50'>
+                            className='px-8 py-5 rounded-full flex-row items-center gap-3 shadow-lg shadow-black/50'
+                            style={{ backgroundColor: colors.accent }}>
                             <Check
                                 size={28}
                                 color='white'

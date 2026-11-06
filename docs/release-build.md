@@ -107,5 +107,6 @@ garden, and swipe-to-delete. `tsc --noEmit`, `expo lint` and `expo-doctor`
 - Build an arm64 APK with `EXPO_PUBLIC_PLANT_PACK_URL` set to test the hosted
   pack on the phone (the code path is already validated on the emulator with
   the 5-photo mini pack).
-- SDK 58 is in; `@expo/ui` + Material You dynamic color is next.
+- `@expo/ui` Material You shell is in (see `docs/material-you.md`); the
+  remaining polish is Compose cards/chips on the detail screens.
 - Release keystore, R8, store listing, privacy policy.

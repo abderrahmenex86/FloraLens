@@ -20,7 +20,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
-import { colors, spacing } from '@/theme';
+import { colors } from '@/lib/materialTheme';
+import { spacing } from '@/theme';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantImages } from '../../lib/plantAssets';
 import { getGardenPlants, savePlantToGarden } from '../../lib/storage';

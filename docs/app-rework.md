@@ -66,7 +66,7 @@ app with the existing models and assets.
 
 ## Still to do
 
-- `@expo/ui` Material You shell (Expo SDK 58 is done).
+- ~~`@expo/ui` Material You shell~~ — done, see `docs/material-you.md`.
 - Real package id, release keystore, icon/splash, permission cleanup.
 - A calibrated OOD model and retrained plant/disease models when compute is
   available.

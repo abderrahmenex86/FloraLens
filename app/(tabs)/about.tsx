@@ -12,7 +12,8 @@ import {
 } from 'react-native-safe-area-context';
 import { Flower2, Heart, Images, Trash2 } from 'lucide-react-native';
 import { styled } from 'nativewind';
-import { colors } from '@/theme';
+import { colors } from '@/lib/materialTheme';
+import { AppBar } from '../../components/material/AppBar';
 import {
     deletePlantPack,
     downloadPlantPack,
@@ -81,10 +82,13 @@ export default function About() {
 
     return (
         <SafeAreaView
-            className='flex-1 bg-[#F4F7F2] flex justify-between p-8'
-            style={{ paddingBottom: Math.max(insets.bottom, 16) + 88 }}>
+            className='flex-1 flex justify-between p-8'
+            style={{
+                backgroundColor: colors.background,
+                paddingBottom: Math.max(insets.bottom, 16) + 16,
+            }}>
             <View className='flex gap-4'>
-                <Text className='text-5xl font-jakarta-bold'>About</Text>
+                <AppBar title='About' />
             </View>
 
             <View className='flex items-center justify-center gap-4'>
@@ -92,54 +96,71 @@ export default function About() {
                     size={48}
                     color={colors.primary}
                 />
-                <Text className='font-jakarta-bold text-2xl mx-4 text-[#2D5A27]'>
+                <Text className='font-jakarta-bold text-2xl mx-4'>
                     FloraLens
                 </Text>
-                <Text className='font-vietnam text-center text-[#1A1C19]'>
+                <Text
+                    className='font-vietnam text-center'
+                    style={{ color: colors.ink }}>
                     Identify plants, spot pests, and understand plant health
                     with on-device AI.
                 </Text>
-                <Text className='font-vietnam text-center text-[#1A1C19]/60 text-sm'>
+                <Text
+                    className='font-vietnam text-center text-sm'
+                    style={{ color: colors.onSurfaceVariant }}>
                     Photos and scans stay on your phone. No account, no uploads.
                 </Text>
 
-                <View className='w-full bg-[#EAF1E8] rounded-3xl p-5 mt-4'>
+                <View
+                    className='w-full rounded-3xl p-5 mt-4'
+                    style={{ backgroundColor: colors.surface }}>
                     <View className='flex-row items-center gap-3 mb-2'>
                         <Images
                             size={22}
                             color={colors.primary}
                         />
-                        <Text className='font-jakarta-bold text-lg text-[#1A1C19]'>
+                        <Text
+                            className='font-jakarta-bold text-lg'
+                            style={{ color: colors.ink }}>
                             Offline reference photos
                         </Text>
                     </View>
-                    <Text className='font-vietnam text-[#1A1C19]/70 text-sm'>
+                    <Text
+                        className='font-vietnam text-sm'
+                        style={{ color: colors.onSurfaceVariant }}>
                         Thumbnails are bundled. Download the full-resolution
                         photos once to keep them offline. About{' '}
                         {formatBytes(74 * 1024 * 1024)}. Use Wi-Fi.
                     </Text>
 
                     {error && (
-                        <Text className='font-vietnam text-[#E25A38] text-sm mt-3'>
+                        <Text
+                        className='font-vietnam text-sm mt-3'
+                        style={{ color: colors.danger }}>
                             {error}
                         </Text>
                     )}
 
                     {packStatus.installed ?
                         <View className='mt-4 gap-3'>
-                            <Text className='font-vietnam text-[#2D5A27] text-sm'>
+                            <Text
+                                className='font-vietnam text-sm'
+                                style={{ color: colors.primary }}>
                                 Downloaded {packStatus.imageCount} photos ·{' '}
                                 {formatBytes(packStatus.bytes)}
                             </Text>
                             <Pressable
                                 onPress={handleDelete}
                                 accessibilityRole='button'
-                                className='flex-row items-center justify-center gap-2 bg-[#F4F7F2] py-3 rounded-2xl'>
+                                className='flex-row items-center justify-center gap-2 py-3 rounded-2xl'
+                                style={{ backgroundColor: colors.background }}>
                                 <Trash2
                                     size={18}
                                     color={colors.danger}
                                 />
-                                <Text className='font-jakarta-bold text-[#E25A38]'>
+                                <Text
+                                    className='font-jakarta-bold'
+                                    style={{ color: colors.danger }}>
                                     Delete offline photos
                                 </Text>
                             </Pressable>
@@ -149,20 +170,33 @@ export default function About() {
                             disabled={downloading || !PLANT_PACK_URL}
                             accessibilityRole='button'
                             accessibilityLabel='Download full reference photos'
-                            className={`mt-4 flex-row items-center justify-center gap-2 py-3 rounded-2xl ${
-                                PLANT_PACK_URL ? 'bg-[#2D5A27]' : 'bg-[#1A1C19]/20'
-                            }`}>
+                            className='mt-4 flex-row items-center justify-center gap-2 py-3 rounded-2xl'
+                            style={{
+                                backgroundColor:
+                                    PLANT_PACK_URL ?
+                                        colors.primary
+                                    :   colors.surfaceHigh,
+                            }}>
                             {downloading ?
                                 <>
                                     <ActivityIndicator
                                         size='small'
                                         color='white'
                                     />
-                                    <Text className='font-jakarta-bold text-white'>
+                                    <Text
+                                        className='font-jakarta-bold'
+                                        style={{ color: colors.onPrimary }}>
                                         {progressLabel}
                                     </Text>
                                 </>
-                            :   <Text className='font-jakarta-bold text-white'>
+                            :   <Text
+                                    className='font-jakarta-bold'
+                                    style={{
+                                        color:
+                                            PLANT_PACK_URL ?
+                                                colors.onPrimary
+                                            :   colors.onSurfaceVariant,
+                                    }}>
                                     {PLANT_PACK_URL ?
                                         'Download full photos'
                                     :   'Pack not configured in this build'}
@@ -171,10 +205,13 @@ export default function About() {
                         </Pressable>
                     }
                     {downloading && progress?.total ? (
-                        <View className='h-1 bg-[#F4F7F2] rounded-full mt-3 overflow-hidden'>
+                        <View
+                            className='h-1 rounded-full mt-3 overflow-hidden'
+                            style={{ backgroundColor: colors.background }}>
                             <View
-                                className='h-1 bg-[#84B026]'
+                                className='h-1'
                                 style={{
+                                    backgroundColor: colors.accent,
                                     width: `${Math.round(
                                         (progress.done / progress.total) * 100,
                                     )}%`,
@@ -187,7 +224,9 @@ export default function About() {
 
             <View className='font-vietnam p-6 pb-8 items-center'>
                 <View className='flex flex-row gap-1 items-center justify-center'>
-                    <Text className='font-vietnam-bold  text-[#1A1C19]'>
+                    <Text
+                        className='font-vietnam-bold'
+                        style={{ color: colors.ink }}>
                         Made with{' '}
                     </Text>
                     <Heart
@@ -195,7 +234,9 @@ export default function About() {
                         color='red'
                         fill='red'
                     />
-                    <Text className='font-vietnam-bold text-[#1A1C19]'>
+                    <Text
+                        className='font-vietnam-bold'
+                        style={{ color: colors.ink }}>
                         by humans.
                     </Text>
                 </View>

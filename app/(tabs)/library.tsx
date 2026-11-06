@@ -1,7 +1,8 @@
-import { colors, radii, sizes } from '@/theme';
+import { radii, sizes } from '@/theme';
+import { colors } from '@/lib/materialTheme';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Search, SearchX } from 'lucide-react-native';
+import { ChevronRight, Search } from 'lucide-react-native';
 import { styled } from 'nativewind';
 import { useMemo, useState } from 'react';
 import {
@@ -12,10 +13,10 @@ import {
     TextInput,
 } from 'react-native';
 import { EmptyState } from '../../components/EmptyState';
+import { AppBar } from '../../components/material/AppBar';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const View = styled(RNView);
 
@@ -29,7 +30,6 @@ ALL_PLANTS.sort((a, b) => a.name.localeCompare(b.name));
 export default function Library() {
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
-    const insets = useSafeAreaInsets();
 
     const filteredPlants = useMemo(() => {
         if (!searchQuery) return ALL_PLANTS;
@@ -49,7 +49,8 @@ export default function Library() {
                 onPress={() => router.push(`/plant/${item.id}`)}
                 accessibilityRole='button'
                 accessibilityLabel={`Open ${item.name}`}
-                className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
+                className='flex-row items-center p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'
+                style={{ backgroundColor: colors.surface }}>
                 {coverImage ?
                     <Image
                         source={coverImage}
@@ -61,29 +62,36 @@ export default function Library() {
                         contentFit='cover'
                     />
                 :   <View
-                        className='width-[64px] height-[64px] bg-[#EAF1E8] rounded-2xl items-center justify-center'
+                        className='rounded-2xl items-center justify-center'
                         style={{
                             width: sizes.thumbnail,
                             height: sizes.thumbnail,
+                            backgroundColor: colors.background,
                         }}>
-                        <Text className='font-jakarta-bold text-[#2D5A27]'>
+                        <Text
+                            className='font-jakarta-bold'
+                            style={{ color: colors.primary }}>
                             {item.name.charAt(0)}
                         </Text>
                     </View>
                 }
                 <View className='flex-1 ml-4 justify-center'>
                     <Text
-                        className='font-jakarta-bold text-[#1A1C19] text-xl mb-0.5'
-                        numberOfLines={1}>
+                        className='font-jakarta-bold text-xl mb-0.5'
+                        numberOfLines={1}
+                        style={{ color: colors.ink }}>
                         {item.name}
                     </Text>
                     <Text
-                        className='font-vietnam text-[#1A1C19]/60 text-base'
-                        numberOfLines={1}>
+                        className='font-vietnam text-base'
+                        numberOfLines={1}
+                        style={{ color: colors.onSurfaceVariant }}>
                         {item.scientific}
                     </Text>
                 </View>
-                <View className='bg-[#F4F7F2] p-2 rounded-full'>
+                <View
+                    className='p-2 rounded-full'
+                    style={{ backgroundColor: colors.background }}>
                     <ChevronRight
                         size={20}
                         color={colors.primary}
@@ -95,27 +103,30 @@ export default function Library() {
 
     return (
         <Screen className='gap-6'>
-            <View className='flex gap-2 mb-2'>
-                <Text className='text-5xl font-jakarta-bold text-[#1A1C19]'>
-                    Library
-                </Text>
-                <Text className='text-lg font-vietnam text-[#2D5A27]'>
-                    Explore {ALL_PLANTS.length} species
-                </Text>
-            </View>
+            <AppBar
+                title='Library'
+                subtitle={`Explore ${ALL_PLANTS.length} species`}
+            />
 
-            <View className='flex-row items-center bg-[#EAF1E8] px-4 py-3 rounded-2xl shadow-sm shadow-black/5 border border-[#F4F7F2]'>
+            <View
+                className='flex-row items-center px-4 py-3 rounded-2xl shadow-sm shadow-black/5'
+                style={{
+                    backgroundColor: colors.surface,
+                    borderWidth: 1,
+                    borderColor: colors.outline,
+                }}>
                 <Search
                     size={20}
                     color={colors.accent}
                 />
                 <TextInput
                     placeholder='Search by name or scientific name...'
-                    placeholderTextColor='#1A1C1980'
+                    placeholderTextColor={colors.onSurfaceVariant}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                     accessibilityLabel='Search plants'
-                    className='flex-1 ml-3 font-vietnam text-base text-[#1A1C19] h-10'
+                    className='flex-1 ml-3 font-vietnam text-base h-10'
+                    style={{ color: colors.ink }}
                     returnKeyType='search'
                     autoCorrect={false}
                 />
@@ -126,12 +137,12 @@ export default function Library() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 120 + insets.bottom }}
+                contentContainerStyle={{ paddingBottom: 24 }}
                 keyboardShouldPersistTaps='handled'
                 initialNumToRender={15}
                 ListEmptyComponent={
                     <EmptyState
-                        icon={SearchX}
+                        iconName='search'
                         title='No plants found'
                         description={`Nothing matches "${searchQuery}". Try a common or scientific name.`}
                         actionLabel='Clear search'

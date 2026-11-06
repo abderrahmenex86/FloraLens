@@ -1,4 +1,5 @@
-import { colors, radii } from '@/theme';
+import { radii } from '@/theme';
+import { colors } from '@/lib/materialTheme';
 import { Image } from 'expo-image';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { ChevronRight, Sprout, Trash2 } from 'lucide-react-native';
@@ -11,9 +12,9 @@ import {
     ScrollView,
     Text,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { EmptyState } from '../../components/EmptyState';
+import { AppBar } from '../../components/material/AppBar';
 import { Screen } from '../../components/Screen';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import { getPlantCover } from '../../lib/plantAssets';
@@ -31,7 +32,6 @@ function formatDate(timestamp: number): string {
 
 export default function Garden() {
     const router = useRouter();
-    const insets = useSafeAreaInsets();
     const [gardenPlants, setGardenPlants] = useState<GardenPlant[]>([]);
 
     useFocusEffect(
@@ -81,21 +81,15 @@ export default function Garden() {
 
     return (
         <Screen className='gap-6'>
-            <View className='flex gap-2 mb-2'>
-                <Text className='text-5xl font-jakarta-bold text-[#1A1C19]'>
-                    Garden
-                </Text>
-                <Text className='text-lg font-vietnam text-[#2D5A27]'>
-                    {gardenPlants.length}{' '}
-                    {gardenPlants.length === 1 ? 'Plant' : 'Plants'} in your
-                    greenhouse
-                </Text>
-            </View>
+            <AppBar
+                title='Garden'
+                subtitle={`${gardenPlants.length} ${gardenPlants.length === 1 ? 'Plant' : 'Plants'} in your greenhouse`}
+            />
 
             {gardenPlants.length === 0 ?
                 <View className='flex-1 justify-center pb-10'>
                     <EmptyState
-                        icon={Sprout}
+                        iconName='sprout'
                         title='Your garden is empty'
                         description='Save a plant from a scan, or add one from the library.'
                         actionLabel='Scan a plant'
@@ -104,9 +98,7 @@ export default function Garden() {
                 </View>
             :   <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 120 + insets.bottom,
-                    }}>
+                    contentContainerStyle={{ paddingBottom: 24 }}>
                     {gardenPlants.map((plant) => {
                         const plantInfo = PLANT_CLASSES[plant.classIndex] || {
                             name: 'Unknown Plant',
@@ -128,7 +120,8 @@ export default function Garden() {
                                     accessibilityLabel={`Open ${plantInfo.name}`}
                                     accessibilityHint='Swipe left or long press to remove'
                                     onLongPress={() => confirmDelete(plant)}
-                                    className='flex-row items-center bg-[#EAF1E8] p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'>
+                                    className='flex-row items-center p-4 rounded-3xl shadow-sm shadow-black/5 mb-3 active:opacity-80'
+                                    style={{ backgroundColor: colors.surface }}>
                                     {coverImage ?
                                         <Image
                                             source={coverImage}
@@ -139,7 +132,12 @@ export default function Garden() {
                                             }}
                                             contentFit='cover'
                                         />
-                                    :   <View className='w-[72px] h-[72px] rounded-2xl bg-[#F4F7F2] items-center justify-center'>
+                                    :   <View
+                                            className='w-[72px] h-[72px] rounded-2xl items-center justify-center'
+                                            style={{
+                                                backgroundColor:
+                                                    colors.background,
+                                            }}>
                                             <Sprout
                                                 size={28}
                                                 color={colors.primary}
@@ -148,18 +146,27 @@ export default function Garden() {
                                     }
                                     <View className='flex-1 ml-4 justify-center'>
                                         <Text
-                                            className='font-jakarta-bold text-[#1A1C19] text-xl mb-0.5'
-                                            numberOfLines={1}>
+                                            className='font-jakarta-bold text-xl mb-0.5'
+                                            numberOfLines={1}
+                                            style={{ color: colors.ink }}>
                                             {plantInfo.name}
                                         </Text>
-                                        <Text className='font-vietnam text-[#1A1C19]/60 text-sm'>
+                                        <Text
+                                            className='font-vietnam text-sm'
+                                            style={{
+                                                color: colors.onSurfaceVariant,
+                                            }}>
                                             Added {formatDate(plant.timestamp)}
                                             {plant.scanId ?
                                                 ' · from scan'
                                             :   ' · from library'}
                                         </Text>
                                     </View>
-                                    <View className='bg-[#F4F7F2] p-2 rounded-full'>
+                                    <View
+                                        className='p-2 rounded-full'
+                                        style={{
+                                            backgroundColor: colors.background,
+                                        }}>
                                         <ChevronRight
                                             size={20}
                                             color={colors.primary}

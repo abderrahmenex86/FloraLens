@@ -1,50 +1,66 @@
-import { View as RNView, Text, Pressable } from 'react-native';
-import { styled } from 'nativewind';
-import { LucideIcon } from 'lucide-react-native';
-import { colors } from '@/theme';
+import { Pressable, Text, View } from 'react-native';
+import { ScanSearch, SearchX, Sprout, type LucideIcon } from 'lucide-react-native';
+import { colors } from '@/lib/materialTheme';
+import type { EmptyStateIcon, EmptyStateProps } from './emptyStateTypes';
 
-const View = styled(RNView);
+const FALLBACK_ICONS: Record<EmptyStateIcon, LucideIcon> = {
+    scan: ScanSearch,
+    sprout: Sprout,
+    search: SearchX,
+};
 
-interface EmptyStateProps {
-    icon: LucideIcon;
-    title: string;
-    description: string;
-    actionLabel?: string;
-    onAction?: () => void;
-}
-
+/**
+ * Non-Android empty state. Android renders a Compose `Card` from
+ * `EmptyState.android.tsx`.
+ */
 export function EmptyState({
-    icon: Icon,
+    iconName,
     title,
     description,
     actionLabel,
     onAction,
 }: EmptyStateProps) {
+    const Icon = FALLBACK_ICONS[iconName];
     return (
-        <View className='flex items-center justify-center py-10 px-6 border-2 border-dashed border-[#84B026]/30 rounded-4xl bg-[#84B026]/5'>
-            <View className='bg-[#84B026]/10 p-4 rounded-full mb-4'>
+        <View
+            className='items-center justify-center rounded-4xl px-6 py-10'
+            style={{
+                borderWidth: 1,
+                borderColor: colors.outline,
+                backgroundColor: colors.surface,
+            }}>
+            <View
+                className='mb-4 rounded-full p-4'
+                style={{ backgroundColor: colors.background }}>
                 <Icon
                     size={40}
                     color={colors.primary}
                     strokeWidth={1.5}
                 />
             </View>
-            <Text className='text-xl font-jakarta-bold text-[#1A1C19] mb-2 text-center'>
+            <Text
+                className='mb-2 text-center font-jakarta-bold text-xl'
+                style={{ color: colors.ink }}>
                 {title}
             </Text>
-            <Text className='text-base font-vietnam text-[#1A1C19]/70 text-center leading-relaxed'>
+            <Text
+                className='text-center font-vietnam text-base leading-relaxed'
+                style={{ color: colors.onSurfaceVariant }}>
                 {description}
             </Text>
-            {actionLabel && onAction && (
+            {actionLabel && onAction ?
                 <Pressable
                     onPress={onAction}
                     accessibilityRole='button'
-                    className='mt-5 bg-[#2D5A27] px-5 py-3 rounded-2xl'>
-                    <Text className='font-jakarta-bold text-white'>
+                    className='mt-5 rounded-2xl px-5 py-3'
+                    style={{ backgroundColor: colors.primary }}>
+                    <Text
+                        className='font-jakarta-bold'
+                        style={{ color: colors.onPrimary }}>
                         {actionLabel}
                     </Text>
                 </Pressable>
-            )}
+            :   null}
         </View>
     );
 }

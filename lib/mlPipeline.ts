@@ -3,7 +3,7 @@ import * as jpeg from 'jpeg-js';
 import * as base64js from 'base64-js';
 import { imageToPytorchTensor } from './tensorUtils';
 import { assessRgba, type InputCheck } from './imageGate';
-import type { ClassificationStats, PlantPrediction, SegmentationResult } from './types';
+import type { ClassificationStats, PlantPrediction } from './types';
 import { UNKNOWN_CONFIDENCE, UNKNOWN_MARGIN } from './types';
 import { Asset } from 'expo-asset';
 import { Buffer } from 'buffer';
@@ -19,7 +19,6 @@ export interface ClassificationResult {
 
 class MLPipeline {
     private plantSession: InferenceSession | null = null;
-    private diseaseSession: InferenceSession | null = null;
     private pestSession: InferenceSession | null = null;
 
     private isInitializingPlant = false;
@@ -42,28 +41,15 @@ class MLPipeline {
     }
 
     async initHealthModels() {
-        if (
-            (this.diseaseSession && this.pestSession) ||
-            this.isInitializingHealth
-        )
-            return;
+        if (this.pestSession || this.isInitializingHealth) return;
         this.isInitializingHealth = true;
         try {
-            const diseaseAsset = Asset.fromModule(
-                require('../assets/models/disease_model.onnx')
-            );
             const pestAsset = Asset.fromModule(
-                require('../assets/models/pest_model.onnx')
+                require('../assets/models/insect_model.onnx')
             );
 
-            await Promise.all([
-                diseaseAsset.downloadAsync(),
-                pestAsset.downloadAsync(),
-            ]);
+            await pestAsset.downloadAsync();
 
-            this.diseaseSession = await InferenceSession.create(
-                diseaseAsset.localUri || diseaseAsset.uri
-            );
             this.pestSession = await InferenceSession.create(
                 pestAsset.localUri || pestAsset.uri
             );
@@ -93,86 +79,6 @@ class MLPipeline {
         return this.processClassification(
             results[this.pestSession.outputNames[0]].data as Float32Array
         );
-    }
-
-    async analyzeDisease(base64Image: string): Promise<SegmentationResult> {
-        if (!this.diseaseSession)
-            throw new Error('Disease session not initialized.');
-
-        const { tensor, rawImageData } = this.base64ToTensor(base64Image, 520);
-
-        const results = await this.diseaseSession.run({
-            [this.diseaseSession.inputNames[0]]: tensor,
-        });
-        const outputTensor = results[this.diseaseSession.outputNames[0]];
-        const outputData = outputTensor.data as Float32Array;
-
-        const numClasses = outputTensor.dims[1];
-        const spatialSize = 520 * 520;
-
-        const pixelClasses = new Uint8Array(spatialSize);
-        const classCounts = new Array(numClasses).fill(0);
-
-        for (let p = 0; p < spatialSize; p++) {
-            let maxVal = -Infinity;
-            let maxClass = 0;
-            for (let c = 0; c < numClasses; c++) {
-                const val = outputData[c * spatialSize + p];
-                if (val > maxVal) {
-                    maxVal = val;
-                    maxClass = c;
-                }
-            }
-            pixelClasses[p] = maxClass;
-            classCounts[maxClass]++;
-        }
-
-        let dominantClass = 0;
-        let maxDiseaseCount = 0;
-        for (let c = 1; c < numClasses; c++) {
-            if (classCounts[c] > maxDiseaseCount) {
-                maxDiseaseCount = classCounts[c];
-                dominantClass = c;
-            }
-        }
-
-        const severity = maxDiseaseCount / spatialSize; // Percentage of image
-
-        if (severity > 0.05) {
-            for (let p = 0; p < spatialSize; p++) {
-                if (pixelClasses[p] === dominantClass) {
-                    const rIdx = p * 4;
-                    rawImageData.data[rIdx] = Math.min(
-                        255,
-                        rawImageData.data[rIdx] + 100
-                    );
-                    rawImageData.data[rIdx + 1] = Math.max(
-                        0,
-                        rawImageData.data[rIdx + 1] - 50
-                    );
-                    rawImageData.data[rIdx + 2] = Math.max(
-                        0,
-                        rawImageData.data[rIdx + 2] - 50
-                    );
-                }
-            }
-
-            const blendedJpeg = jpeg.encode(rawImageData, 80);
-            const blendedBase64 = base64js.fromByteArray(blendedJpeg.data);
-
-            return {
-                hasDisease: true,
-                diseaseClassIndex: dominantClass,
-                severity,
-                blendedBase64: `data:image/jpeg;base64,${blendedBase64}`,
-            };
-        } else {
-            return {
-                hasDisease: false,
-                diseaseClassIndex: 0,
-                severity: 0,
-            };
-        }
     }
 
     /**

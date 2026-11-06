@@ -3,6 +3,7 @@
 node_modules/
 assets/models
 assets/images/plants
+assets/images/garden
 
 # Expo
 .expo/
@@ -60,3 +61,4 @@ __pycache__/
 # Optional downloadable photo pack
 plant-pack/
 plant-pack-mini/
+plant-pack-garden/

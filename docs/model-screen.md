@@ -9,7 +9,7 @@ classifier.
 | Dataset | Images | Use |
 |---|---|---|
 | Pl@ntNet-300K v2 (HF mirror) | 306k extracted, 106k used | 1,000 wild species |
-| GBIF garden taxa | 20,268 kept | 114 garden/houseplant/veg classes |
+| GBIF garden taxa | 20,268 kept | 118 garden/houseplant/veg classes |
 | GBIF garden insects | 6,311 kept | 22 insect taxa |
 | Plant photos (from Pl@ntNet) | 3,000 | "No insect" negatives |
 | COCO val2017 | 5,000 | gate negatives |
@@ -51,13 +51,13 @@ had plateaued. The winner was retrained for 40 epochs.
 | Model | Classes | Input | top-1 | top-5 | macro-F1 | ECE | ONNX |
 |---|---|---|---|---|---|---|---|
 | Plant gate | 2 | 128 | 96.5% | — | 0.956 | 0.02 | 5.9 MB |
-| Garden (MNV4-S) | 114 | 224 | 67.9% | 87.7% | 0.670 | 0.08 | 10.6 MB |
+| Garden (MNV4-S) | 118 | 224 | 67.9% | 87.7% | 0.670 | 0.08 | 10.6 MB |
 | Broad (RepViT) | 1,023 | 224 | 68.0% | 89.4% | 0.431 | 0.11 | 22.0 MB |
 | Insects (RepViT) | 23 | 224 | 83.1% | 96.0% | 0.736 | 0.12 | 19.0 MB |
 
 The broad model's macro-F1 is diluted by ~650 Pl@ntNet species with fewer than
-80 images. For garden use, the 114-class model is the better fit: same top-1
-with 10× fewer classes and half the size.
+80 images. For garden use, the 118-class model is the better fit: same top-1
+with 9× fewer classes and half the size.
 
 The insect model includes a **`no_insect` class** built from 3,000 clean leaf
 photos, so a healthy leaf is not confidently labelled as a pest.
@@ -78,9 +78,11 @@ list path). ONNX exports use a dynamic batch axis.
 
 - INT8 quantization collapsed the MobileNetV3 gate (plant recall 99% → 8%);
   FP32 ships instead. RepViT was not quantized in this pass.
-- The app's current pest model is IP102 (rice pests); the new insect model
-  replaces it and needs a matching `PEST_CLASSES` update in the app.
-- The deployed plant model is 364 classes; switching to the garden or broad
-  model means regenerating the app's class list and reference thumbnails.
-- Disease and language-model work deferred; see `docs/input-gate.md` for the
-  gate and this file for the vision screen.
+- The app ships the garden model and the garden-insect model. The 1,023-class
+  broad model and the IP102 pest model are training artifacts only.
+- The disease segmentation model was removed from the app: the scan flow now
+  reports one plant match plus one insect match, which keeps the bundle at
+  ~30 MB of models instead of ~90 MB.
+- Library covers come from Wikipedia/Wikimedia (thumbnail CDN); the fetch
+  script is `tools/fetch_garden_covers.py`. Reference thumbnails are built by
+  `tools/build_plant_library.py`.

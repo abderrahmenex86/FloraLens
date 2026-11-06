@@ -113,18 +113,11 @@ export default function ScanScreen() {
         try {
             setState('analyzing');
 
-            const [manip224, manip520] = await Promise.all([
-                manipulateAsync(
-                    photoUri,
-                    [{ resize: { width: 224, height: 224 } }],
-                    { compress: 1, base64: true },
-                ),
-                manipulateAsync(
-                    photoUri,
-                    [{ resize: { width: 520, height: 520 } }],
-                    { compress: 1, base64: true },
-                ),
-            ]);
+            const manip224 = await manipulateAsync(
+                photoUri,
+                [{ resize: { width: 224, height: 224 } }],
+                { compress: 1, base64: true },
+            );
 
             // Reject dark and blank frames before the classifier can be
             // confidently wrong about them.
@@ -138,10 +131,9 @@ export default function ScanScreen() {
                 return;
             }
 
-            const [plantResult, pestResult, diseaseResult] = await Promise.all([
+            const [plantResult, pestResult] = await Promise.all([
                 mlPipeline.analyzePlant(manip224.base64!),
                 mlPipeline.analyzePest(manip224.base64!),
-                mlPipeline.analyzeDisease(manip520.base64!),
             ]);
 
             const record = saveScan({
@@ -151,7 +143,6 @@ export default function ScanScreen() {
                     plantStats: plantResult.stats,
                     pest: pestResult.predictions[0],
                     pestStats: pestResult.stats,
-                    disease: diseaseResult,
                 },
             });
 

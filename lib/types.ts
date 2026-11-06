@@ -29,7 +29,8 @@ export interface ScanDiagnosis {
     plantStats?: ClassificationStats;
     pest: PestPrediction;
     pestStats?: ClassificationStats;
-    disease: SegmentationResult;
+    /** Older scans carry a disease segmentation; new scans do not. */
+    disease?: SegmentationResult;
 }
 
 export interface ScanRecord {

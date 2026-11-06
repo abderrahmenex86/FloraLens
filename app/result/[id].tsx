@@ -25,7 +25,7 @@ import { getPlantImages } from '../../lib/plantAssets';
 
 import { useAppTheme, withAlpha } from '@/lib/appTheme';
 import { radii, spacing } from '@/theme';
-import { DISEASE_CLASSES, PEST_CLASSES } from '../../lib/healthClasses';
+import { PEST_CLASSES } from '../../lib/healthClasses';
 import { PLANT_CLASSES } from '../../lib/plantClasses';
 import {
     getLegacySession,
@@ -148,8 +148,14 @@ export default function ResultScreen() {
         isUncertain(stats)
     :   mainMatch.confidenceScore < 0.5;
     const isManualSelection = scan.selectedClassIndex != null;
-    const disease = scan.diagnosis?.disease;
     const pest = scan.diagnosis?.pest;
+    const pestInfo = pest ? PEST_CLASSES[pest.classIndex] : undefined;
+    const noInsect = pest?.classIndex === 22;
+    const pestDetected =
+        !!pest && !noInsect && pest.confidenceScore >= PEST_CONFIDENCE;
+    const pestIsHarmful =
+        pestInfo?.severity === 'High' || pestInfo?.severity === 'Medium';
+    const pestColor = pestIsHarmful ? colors.danger : colors.primary;
     const references = getPlantImages(mainMatch.classIndex);
 
     const handleBack = () => {
@@ -383,84 +389,13 @@ export default function ResultScreen() {
                         Diagnostics
                     </Text>
 
-                    <View className='mb-4 rounded-3xl p-5'
-                        style={{ backgroundColor: colors.surface }}>
-                        <View className='flex-row items-center gap-3 mb-4'>
-                            {disease?.hasDisease ?
-                                <ShieldAlert
-                                    size={24}
-                                    color={colors.danger}
-                                />
-                            :   <ShieldCheck
-                                    size={24}
-                                    color={colors.accent}
-                                />
-                            }
-                            <Text className='font-jakarta-bold text-xl'
-                                style={{ color: colors.ink }}>
-                                Disease check
-                            </Text>
-                        </View>
-                        {!disease ?
-                            <Text className='font-vietnam'
-                            style={{ color: colors.onSurfaceVariant }}>
-                                Not available for this saved scan.
-                            </Text>
-                        : disease.hasDisease ?
-                            <>
-                                {disease.blendedBase64 && (
-                                    <Image
-                                        source={{ uri: disease.blendedBase64 }}
-                                        style={{
-                                            width: '100%',
-                                            aspectRatio: 1,
-                                            borderRadius: radii.md,
-                                            marginBottom: 16,
-                                        }}
-                                        contentFit='contain'
-                                    />
-                                )}
-                                <Text className='mb-1 mt-4 font-jakarta-bold text-lg'
-                                    style={{ color: colors.danger }}>
-                                    {
-                                        DISEASE_CLASSES[
-                                            disease.diseaseClassIndex
-                                        ]?.name
-                                    }
-                                </Text>
-                                <Text className='font-vietnam leading-relaxed'
-                                    style={{
-                                        color: colors.onSurfaceVariant,
-                                    }}>
-                                    {
-                                        DISEASE_CLASSES[
-                                            disease.diseaseClassIndex
-                                        ]?.treatment
-                                    }
-                                </Text>
-                                <Text className='mt-2 font-vietnam text-sm'
-                                    style={{
-                                        color: colors.onSurfaceVariant,
-                                    }}>
-                                    About{' '}
-                                    {Math.round(disease.severity * 100)}% of the
-                                    image shows this pattern.
-                                </Text>
-                            </>
-                        :   <Text className='font-vietnam'
-                            style={{ color: colors.onSurfaceVariant }}>
-                                No significant disease markers detected.
-                            </Text>
-                        }
-                    </View>
-
                     <View className='mb-10 rounded-3xl p-5'
                         style={{ backgroundColor: colors.surface }}>
                         <View className='flex-row items-center gap-3 mb-4'>
-                            {pest && pest.confidenceScore >= PEST_CONFIDENCE ?
+                            {pestDetected ?
                                 <Bug
                                     size={24}
-                                    color={colors.danger}
+                                    color={pestColor}
                                 />
                             :   <ShieldCheck
                                     size={24}
@@ -469,30 +404,37 @@ export default function ResultScreen() {
                             }
                             <Text className='font-jakarta-bold text-xl'
                                 style={{ color: colors.ink }}>
-                                Pest check
+                                Insect check
                             </Text>
                         </View>
                         {!pest ?
-                            <Text className='font-vietnam'
-                            style={{ color: colors.onSurfaceVariant }}>
+                            <Text
+                                className='font-vietnam'
+                                style={{ color: colors.onSurfaceVariant }}>
                                 Not available for this saved scan.
                             </Text>
-                        : pest.confidenceScore >= PEST_CONFIDENCE ?
+                        : pestDetected ?
                             <>
-                                <Text className='mb-1 font-jakarta-bold text-lg'
-                                    style={{ color: colors.danger }}>
-                                    {PEST_CLASSES[pest.classIndex]?.name}
+                                <Text
+                                    className='mb-1 font-jakarta-bold text-lg'
+                                    style={{ color: pestColor }}>
+                                    {pestInfo?.name}
                                 </Text>
-                                <Text className='font-vietnam leading-relaxed'
+                                <Text
+                                    className='font-vietnam leading-relaxed'
                                     style={{
                                         color: colors.onSurfaceVariant,
                                     }}>
-                                    {PEST_CLASSES[pest.classIndex]?.treatment}
+                                    {pestInfo?.treatment}
                                 </Text>
                             </>
-                        :   <Text className='font-vietnam'
-                            style={{ color: colors.onSurfaceVariant }}>
-                                No pests detected with high confidence.
+                        :   <Text
+                                className='font-vietnam'
+                                style={{ color: colors.onSurfaceVariant }}>
+                                {noInsect ?
+                                    'No insect detected in this photo.'
+                                :   'No insect above the confidence threshold.'
+                                }
                             </Text>
                         }
                     </View>

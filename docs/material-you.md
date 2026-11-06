@@ -35,6 +35,10 @@ Five destinations: Home, My scans, Scan, Garden, Library.
   route with its own close button, so the camera never becomes a swipe target.
 - `components/SwipePager.tsx` handles horizontal swipes between the four tab
   pages. Vertical drags fail the gesture, so lists scroll normally.
+- Each tab page slides in 26 px from its side and fades up over ~240 ms. The
+  tab navigator's own `animation` option did not run reliably with the custom
+  Compose tab bar, so `Screen` drives the transition with Reanimated instead.
+  The direction comes from the tab order in `PAGE_ORDER`.
 - Swipe-to-delete on rows is gone because it competed with paging. Rows delete
   through a trash button and long press.
 

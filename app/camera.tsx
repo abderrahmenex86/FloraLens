@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { manipulateAsync } from 'expo-image-manipulator';
 import { styled } from 'nativewind';
 import { useRouter } from 'expo-router';
@@ -22,6 +21,7 @@ import {
     X,
 } from 'lucide-react-native';
 import { mlPipeline } from '../lib/mlPipeline';
+import { setPendingPhoto } from '../lib/photoSelection';
 import { saveScan } from '../lib/storage';
 import { useAppTheme, withAlpha } from '@/lib/appTheme';
 
@@ -59,25 +59,13 @@ export default function ScanScreen() {
         };
     }, []);
 
-    const pickFromGallery = useCallback(async () => {
-        try {
-            const result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 1,
-            });
-            if (!result.canceled) {
-                setPhotoUri(result.assets[0].uri);
-                setState('reviewing');
-            }
-        } catch (error) {
-            console.error('Gallery picker failed:', error);
-            ToastAndroid.show(
-                'The gallery could not be opened.',
-                ToastAndroid.SHORT,
-            );
-        }
-    }, []);
+    const pickFromGallery = useCallback(() => {
+        setPendingPhoto((uri) => {
+            setPhotoUri(uri);
+            setState('reviewing');
+        });
+        router.push('/photo-picker');
+    }, [router]);
 
     const takePhoto = useCallback(async () => {
         if (!cameraRef.current || capturing || !cameraReady) return;

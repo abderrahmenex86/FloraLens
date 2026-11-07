@@ -76,6 +76,10 @@ const RootLayout = () => {
                         name='settings'
                         options={{ presentation: 'modal' }}
                     />
+                    <Stack.Screen
+                        name='photo-picker'
+                        options={{ presentation: 'modal' }}
+                    />
                 </Stack>
             </AppThemeProvider>
         </GestureHandlerRootView>

@@ -5,7 +5,11 @@ leaves for insects, and keeps watering reminders on the phone. The classifiers
 run locally with ONNX Runtime, so photos, scans and the garden stay on the
 device.
 
-<img src="docs/readme-home.png" width="32%" alt="FloraLens home screen with a Needs water section, recent scans and daily picks" />
+<table><tr>
+<td><img src="docs/demo/home.jpg" width="150" alt="Home screen with two plants due for water, recent scans and daily picks" /></td><td><img src="docs/demo/garden.jpg" width="150" alt="Garden calendar with four watering days and two plants due today" /></td>
+<td><a href="docs/demo/floralens.mp4"><img src="docs/demo/poster.jpg" width="150" alt="Play the 26-second FloraLens screen recording" /></a></td>
+<td><img src="docs/demo/result.jpg" width="150" alt="Hydrangea scan result at 97 percent with care and alternatives" /></td><td><img src="docs/demo/plant.jpg" width="150" alt="Monstera care guide from the library" /></td>
+</tr></table>
 
 ## What it does
 
@@ -90,8 +94,6 @@ The plant model is a 118-class MobileNetV4-Conv-S. The insect model is a
 23-class RepViT-M1. Both take 224x224 ImageNet-normalised input. The gate is a
 MobileNetV3-Small at 128x128. Class ids and model contracts live in `shared/`;
 `tools/validate_contracts.py` checks an export against its class list.
-
-<img src="docs/readme-garden.png" width="32%" alt="Garden calendar with four watering days and today's list of two plants" />
 
 Scans and garden entries are stored in MMKV, with scan photos copied into
 private app storage. Watering dates are calendar days. Reminders are rebuilt at

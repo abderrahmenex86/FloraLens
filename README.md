@@ -106,7 +106,7 @@ uv run --project ml pytest -q ml/tests
 uv run --project ml floralens --help
 ```
 
-The tests cover manifests, cleaning, selection, splitting, taxonomy and the rule engine. The last run finished with `16 passed in 0.50s`. Datasets and checkpoints are not in git; the pipeline expects them under `data/`, `ml/data/`, `ml/runs/` and `ml/exports/`.
+The tests cover manifests, cleaning, selection, splitting, taxonomy and the rule engine. The suite has 16 tests. Datasets and checkpoints are not in git; the pipeline expects them under `data/`, `ml/data/`, `ml/runs/` and `ml/exports/`.
 
 ## First run
 

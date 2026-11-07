@@ -150,7 +150,7 @@ The ML pipeline is separate from the app and meets it at `shared/`:
 
 ```mermaid
 flowchart LR
-    A[Pl@ntNet-300K] --> C[Image manifests]
+    A["Pl@ntNet-300K"] --> C[Image manifests]
     B[GBIF garden and insects] --> C
     C --> D[Clean and dedupe]
     D --> E[Select classes]

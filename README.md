@@ -6,9 +6,9 @@ run locally with ONNX Runtime, so photos, scans and the garden stay on the
 device.
 
 <table><tr>
-<td align="center"><img src="docs/demo/home.jpg" width="150" alt="Home screen with two plants due for water, recent scans and daily picks" /></td>
-<td align="center"><details><summary><img src="docs/demo/poster.jpg" width="150" alt="Play the 26-second FloraLens demo" /></summary><video src="https://github.com/user-attachments/assets/7717cbac-3df7-45a6-aea6-779f5f951564" controls muted playsinline></video></details></td>
-<td align="center"><img src="docs/demo/result.jpg" width="150" alt="Hydrangea scan result at 97 percent with care and alternatives" /></td>
+<td align="center"><img src="docs/demo/home.jpg" width="340" alt="Home screen with two plants due for water, recent scans and daily picks" /></td>
+<td align="center"><video src="https://github.com/user-attachments/assets/7717cbac-3df7-45a6-aea6-779f5f951564" controls muted playsinline></video></td>
+<td align="center"><img src="docs/demo/result.jpg" width="340" alt="Hydrangea scan result at 97 percent with care and alternatives" /></td>
 </tr></table>
 
 ## What it does

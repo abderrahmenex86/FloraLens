@@ -6,9 +6,9 @@ run locally with ONNX Runtime, so photos, scans and the garden stay on the
 device.
 
 <table><tr>
-<td><img src="docs/demo/home.jpg" width="150" alt="Home screen with two plants due for water, recent scans and daily picks" /></td><td><img src="docs/demo/garden.jpg" width="150" alt="Garden calendar with four watering days and two plants due today" /></td>
-<td><video src="https://github.com/user-attachments/assets/7717cbac-3df7-45a6-aea6-779f5f951564" width="150" controls muted playsinline poster="docs/demo/garden.jpg"></video></td>
-<td><img src="docs/demo/result.jpg" width="150" alt="Hydrangea scan result at 97 percent with care and alternatives" /></td><td><img src="docs/demo/plant.jpg" width="150" alt="Monstera care guide from the library" /></td>
+<td><img src="docs/demo/home.jpg" width="150" alt="Home screen with two plants due for water, recent scans and daily picks" /></td>
+<td><video src="https://github.com/user-attachments/assets/7717cbac-3df7-45a6-aea6-779f5f951564" controls muted playsinline poster="docs/demo/garden.jpg"></video></td>
+<td><img src="docs/demo/result.jpg" width="150" alt="Hydrangea scan result at 97 percent with care and alternatives" /></td>
 </tr></table>
 
 ## What it does

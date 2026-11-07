@@ -65,7 +65,7 @@ photos, so a healthy leaf is not confidently labelled as a pest.
 ## Artifacts
 
 ```
-ml/exports/plant_gate/model.onnx    5.9 MB   (existing download)
+ml/exports/plant_gate/plant_gate.onnx  5.9 MB
 ml/exports/garden/model.onnx       10.6 MB
 ml/exports/plants1024/model.onnx   22.0 MB
 ml/exports/insects/model.onnx      19.0 MB
@@ -83,7 +83,7 @@ garden-insect model. The 1,023-class
   broad model and the IP102 pest model are training artifacts only.
 - The disease segmentation model was removed from the app: the scan flow now
   reports one plant match plus one insect match, which keeps the bundle at
-  ~30 MB of models instead of ~90 MB.
+  ~36 MB of models instead of ~90 MB.
 - Library covers come from Wikipedia/Wikimedia (thumbnail CDN); the fetch
   script is `tools/fetch_garden_covers.py`. Reference thumbnails are built by
   `tools/build_plant_library.py`.

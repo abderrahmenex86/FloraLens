@@ -16,25 +16,26 @@ The app now has a real identity and a clean manifest.
 
 ## Permissions
 
-The release manifest declares only:
+The release manifest declares:
 
-- `CAMERA` (system camera intent from the image picker)
-- `INTERNET` (optional photo-pack download)
-- `VIBRATE` (haptics)
-- `ACCESS_NETWORK_STATE`
+- `CAMERA`
+- `READ_MEDIA_IMAGES` and `READ_MEDIA_VISUAL_USER_SELECTED` (scoped gallery)
+- `READ_EXTERNAL_STORAGE` with `maxSdkVersion=32` (Android 12 and below)
+- `INTERNET` and `ACCESS_NETWORK_STATE` (optional photo-pack download)
+- `VIBRATE`, `POST_NOTIFICATIONS`, `RECEIVE_BOOT_COMPLETED`, `WAKE_LOCK`
 - the internal dynamic-receiver permission
 
 Blocked from library manifests:
 
 - `RECORD_AUDIO`
 - `SYSTEM_ALERT_WINDOW`
-- `READ_EXTERNAL_STORAGE` / `WRITE_EXTERNAL_STORAGE`
-- `READ_MEDIA_IMAGES` / `READ_MEDIA_VIDEO` / `READ_MEDIA_AUDIO`
+- `WRITE_EXTERNAL_STORAGE`
+- `READ_MEDIA_VIDEO` / `READ_MEDIA_AUDIO`
 
-`expo-camera`, `expo-media-library`, `expo-blur`, `expo-symbols`,
-`expo-web-browser` and `@gorhom/bottom-sheet` were removed because nothing
-imported them. `expo-dev-client` is still present for the development workflow
-and should be removed for a store build.
+`expo-blur`, `expo-symbols`, `expo-web-browser` and `@gorhom/bottom-sheet` are
+not installed. `expo-camera` handles capture and `expo-media-library` backs the
+scoped gallery. `expo-dev-client` stays for development and should be removed
+for a store build.
 
 ## Build
 
@@ -53,16 +54,14 @@ cd android
   -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=1g"
 ```
 
-Sizes from this pass (SDK 58 + Material You shell):
+Current size with the gate, garden and insect models:
 
 | Build | APK |
 |---|---|
-| x86_64 release | 169 MB |
-| arm64 release | 162 MB |
+| arm64 release | 116 MB |
 
 The release is signed with the debug keystore; replace it before publishing.
-R8/minify is still disabled, so the dex is 42 MB and the APK is larger than it
-needs to be.
+R8/minify is enabled in `android/gradle.properties`.
 
 ## Verified
 
@@ -70,14 +69,15 @@ needs to be.
 - Package/label/permissions inspected with `aapt2`.
 - `allowBackup=false`.
 - Home and empty state render in a standalone release build with no Metro.
-- Pixel 8a (arm64, Android 17): installed the 166 MB release, cold start
-  **0.5–1.0 s**, PSS **96 MB** at home. (SDK 54 build.)
-- Camera permission prompt, system camera, crop, on-device analysis and result
-  all work from the release build.
+- Pixel 8a (arm64, Android 17): installed the 116 MB release, cold start under
+  1 s, PSS 96 MB at home. The PSS figure came from an earlier SDK 54 build.
+- Camera permission prompt, system camera, in-app photo picker, on-device
+  analysis and result all work from the release build.
 - The camera permission dialog still says "take pictures and record video"
   because Android groups camera and video under CAMERA; RECORD_AUDIO is not in
   the manifest.
-- Only `CAMERA` is granted; no media, microphone or overlay permission.
+- `CAMERA`, `POST_NOTIFICATIONS` and photo access are the runtime permissions;
+  no microphone or overlay permission exists.
 
 ## SDK 58 migration
 
